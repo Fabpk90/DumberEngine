@@ -20,9 +20,9 @@ T *GameObject::getComponent()
 
     while (ite != components.end())
     {
-        T* comp = dynamic_cast<T*>(*ite);
+        T *comp = dynamic_cast<T *>(*ite);
 
-        if(comp != nullptr)
+        if (comp != nullptr)
         {
             return comp;
         }
@@ -75,12 +75,12 @@ void GameObject::removeComponent()
 
     while (ite != components.end())
     {
-       T* type = dynamic_cast<T*>(*ite);
+        T *type = dynamic_cast<T *>(*ite);
 
-       if(type != nullptr)
-       {
-           components.remove(*ite);
-           break;
-       }
+        if (type != nullptr)
+        {
+            components.remove(*ite);
+            break;
+        }
     }
 }

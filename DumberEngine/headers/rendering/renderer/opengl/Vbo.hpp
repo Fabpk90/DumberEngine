@@ -19,6 +19,7 @@ public:
         {
             NbFloats = nbFloats;
         }
+
         Element()
         {
             NbFloats = 0;
@@ -27,31 +28,38 @@ public:
     };
 
     Vbo(int nbElements, int nbVertices);
+
     ~Vbo();
 
     void setElementDescription(int index, Element desc);
+
     void setElementData(int dataIndex, int vertexIndex, float f1);
+
     void setElementData(int dataIndex, int vertexIndex, float f1, float f2);
+
     void setElementData(int dataIndex, int vertexIndex, float f1, float f2, float f3);
+
     void setElementData(int dataIndex, int vertexIndex, float f1, float f2, float f3, float f4);
 
     void createCPUSide();
+
     void deleteCPUSide();
 
     void createGPUSide();
+
     void deleteGPUSide();
 
     void draw();
 
 private:
-    Element* elements;
+    Element *elements;
     int nbElements;
     int nbVertices;
 
     int totalElementSize;
     int sizeOfOneVertex;
 
-    float* elementsValue;
+    float *elementsValue;
 
     GLuint vao;
     GLuint vbo;

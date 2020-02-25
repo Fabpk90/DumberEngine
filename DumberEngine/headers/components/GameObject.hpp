@@ -12,25 +12,27 @@
 class GameObject : public IComponent
 {
 private:
-    std::list<IComponent*> components;
+    std::list<IComponent *> components;
     std::string name;
 public:
 
     ~GameObject();
 
-    GameObject(const char* name);
+    GameObject(const char *name);
 
-    void start() override ;
-    void update() override ;
-    void draw() override ;
+    void start() override;
 
-    void addComponent(IComponent* comp);
+    void update() override;
+
+    void draw() override;
+
+    void addComponent(IComponent *comp);
 
 
-    template <class T>
-            T* getComponent();
+    template<class T>
+    T *getComponent();
 
-    template <class T>
+    template<class T>
     void removeComponent();
 };
 

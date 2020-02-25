@@ -69,12 +69,12 @@ void Vbo::setElementData(int dataIndex, int vertexIndex, float f1, float f2, flo
 
 void Vbo::createGPUSide()
 {
-    if(vao != 0)
+    if (vao != 0)
         glDeleteVertexArrays(1, &vao);
     glGenVertexArrays(1, &vao);
     glBindVertexArray(vao);
 
-    if(vbo != 0)
+    if (vbo != 0)
         glDeleteBuffers(1, &vbo);
     glGenBuffers(1, &vbo);
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
@@ -82,9 +82,10 @@ void Vbo::createGPUSide()
     for (int i = 0; i < nbElements; ++i)
     {
         glEnableVertexAttribArray(i);
-        glVertexAttribPointer(i, elements[i].NbFloats, GL_FLOAT, GL_FALSE, (sizeof(float) * sizeOfOneVertex), (void*) (sizeof(float) * elements[i].OffsetFloats) );
+        glVertexAttribPointer(i, elements[i].NbFloats, GL_FLOAT, GL_FALSE, (sizeof(float) * sizeOfOneVertex),
+                              (void *) (sizeof(float) * elements[i].OffsetFloats));
     }
-    glBufferData(GL_ARRAY_BUFFER, totalElementSize * nbVertices * sizeof(float),elementsValue, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, totalElementSize * nbVertices * sizeof(float), elementsValue, GL_STATIC_DRAW);
 
     glBindVertexArray(0);
 }
@@ -98,7 +99,7 @@ void Vbo::deleteCPUSide()
 Vbo::~Vbo()
 {
     deleteCPUSide();
-    delete [] elements;
+    delete[] elements;
 }
 
 void Vbo::deleteGPUSide()

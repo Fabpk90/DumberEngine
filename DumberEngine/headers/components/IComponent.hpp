@@ -11,10 +11,12 @@ class IComponent
 {
 public:
     virtual void start() = 0;
+
     virtual void update() = 0;
+
     virtual void draw() = 0;
 
-    GameObject* gameObject;
+    GameObject *gameObject;
 };
 
 #endif //DUMBERENGINE_ICOMPONENT_HPP

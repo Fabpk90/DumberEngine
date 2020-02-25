@@ -16,14 +16,17 @@ public:
     glm::vec3 right;
     glm::vec3 up;
 
+    glm::vec2 angles;
+
 private:
     void updateVecs();
 
 public:
     Camera(glm::vec3 position);
 
-    void move(glm::vec3& movement);
-    void rotate(glm::vec2 angle);
+    void move(glm::vec3 &movement);
+
+    void rotate(glm::vec2 delta);
 };
 
 #endif //DUMBERENGINE_CAMERA_HPP

@@ -17,9 +17,9 @@ private:
 
 public:
 
-    Time(const Time&) = delete;
+    Time(const Time &) = delete;
 
-    static Time& getInstance()
+    static Time &getInstance()
     {
         return instance;
     }

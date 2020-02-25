@@ -4,7 +4,7 @@
 
 #include "../../../headers/rendering/renderer/IWindow.h"
 
-GLFWwindow * IWindow::GetHandle()
+GLFWwindow *IWindow::GetHandle()
 {
     return windowHandle;
 }

@@ -10,10 +10,13 @@
 class OpenGLRenderer : public IWindow
 {
 public:
-    ~OpenGLRenderer() override ;
+    ~OpenGLRenderer() override;
 
-    void init(SWindowData data) override ;
-    void release() override ;
+    void init(SWindowData data) override;
+
+    void closeWindow() override;
+
+    void release() override;
 };
 
 #endif //DUMBERENGINE_OPENGLRENDERER_HPP

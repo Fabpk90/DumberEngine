@@ -3,6 +3,7 @@
 //
 
 #define STB_IMAGE_IMPLEMENTATION
+
 #include "stb/stb_image.h"
 
 #include "glad/glad.h"
@@ -26,7 +27,7 @@
 #include "../headers/rendering/renderer/opengl/InputManager.hpp"
 
 
-Vbo* createCube()
+Vbo *createCube()
 {
     auto vbo = new Vbo(3, 36);
 
@@ -220,58 +221,78 @@ GLenum glCheckError_(const char *file, int line)
         std::string error;
         switch (errorCode)
         {
-            case GL_INVALID_ENUM:                  error = "INVALID_ENUM"; break;
-            case GL_INVALID_VALUE:                 error = "INVALID_VALUE"; break;
-            case GL_INVALID_OPERATION:             error = "INVALID_OPERATION"; break;
-            case GL_OUT_OF_MEMORY:                 error = "OUT_OF_MEMORY"; break;
-            case GL_INVALID_FRAMEBUFFER_OPERATION: error = "INVALID_FRAMEBUFFER_OPERATION"; break;
-            default:                               error = "AY CARAMBA"; break;
+            case GL_INVALID_ENUM:
+                error = "INVALID_ENUM";
+                break;
+            case GL_INVALID_VALUE:
+                error = "INVALID_VALUE";
+                break;
+            case GL_INVALID_OPERATION:
+                error = "INVALID_OPERATION";
+                break;
+            case GL_OUT_OF_MEMORY:
+                error = "OUT_OF_MEMORY";
+                break;
+            case GL_INVALID_FRAMEBUFFER_OPERATION:
+                error = "INVALID_FRAMEBUFFER_OPERATION";
+                break;
+            default:
+                error = "AY CARAMBA";
+                break;
         }
         std::cout << error << " | " << file << " (" << line << ")" << std::endl;
     }
     return errorCode;
 }
+
 #define glCheckError() glCheckError_(__FILE__, __LINE__)
 
 OpenGLRenderer renderer = OpenGLRenderer();
+bool isCursorShown = false;
 
-void updateCamera(Camera& cam)
+void updateCamera(Camera &cam)
 {
-    auto& input = InputManager::getInstance();
+    auto &input = InputManager::getInstance();
 
     glm::vec3 movement = glm::vec3();
 
-    if(input.isKeyPressed(GLFW_KEY_W))
+    if (input.isKeyPressed(GLFW_KEY_W))
     {
         movement.z += 2;
-    }
-    else if(input.isKeyPressed(GLFW_KEY_S))
+    } else if (input.isKeyPressed(GLFW_KEY_S))
     {
         movement.z -= 2;
     }
-    if(input.isKeyPressed(GLFW_KEY_A))
+    if (input.isKeyPressed(GLFW_KEY_A))
     {
         movement.x -= 2;
-    }
-    else if(input.isKeyPressed(GLFW_KEY_D))
+    } else if (input.isKeyPressed(GLFW_KEY_D))
     {
         movement.x += 2;
     }
 
-    if(input.isKeyPressed(GLFW_KEY_ESCAPE))
+    if (input.isKeyPressed(GLFW_KEY_ESCAPE))
     {
         glfwSetWindowShouldClose(renderer.GetHandle(), true);
+    }
+
+    if (input.isMouseButtonPressed(GLFW_MOUSE_BUTTON_RIGHT))
+    {
+        isCursorShown = !isCursorShown;
+        glfwSetInputMode(renderer.GetHandle(), GLFW_CURSOR, isCursorShown ? GLFW_CURSOR_NORMAL : GLFW_CURSOR_HIDDEN);
     }
 
     movement *= Time::getInstance().deltaTime;
 
     cam.move(movement);
+    if (glfwGetInputMode(renderer.GetHandle(), GLFW_CURSOR) == GLFW_CURSOR_HIDDEN)
+        cam.rotate(input.getMouseDelta());
 }
 
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
 
-    SWindowData data {};
+    SWindowData data{};
     data.width = 800;
     data.height = 600;
     data.name = "Dumber Engine";
@@ -282,17 +303,17 @@ int main(int argc, char** argv)
 
     Camera cam = Camera(glm::vec3(0, -5, 0));
 
-    Shader* shader = new Shader("shaders/cube/");
-    glm::mat4 proj = glm::perspective(glm::radians(60.0f), (float)data.width / (float)data.height, 0.1f, 100.0f);
+    Shader *shader = new Shader("shaders/cube/");
+    glm::mat4 proj = glm::perspective(glm::radians(60.0f), (float) data.width / (float) data.height, 0.1f, 100.0f);
     glm::mat4 model = glm::mat4(1.0f);
 
     model = glm::translate(model, glm::vec3(-0.25f, 0, 0));
 
-    Vbo* vbo = createCube();
+    Vbo *vbo = createCube();
 
     bool show_demo_window = true;
     float lastFrame = 0;
-    while(!glfwWindowShouldClose(handle))
+    while (!glfwWindowShouldClose(handle))
     {
         float currentFrame = glfwGetTime();
         Time::getInstance().deltaTime = currentFrame - lastFrame;
