@@ -36,20 +36,20 @@ void CameraScript::update()
 
     if (input.isKeyPressed(GLFW_KEY_ESCAPE))
     {
-        glfwSetWindowShouldClose(renderer.GetHandle(), true);
+        input.renderer->closeWindow();
     }
 
     if (input.isMouseButtonPressed(GLFW_MOUSE_BUTTON_RIGHT))
     {
-        isCursorShown = !isCursorShown;
-        glfwSetInputMode(renderer.GetHandle(), GLFW_CURSOR, isCursorShown ? GLFW_CURSOR_NORMAL : GLFW_CURSOR_HIDDEN);
+        isCursorvisible = !isCursorvisible;
+        input.setMouseVisible(isCursorvisible);
     }
 
     movement *= Time::getInstance().deltaTime;
 
-    cam.move(movement);
-    if (glfwGetInputMode(renderer.GetHandle(), GLFW_CURSOR) == GLFW_CURSOR_HIDDEN)
-        cam.rotate(input.getMouseDelta());
+    cam->move(movement);
+    if (!isCursorvisible)
+        cam->rotate(input.getMouseDelta());
 }
 
 void CameraScript::draw()
@@ -60,4 +60,10 @@ void CameraScript::draw()
 CameraScript::~CameraScript()
 {
     delete cam;
+}
+
+CameraScript::CameraScript()
+{
+    cam = new Camera(glm::vec3());
+    isCursorvisible = true;
 }

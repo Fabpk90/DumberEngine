@@ -10,10 +10,7 @@ class Time
 private:
     static Time instance;
 
-    Time()
-    {
-
-    }
+    Time(){}
 
 public:
 
@@ -26,7 +23,5 @@ public:
 
     float deltaTime = 0.0f;
 };
-
-Time Time::instance;
 
 #endif //DUMBERENGINE_TIME_HPP

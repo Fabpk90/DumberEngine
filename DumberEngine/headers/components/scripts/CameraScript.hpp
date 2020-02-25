@@ -12,8 +12,9 @@ class CameraScript : public IComponent
 {
 private:
     Camera *cam;
+    bool isCursorvisible;
 public:
-
+    CameraScript();
     ~CameraScript();
 
     void start() override;
