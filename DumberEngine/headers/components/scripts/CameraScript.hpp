@@ -11,11 +11,12 @@
 class CameraScript : public IComponent
 {
 private:
-    Camera *cam;
     bool isCursorvisible;
+    bool isRightButtonReleased;
 public:
     CameraScript();
-    ~CameraScript();
+
+    ~CameraScript() override;
 
     void start() override;
 

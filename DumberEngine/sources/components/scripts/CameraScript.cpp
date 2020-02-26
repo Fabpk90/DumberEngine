@@ -4,6 +4,7 @@
 
 #include <glm/vec3.hpp>
 #include <glfw/glfw3.h>
+#include <iostream>
 #include "../../../headers/components/scripts/CameraScript.hpp"
 #include "../../../headers/rendering/renderer/opengl/InputManager.hpp"
 #include "../../../headers/rendering/helper/Time.hpp"
@@ -15,6 +16,7 @@ void CameraScript::start()
 
 void CameraScript::update()
 {
+    auto &cam = (Camera::getInstance());
     auto &input = InputManager::getInstance();
 
     glm::vec3 movement = glm::vec3();
@@ -22,14 +24,16 @@ void CameraScript::update()
     if (input.isKeyPressed(GLFW_KEY_W))
     {
         movement.z += 2;
-    } else if (input.isKeyPressed(GLFW_KEY_S))
+    }
+    else if (input.isKeyPressed(GLFW_KEY_S))
     {
         movement.z -= 2;
     }
     if (input.isKeyPressed(GLFW_KEY_A))
     {
         movement.x -= 2;
-    } else if (input.isKeyPressed(GLFW_KEY_D))
+    }
+    else if (input.isKeyPressed(GLFW_KEY_D))
     {
         movement.x += 2;
     }
@@ -39,17 +43,24 @@ void CameraScript::update()
         input.renderer->closeWindow();
     }
 
-    if (input.isMouseButtonPressed(GLFW_MOUSE_BUTTON_RIGHT))
+    if (input.isMouseButtonPressed(GLFW_MOUSE_BUTTON_RIGHT) && isRightButtonReleased)
     {
+        isRightButtonReleased = false;
         isCursorvisible = !isCursorvisible;
         input.setMouseVisible(isCursorvisible);
+        //std::cout << "pressed " << std::endl;
+    }
+    else
+    {
+        //std::cout << "released " << std::endl;
+        isRightButtonReleased = true;
     }
 
     movement *= Time::getInstance().deltaTime;
 
-    cam->move(movement);
+    cam.move(movement);
     if (!isCursorvisible)
-        cam->rotate(input.getMouseDelta());
+        cam.rotate(input.getMouseDelta());
 }
 
 void CameraScript::draw()
@@ -57,13 +68,14 @@ void CameraScript::draw()
 
 }
 
-CameraScript::~CameraScript()
-{
-    delete cam;
-}
-
 CameraScript::CameraScript()
 {
-    cam = new Camera(glm::vec3());
+    //TODO: add a better way to handle the camera
+    isRightButtonReleased = false;
     isCursorvisible = true;
+}
+
+CameraScript::~CameraScript()
+{
+
 }

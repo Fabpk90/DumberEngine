@@ -46,7 +46,8 @@ void Shader::load()
             glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
             std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
         }
-    } else
+    }
+    else
     {
         std::cout << "The path for the vertex shader is incorrect " << s << std::endl;
     }
@@ -79,7 +80,8 @@ void Shader::load()
             glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
             std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
         }
-    } else
+    }
+    else
     {
         std::cout << "The path for the fragment shader is incorrect " << s << std::endl;
     }

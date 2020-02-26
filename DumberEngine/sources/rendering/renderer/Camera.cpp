@@ -5,12 +5,8 @@
 #include "../../../headers/rendering/renderer/Camera.hpp"
 #include <glm/gtc/matrix_transform.hpp>
 
-Camera::Camera(glm::vec3 position) : position(position)
-{
-    angles = glm::vec2();
-    forward = glm::vec3(0, 0, -1);
-    updateVecs();
-}
+Camera Camera::mainCamera;
+
 
 void Camera::updateVecs()
 {
@@ -48,6 +44,18 @@ void Camera::rotate(glm::vec2 delta)
 
     forward = position + direction * 2.0f;
 
+    updateVecs();
+}
+
+Camera &Camera::getInstance()
+{
+    return mainCamera;
+}
+
+Camera::Camera()
+{
+    angles = glm::vec2();
+    forward = glm::vec3(0, 0, -1);
     updateVecs();
 }
 

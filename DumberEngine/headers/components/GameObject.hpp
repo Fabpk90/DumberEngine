@@ -13,10 +13,12 @@ class GameObject : public IComponent
 {
 private:
     std::list<IComponent *> components;
-    std::string name;
+
 public:
 
-    ~GameObject();
+    std::string name;
+
+    ~GameObject() override;
 
     GameObject(const char *name);
 

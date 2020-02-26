@@ -25,6 +25,9 @@
 #include "../headers/rendering/renderer/Camera.hpp"
 #include "../headers/rendering/helper/Time.hpp"
 #include "../headers/rendering/renderer/opengl/InputManager.hpp"
+#include "../headers/rendering/Scene.hpp"
+#include "../headers/components/GameObject.hpp"
+#include "../headers/components/scripts/CameraScript.hpp"
 
 
 Vbo *createCube()
@@ -247,51 +250,10 @@ GLenum glCheckError_(const char *file, int line)
 
 #define glCheckError() glCheckError_(__FILE__, __LINE__)
 
-OpenGLRenderer renderer = OpenGLRenderer();
-bool isCursorShown = false;
-
-void updateCamera(Camera &cam)
-{
-    auto &input = InputManager::getInstance();
-
-    glm::vec3 movement = glm::vec3();
-
-    if (input.isKeyPressed(GLFW_KEY_W))
-    {
-        movement.z += 2;
-    } else if (input.isKeyPressed(GLFW_KEY_S))
-    {
-        movement.z -= 2;
-    }
-    if (input.isKeyPressed(GLFW_KEY_A))
-    {
-        movement.x -= 2;
-    } else if (input.isKeyPressed(GLFW_KEY_D))
-    {
-        movement.x += 2;
-    }
-
-    if (input.isKeyPressed(GLFW_KEY_ESCAPE))
-    {
-        glfwSetWindowShouldClose(renderer.GetHandle(), true);
-    }
-
-    if (input.isMouseButtonPressed(GLFW_MOUSE_BUTTON_RIGHT))
-    {
-        isCursorShown = !isCursorShown;
-        glfwSetInputMode(renderer.GetHandle(), GLFW_CURSOR, isCursorShown ? GLFW_CURSOR_NORMAL : GLFW_CURSOR_HIDDEN);
-    }
-
-    movement *= Time::getInstance().deltaTime;
-
-    cam.move(movement);
-    if (glfwGetInputMode(renderer.GetHandle(), GLFW_CURSOR) == GLFW_CURSOR_HIDDEN)
-        cam.rotate(input.getMouseDelta());
-}
 
 int main(int argc, char **argv)
 {
-
+    OpenGLRenderer renderer = OpenGLRenderer();
     SWindowData data{};
     data.width = 800;
     data.height = 600;
@@ -301,7 +263,11 @@ int main(int argc, char **argv)
 
     auto handle = renderer.GetHandle();
 
-    Camera cam = Camera(glm::vec3(0, -5, 0));
+    Scene *scene = new Scene();
+    auto *o = new GameObject("Camera");
+    o->addComponent(new CameraScript());
+
+    scene->addGameObject(o);
 
     Shader *shader = new Shader("shaders/cube/");
     glm::mat4 proj = glm::perspective(glm::radians(60.0f), (float) data.width / (float) data.height, 0.1f, 100.0f);
@@ -319,16 +285,16 @@ int main(int argc, char **argv)
         Time::getInstance().deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
 
-        updateCamera(cam);
-
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+        scene->update();
+        scene->draw();
+
         shader->use();
         shader->setMatrix4("model", model);
-
-        glm::mat4 view = glm::lookAt(cam.position, cam.position + cam.direction, cam.up);
-        shader->setMatrix4("view", view);
+        // glm::mat4 view = glm::lookAt(cam.position, cam.position + cam.direction, cam.up);
+        // shader->setMatrix4("view", view);
         shader->setMatrix4("projection", proj);
         vbo->draw();
 

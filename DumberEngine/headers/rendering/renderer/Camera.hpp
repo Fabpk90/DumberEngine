@@ -17,12 +17,18 @@ public:
     glm::vec3 up;
 
     glm::vec2 angles;
-
 private:
+    static Camera mainCamera;
+
     void updateVecs();
 
+    Camera();
+
 public:
-    Camera(glm::vec3 position);
+
+    Camera(const Camera &) = delete;
+
+    static Camera &getInstance();
 
     void move(glm::vec3 &movement);
 

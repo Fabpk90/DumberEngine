@@ -16,6 +16,9 @@ public:
 
     virtual void draw() = 0;
 
+    virtual ~IComponent()
+    {};
+
     GameObject *gameObject;
 };
 

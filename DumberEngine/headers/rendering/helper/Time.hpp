@@ -10,7 +10,8 @@ class Time
 private:
     static Time instance;
 
-    Time(){}
+    Time()
+    {}
 
 public:
 

@@ -9,7 +9,7 @@
 
 GameObject::GameObject(const char *name) : name(name)
 {
-
+    components = std::list<IComponent *>();
 }
 
 
@@ -38,6 +38,7 @@ void GameObject::start()
     while (ite != components.end())
     {
         (*ite)->start();
+        ++ite;
     }
 
 }
@@ -49,6 +50,7 @@ void GameObject::update()
     while (ite != components.end())
     {
         (*ite)->update();
+        ++ite;
     }
 }
 
@@ -59,6 +61,7 @@ void GameObject::draw()
     while (ite != components.end())
     {
         (*ite)->draw();
+        ++ite;
     }
 }
 
@@ -82,5 +85,15 @@ void GameObject::removeComponent()
             components.remove(*ite);
             break;
         }
+        else
+            ++ite;
+    }
+}
+
+GameObject::~GameObject()
+{
+    for (IComponent *i : components)
+    {
+        delete i;
     }
 }
