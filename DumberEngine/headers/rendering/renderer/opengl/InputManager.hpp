@@ -35,7 +35,7 @@ public:
 
     static void keyPressed(GLFWwindow *window, int key, int scancode, int action, int mods);
 
-    static void mouseMoved(GLFWwindow *window, double xpos, double ypos);
+    static void mouseMoved(GLFWwindow *, double xPos, double yPos);
 
     static void mouseButtonClicked(GLFWwindow *, int button, int action, int mods);
 
@@ -47,9 +47,11 @@ public:
 
     void setMouseVisible(bool isVisible) override;
 
-    glm::vec2 &getMousePosition() override;
+    void setMousePosition(glm::vec2 position) override;
 
-    glm::vec2 &getMouseDelta() override;
+    glm::vec2 getMouseDelta() override;
+
+    glm::vec2 &getMousePosition() override;
 
     IWindow *renderer;
 };

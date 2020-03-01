@@ -3,7 +3,9 @@
 //
 
 #include "../../../headers/rendering/renderer/Camera.hpp"
+#include "../../../headers/rendering/renderer/IWindow.h"
 #include <glm/gtc/matrix_transform.hpp>
+#include <iostream>
 
 Camera Camera::mainCamera;
 
@@ -26,19 +28,18 @@ void Camera::move(glm::vec3 &m)
 
 void Camera::rotate(glm::vec2 delta)
 {
-    angles += delta;
+    angles.x += delta.x;
+    angles.y -= delta.y;
 
     if (angles.y > 89.0f)
         angles.y = 89.0f;
     else if (angles.y < -89.0f)
         angles.y = -89.0f;
 
-    float x = angles.x * 0.2f;
-    float y = angles.y * 0.2f;
 
-    direction.x = cos(glm::radians(x)) * cos(glm::radians(y));
-    direction.y = sin(glm::radians(y));
-    direction.z = sin(glm::radians(x)) * cos(glm::radians(y));
+    direction.x = cos(glm::radians(angles.y)) * cos(glm::radians(angles.x));
+    direction.y = sin(glm::radians(angles.y));
+    direction.z = cos(glm::radians(angles.y)) * sin(glm::radians(angles.x));
 
     direction = glm::normalize(direction);
 
@@ -57,5 +58,36 @@ Camera::Camera()
     angles = glm::vec2();
     forward = glm::vec3(0, 0, -1);
     updateVecs();
+}
+
+void Camera::start()
+{
+
+}
+
+void Camera::update()
+{
+
+}
+
+void Camera::draw()
+{
+
+}
+
+void Camera::drawInspector()
+{
+
+}
+
+glm::mat4 Camera::getViewMatrix()
+{
+    return glm::lookAt(position, position + direction, up);
+}
+
+glm::mat4 Camera::getProjectionMatrix()
+{
+
+    return glm::perspective(glm::radians(60.0f), (float) IWindow::instance->getActualWidth() / (float) IWindow::instance->getActualHeight(), 0.1f, 100.0f);
 }
 

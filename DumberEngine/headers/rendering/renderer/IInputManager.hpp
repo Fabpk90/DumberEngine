@@ -17,11 +17,10 @@ public:
     virtual bool isMouseButtonPressed(int button) = 0;
 
     virtual void setMouseVisible(bool isVisible) = 0;
+    virtual void setMousePosition(glm::vec2 position) = 0;
+    virtual glm::vec2 getMouseDelta() = 0;
 
     virtual glm::vec2 &getMousePosition() = 0;
-
-    virtual glm::vec2 &getMouseDelta() = 0;
-
 };
 
 #endif //DUMBERENGINE_IINPUTMANAGER_HPP

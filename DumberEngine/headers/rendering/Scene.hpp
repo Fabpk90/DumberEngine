@@ -24,6 +24,8 @@ public:
     void addGameObject(GameObject *go);
 
     void removeGameObject(std::string name);
+
+    void drawInspector() override;
 };
 
 #endif //DUMBERENGINE_SCENE_HPP

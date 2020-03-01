@@ -5,6 +5,7 @@
 #include <glm/vec3.hpp>
 #include <glfw/glfw3.h>
 #include <iostream>
+#include <imgui/imgui.h>
 #include "../../../headers/components/scripts/CameraScript.hpp"
 #include "../../../headers/rendering/renderer/opengl/InputManager.hpp"
 #include "../../../headers/rendering/helper/Time.hpp"
@@ -43,24 +44,35 @@ void CameraScript::update()
         input.renderer->closeWindow();
     }
 
-    if (input.isMouseButtonPressed(GLFW_MOUSE_BUTTON_RIGHT) && isRightButtonReleased)
+    input.setMouseVisible(true);
+
+    if (input.isMouseButtonPressed(GLFW_MOUSE_BUTTON_RIGHT))
     {
-        isRightButtonReleased = false;
-        isCursorvisible = !isCursorvisible;
-        input.setMouseVisible(isCursorvisible);
+
+        isCursorvisible = false;
+        input.setMouseVisible(false);
         //std::cout << "pressed " << std::endl;
     }
     else
     {
+        isCursorvisible = true;
         //std::cout << "released " << std::endl;
-        isRightButtonReleased = true;
     }
 
     movement *= Time::getInstance().deltaTime;
 
     cam.move(movement);
     if (!isCursorvisible)
-        cam.rotate(input.getMouseDelta());
+    {
+        glm::vec2 delta, center;
+        center = glm::vec2(input.renderer->getActualWidth() >> 1, input.renderer->getActualHeight() >> 1);
+
+        delta = input.getMousePosition() - center;
+
+        cam.rotate(delta / 4.0f);
+        input.setMousePosition(center);
+    }
+
 }
 
 void CameraScript::draw()
@@ -78,4 +90,10 @@ CameraScript::CameraScript()
 CameraScript::~CameraScript()
 {
 
+}
+
+void CameraScript::drawInspector()
+{
+    ImGui::Text("CameraScript");
+    ImGui::Text("%f %f %f", Camera::getInstance().position.x, Camera::getInstance().position.y, Camera::getInstance().position.z);
 }

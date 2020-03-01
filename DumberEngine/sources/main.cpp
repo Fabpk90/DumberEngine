@@ -28,6 +28,7 @@
 #include "../headers/rendering/Scene.hpp"
 #include "../headers/components/GameObject.hpp"
 #include "../headers/components/scripts/CameraScript.hpp"
+#include "../headers/components/scripts/World.hpp"
 
 
 Vbo *createCube()
@@ -261,12 +262,16 @@ int main(int argc, char **argv)
 
     renderer.init(data);
 
-    auto handle = renderer.GetHandle();
+    auto handle = renderer.getHandle();
 
     Scene *scene = new Scene();
     auto *o = new GameObject("Camera");
     o->addComponent(new CameraScript());
 
+    auto* worldGO = new GameObject("World");
+    worldGO->addComponent(new World());
+
+    scene->addGameObject(worldGO);
     scene->addGameObject(o);
 
     Shader *shader = new Shader("shaders/cube/");
@@ -288,14 +293,16 @@ int main(int argc, char **argv)
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+        shader->use();
+        shader->setMatrix4("model", model);
+        auto view = Camera::getInstance().getViewMatrix();
+        shader->setMatrix4("view", view);
+        shader->setMatrix4("projection", proj);
+
         scene->update();
         scene->draw();
 
-        shader->use();
-        shader->setMatrix4("model", model);
-        // glm::mat4 view = glm::lookAt(cam.position, cam.position + cam.direction, cam.up);
-        // shader->setMatrix4("view", view);
-        shader->setMatrix4("projection", proj);
+
         vbo->draw();
 
         // Start the Dear ImGui frame
@@ -303,7 +310,7 @@ int main(int argc, char **argv)
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
-        ImGui::ShowDemoWindow(&show_demo_window);
+        scene->drawInspector();
 
         ImGui::Render();
 

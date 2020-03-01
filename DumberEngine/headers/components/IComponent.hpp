@@ -16,6 +16,9 @@ public:
 
     virtual void draw() = 0;
 
+    //used to show params in the inspector
+    virtual void drawInspector() = 0;
+
     virtual ~IComponent()
     {};
 

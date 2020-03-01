@@ -28,6 +28,8 @@ public:
 
     void draw() override;
 
+    void drawInspector() override;
+
     void addComponent(IComponent *comp);
 
 

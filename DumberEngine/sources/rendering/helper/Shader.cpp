@@ -129,7 +129,7 @@ void Shader::use()
     glUseProgram(shaderProgram);
 }
 
-void Shader::setMatrix4(const std::string &name, glm::mat4 &m)
+void Shader::setMatrix4(const std::string &name, glm::mat4& m)
 {
     GLint location = glGetUniformLocation(shaderProgram, name.c_str());
     glUniformMatrix4fv(location, 1, GL_FALSE, &m[0][0]);
@@ -146,3 +146,5 @@ void Shader::setFloat(const std::string &name, float f1)
     GLint location = glGetUniformLocation(shaderProgram, name.c_str());
     glUniform1f(location, f1);
 }
+
+

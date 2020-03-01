@@ -25,36 +25,30 @@ glm::vec2 &InputManager::getMousePosition()
     return mousePosition;
 }
 
-glm::vec2 &InputManager::getMouseDelta()
-{
-    return mouseDelta;
-}
-
 InputManager::InputManager()
 {
-    mouseDelta = mousePosition = glm::vec2();
+    mousePosition = glm::vec2();
     memset(keys, 0, sizeof(void *) * GLFW_KEY_LAST);
+    memset(mouseButtonState, 0, sizeof(void *) * GLFW_MOUSE_BUTTON_LAST);
 }
 
 void InputManager::keyPressed(GLFWwindow *window, int key, int scancode, int action, int mods)
 {
-    InputManager::getInstance().keys[key] = action == GLFW_PRESS || action == GLFW_REPEAT;
-}
-
-void InputManager::mouseMoved(GLFWwindow *window, double xpos, double ypos)
-{
-    auto &instance = InputManager::getInstance();
-
-    instance.mouseDelta.x = instance.mousePosition.x - xpos;
-    instance.mouseDelta.y = instance.mousePosition.y - ypos;
-
-    instance.mousePosition.x = xpos;
-    instance.mousePosition.y = ypos;
+    instance.keys[key] = action == GLFW_PRESS || action == GLFW_REPEAT;
 }
 
 void InputManager::mouseButtonClicked(GLFWwindow *h, int button, int action, int mode)
 {
-    InputManager::getInstance().mouseButtonState[button] = action == GLFW_PRESS || action == GLFW_REPEAT;
+    instance.mouseButtonState[button] = action == GLFW_PRESS || action == GLFW_REPEAT;
+}
+
+void InputManager::mouseMoved(GLFWwindow *, double xPos, double yPos)
+{
+    instance.mouseDelta.x = instance.mousePosition.x - xPos;
+    instance.mouseDelta.y = instance.mousePosition.y - yPos;
+
+    instance.mousePosition.x = xPos;
+    instance.mousePosition.y = yPos;
 }
 
 bool InputManager::isMouseButtonPressed(int button)
@@ -65,6 +59,21 @@ bool InputManager::isMouseButtonPressed(int button)
 void InputManager::setMouseVisible(bool isVisible)
 {
     isMouseShown = isVisible;
-    glfwSetInputMode(renderer->GetHandle(), GLFW_CURSOR, isMouseShown);
+    glfwSetInputMode(renderer->getHandle(), GLFW_CURSOR, isMouseShown ? GLFW_CURSOR_NORMAL : GLFW_CURSOR_HIDDEN);
 }
+
+void InputManager::setMousePosition(glm::vec2 position)
+{
+    glfwSetCursorPos(renderer->getHandle(), position.x, position.y);
+
+    mouseDelta = mousePosition - position;
+    mousePosition = position;
+}
+
+glm::vec2 InputManager::getMouseDelta()
+{
+    return mouseDelta;
+}
+
+
 

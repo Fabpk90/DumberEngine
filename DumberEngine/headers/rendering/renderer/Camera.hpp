@@ -6,8 +6,9 @@
 #define DUMBERENGINE_CAMERA_HPP
 
 #include "glm/glm.hpp"
+#include "../../components/IComponent.hpp"
 
-class Camera
+class Camera : public IComponent
 {
 public:
     glm::vec3 position;
@@ -26,6 +27,14 @@ private:
 
 public:
 
+    void start() override;
+
+    void update() override;
+
+    void draw() override;
+
+    void drawInspector() override;
+
     Camera(const Camera &) = delete;
 
     static Camera &getInstance();
@@ -33,6 +42,9 @@ public:
     void move(glm::vec3 &movement);
 
     void rotate(glm::vec2 delta);
+
+    glm::mat4 getViewMatrix();
+    glm::mat4 getProjectionMatrix();
 };
 
 #endif //DUMBERENGINE_CAMERA_HPP

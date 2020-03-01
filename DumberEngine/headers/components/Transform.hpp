@@ -5,9 +5,17 @@
 #ifndef DUMBERENGINE_TRANSFORM_HPP
 #define DUMBERENGINE_TRANSFORM_HPP
 
-class Transform
-{
+#include "IComponent.hpp"
 
+class Transform : public IComponent
+{
+    void start() override;
+
+    void update() override;
+
+    void draw() override;
+
+    void drawInspector() override;
 };
 
 #endif //DUMBERENGINE_TRANSFORM_HPP

@@ -97,3 +97,11 @@ GameObject::~GameObject()
         delete i;
     }
 }
+
+void GameObject::drawInspector()
+{
+    for (IComponent *i : components)
+    {
+        i->drawInspector();
+    }
+}

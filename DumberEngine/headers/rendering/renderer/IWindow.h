@@ -18,7 +18,6 @@ class IWindow
 {
 public:
 
-
     virtual ~IWindow() = default;
 
     virtual void init(SWindowData data) = 0;
@@ -27,10 +26,18 @@ public:
 
     virtual void release() = 0;
 
-    GLFWwindow *GetHandle();
+    virtual int getActualWidth() = 0;
+    virtual int getActualHeight() = 0;
+
+    virtual void setSize(int width, int height) = 0;
+
+    GLFWwindow* getHandle();
+
+    static IWindow* instance;
 
 protected:
-    GLFWwindow *windowHandle = nullptr;
+    GLFWwindow* windowHandle = nullptr;
+
 };
 
 #endif //DUMBERENGINE_IWINDOW_H

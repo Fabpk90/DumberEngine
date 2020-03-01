@@ -23,6 +23,8 @@ public:
     void update() override;
 
     void draw() override;
+
+    void drawInspector() override;
 };
 
 #endif //DUMBERENGINE_CAMERASCRIPT_HPP

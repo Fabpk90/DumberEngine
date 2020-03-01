@@ -5,6 +5,7 @@
 #ifndef DUMBERENGINE_SHADER_HPP
 #define DUMBERENGINE_SHADER_HPP
 
+#include <string>
 #include <glad/glad.h>
 #include "glm/glm.hpp"
 

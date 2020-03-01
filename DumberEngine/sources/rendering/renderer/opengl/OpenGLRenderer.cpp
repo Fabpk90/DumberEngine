@@ -15,13 +15,12 @@ static void glfwError(int id, const char *description)
     std::cout << description << std::endl;
 }
 
-void framebuffer_size_callback(GLFWwindow *window, int width, int height)
-{
-    glViewport(0, 0, width, height);
-}
-
 void OpenGLRenderer::init(SWindowData data)
 {
+    instance = this;
+    windowSize.x = data.width;
+    windowSize.y = data.height;
+
     std::cout << "Initializing Opengl Renderer" << std::endl;
     glfwSetErrorCallback(&glfwError);
     glfwInit();
@@ -29,9 +28,7 @@ void OpenGLRenderer::init(SWindowData data)
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-
     windowHandle = glfwCreateWindow(data.width, data.height, data.name, NULL, NULL);
-
 
     if (windowHandle == NULL)
     {
@@ -39,7 +36,7 @@ void OpenGLRenderer::init(SWindowData data)
         release();
     }
     glfwMakeContextCurrent(windowHandle);
-    glfwSetFramebufferSizeCallback(windowHandle, framebuffer_size_callback);
+    glfwSetFramebufferSizeCallback(windowHandle, resizeCallback);
 
     if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress))
     {
@@ -94,5 +91,28 @@ OpenGLRenderer::~OpenGLRenderer()
 void OpenGLRenderer::closeWindow()
 {
     glfwSetWindowShouldClose(windowHandle, true);
+}
+
+int OpenGLRenderer::getActualWidth()
+{
+    return windowSize.x;
+}
+
+int OpenGLRenderer::getActualHeight()
+{
+    return windowSize.y;
+}
+
+void OpenGLRenderer::resizeCallback(GLFWwindow *window, int width, int height)
+{
+    glViewport(0, 0, width, height);
+
+    IWindow::instance->setSize(width, height);
+}
+
+void OpenGLRenderer::setSize(int width, int height)
+{
+    windowSize.x = width;
+    windowSize.y = height;
 }
 
