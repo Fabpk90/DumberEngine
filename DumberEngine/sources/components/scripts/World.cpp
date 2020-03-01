@@ -25,6 +25,9 @@ void World::draw()
     auto p = Camera::getInstance().getProjectionMatrix();
     shaderWorld.setMatrix4("p", p);
 
+    texture.use(0);
+    shaderWorld.setInt("worldTex", 0);
+
     bool isTransparentPass = false;
     for (int i = 0; i < CHUNK_SIZE; ++i)
     {
@@ -68,6 +71,8 @@ World::World() : shaderWorld("shaders/cube/")
             }
         }
     }
+
+    texture.loadFrom("textures/terrain.png");
 }
 
 World::~World()

@@ -274,14 +274,6 @@ int main(int argc, char **argv)
     scene->addGameObject(worldGO);
     scene->addGameObject(o);
 
-    Shader *shader = new Shader("shaders/cube/");
-    glm::mat4 proj = glm::perspective(glm::radians(60.0f), (float) data.width / (float) data.height, 0.1f, 100.0f);
-    glm::mat4 model = glm::mat4(1.0f);
-
-    model = glm::translate(model, glm::vec3(-0.25f, 0, 0));
-
-    Vbo *vbo = createCube();
-
     bool show_demo_window = true;
     float lastFrame = 0;
     while (!glfwWindowShouldClose(handle))
@@ -293,17 +285,8 @@ int main(int argc, char **argv)
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        shader->use();
-        shader->setMatrix4("model", model);
-        auto view = Camera::getInstance().getViewMatrix();
-        shader->setMatrix4("view", view);
-        shader->setMatrix4("projection", proj);
-
         scene->update();
         scene->draw();
-
-
-        vbo->draw();
 
         // Start the Dear ImGui frame
         ImGui_ImplOpenGL3_NewFrame();

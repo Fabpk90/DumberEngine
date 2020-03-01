@@ -8,6 +8,7 @@
 #include "Chunk.hpp"
 #include "../IComponent.hpp"
 #include "../../rendering/helper/Shader.hpp"
+#include "../../rendering/renderer/opengl/Texture2D.hpp"
 
 class World : public IComponent
 {
@@ -17,6 +18,7 @@ public:
 private:
     Chunk *chunks[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE];
     Shader shaderWorld;
+    Texture2D texture;
 public:
     ~World();
     World();
