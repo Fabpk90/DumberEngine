@@ -19,6 +19,9 @@ private:
     Chunk *chunks[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE];
     Shader shaderWorld;
     Texture2D texture;
+    glm::vec3 sunDirection;
+    glm::vec3 skyColor;
+    glm::vec3 sunColor;
 public:
     ~World();
     World();

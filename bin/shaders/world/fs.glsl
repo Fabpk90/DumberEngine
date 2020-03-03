@@ -1,6 +1,6 @@
 #version 400
 
-uniform sampler2D colorTex1;
+uniform sampler2D worldTex;
 uniform vec3 lightDir;
 uniform vec3 camPos;
 uniform vec3 skyColor;
@@ -79,7 +79,7 @@ void main()
 
 	//Ambient
 	c.rgb += 0.01 * skyColor * (1 - diffuse);
-	vec4 texColor =texture(colorTex1, uv);
+	vec4 texColor =texture(worldTex, uv);
 	//texColor.x = pow(texColor.x, 2.0);
 	//texColor.y = pow(texColor.y, 2.0);
 	//texColor.z = pow(texColor.z, 2.0);

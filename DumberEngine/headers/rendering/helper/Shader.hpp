@@ -30,6 +30,10 @@ public:
 
     void setMatrix4(const std::string &name, glm::mat4x4 &m);
 
+    void setVec3(const char *name, glm::vec3& vec);
+
+    void setVec4(const char *string, glm::vec4 &vec);
+
 private:
     void load();
 

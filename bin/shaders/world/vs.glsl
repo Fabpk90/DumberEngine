@@ -1,11 +1,9 @@
 #version 400
 
 uniform float elapsed;
-uniform mat4 mvp;
 uniform mat4 m;
 uniform mat4 v;
 uniform mat4 p;
-uniform mat4 nmat;
 
 layout(location=0) in vec3 vs_position_in;
 layout(location=1) in vec3 vs_normal_in;
@@ -45,7 +43,8 @@ void main()
 	vec4 vecIn = vec4(vs_position_in,1.0);
 	vec4 vecInW = m * vecIn;
 		
-	normal = (nmat * vec4(vs_normal_in,1.0)).xyz; 
+	//normal = ( inverse(transpose(m)) * vec4(vs_normal_in,1.0)).xyz;
+	normal =  vec4(vs_normal_in,1.0).xyz;
 
 	uv = vs_uv_in;
 
