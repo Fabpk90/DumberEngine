@@ -23,9 +23,7 @@ void Chunk::draw(bool isTransparentPass)
 {
     if(isTransparentPass && vboTransparent != nullptr)
     {
-        glEnable(GL_BLEND);
         vboTransparent->draw();
-        glDisable(GL_BLEND);
     }
     else if(vboOpaque != nullptr)
     {
@@ -67,10 +65,15 @@ void Chunk::toVbo()
         {
             for (int k = 0; k < CUBE_IN_CHUNK; ++k)
             {
-                if(cubes[i][j][k].isTransparent())
-                    addCubeToVbo(vboTransparent, vertexIndexTransparent, glm::vec3(i, j, k), cubes[i][j][k].getType());
-                else if (cubes[i][j][k].isOpaque())
-                    addCubeToVbo(vboOpaque, vertexIndexOpaque, glm::vec3(i, j, k), cubes[i][j][k].getType());
+                auto& cube = cubes[i][j][k];
+
+                if(cube.getType() != Cube::CUBE_AIR)
+                {
+                    if(cube.isTransparent())
+                        addCubeToVbo(vboTransparent, vertexIndexTransparent, glm::vec3(i, j, k), cube.getType());
+                    else
+                        addCubeToVbo(vboOpaque, vertexIndexOpaque, glm::vec3(i, j, k),  cube.getType());
+                }
             }
         }
     }
@@ -201,7 +204,7 @@ glm::vec2 Chunk::getAtlasPosition(float type)
     if (type == 5)
         return glm::vec2(14, 0);
 
-    //std::cout << "Error cube type not recognized " << std::endl;
+    std::cout << "Error cube type not recognized " << std::endl;
 
     return glm::vec2(-1, -1);
 }
@@ -221,8 +224,8 @@ void Chunk::initCubes()
 
                 if(sample >= 0.5f)
                     t = Cube::CUBE_TERRE;
-                else if(sample > 0.4f)
-                    t = Cube::CUBE_EAU;
+                /*else if(sample > 0.4f)
+                    t = Cube::CUBE_EAU;*/
 
 
                 cubes[i][j][k].setType(t);

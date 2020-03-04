@@ -44,6 +44,11 @@ void CameraScript::update()
         input.renderer->closeWindow();
     }
 
+    if(input.isKeyPressed(GLFW_KEY_SPACE))
+    {
+        movement.y += 2;
+    }
+
     input.setMouseVisible(true);
 
     if (input.isMouseButtonPressed(GLFW_MOUSE_BUTTON_RIGHT))

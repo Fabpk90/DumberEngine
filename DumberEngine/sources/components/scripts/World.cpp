@@ -40,6 +40,7 @@ void World::draw()
     shaderWorld.setInt("worldTex", 0);
 
     bool isTransparentPass = false;
+    glDisable(GL_BLEND);
     for (int i = 0; i < CHUNK_SIZE; ++i)
     {
         for (int j = 0; j < CHUNK_SIZE; ++j)
@@ -52,7 +53,7 @@ void World::draw()
     }
 
     isTransparentPass = true;
-
+    glEnable(GL_BLEND);
     for (int i = 0; i < CHUNK_SIZE; ++i)
     {
         for (int j = 0; j < CHUNK_SIZE; ++j)
@@ -70,7 +71,7 @@ void World::drawInspector()
     ImGui::Text("World: %d chunks ", CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE);
 }
 
-World::World() : shaderWorld("shaders/world/")
+World::World() : shaderWorld("shaders/cube/")
 {
     for (int i = 0; i < CHUNK_SIZE; ++i)
     {
