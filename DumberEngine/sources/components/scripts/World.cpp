@@ -71,7 +71,7 @@ void World::drawInspector()
     ImGui::Text("World: %d chunks ", CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE);
 }
 
-World::World() : shaderWorld("shaders/cube/")
+World::World() : shaderWorld("shaders/world/")
 {
     for (int i = 0; i < CHUNK_SIZE; ++i)
     {

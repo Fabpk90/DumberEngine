@@ -44,6 +44,8 @@ void OpenGLRenderer::init(SWindowData data)
         release();
     }
 
+    glEnable(GL_DEPTH_TEST);
+
     std::cout << "Opengl Renderer initialized" << std::endl;
 
     std::cout << "Initializing the Input Manager" << std::endl;
@@ -114,5 +116,13 @@ void OpenGLRenderer::setSize(int width, int height)
 {
     windowSize.x = width;
     windowSize.y = height;
+}
+
+void OpenGLRenderer::setVSync(bool isActivated)
+{
+    if(isActivated)
+        glfwSwapInterval(1);
+    else
+        glfwSwapInterval(0);
 }
 

@@ -43,8 +43,8 @@ void main()
 	vec4 vecIn = vec4(vs_position_in,1.0);
 	vec4 vecInW = m * vecIn;
 		
-	//normal = ( inverse(transpose(m)) * vec4(vs_normal_in,1.0)).xyz;
-	normal =  vec4(vs_normal_in,1.0).xyz;
+	normal = ( inverse(transpose(m)) * vec4(vs_normal_in,1.0)).xyz;
+	//normal =  vec4(vs_normal_in,1.0).xyz;
 
 	uv = vs_uv_in;
 
@@ -61,7 +61,7 @@ void main()
 	else if(vs_type_in == CUBE_EAU)
 	 {
 		color = vec4(0.0,0.0,1.0,0.5);	
-		vecInW.z += waterNoise(vecInW);
+		//vecInW.z += waterNoise(vecInW);
 	 }
 
 	 type = int(vs_type_in);

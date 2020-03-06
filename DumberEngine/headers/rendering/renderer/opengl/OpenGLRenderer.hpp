@@ -27,6 +27,8 @@ public:
 
     int getActualHeight() override;
 
+    void setVSync(bool isActivated) override;
+
     void setSize(int width, int height) override;
 };
 

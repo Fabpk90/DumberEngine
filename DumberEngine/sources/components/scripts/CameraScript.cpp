@@ -46,7 +46,12 @@ void CameraScript::update()
 
     if(input.isKeyPressed(GLFW_KEY_SPACE))
     {
-        movement.y += 2;
+        glm::vec3 up = glm::vec3(0, 1, 0);
+
+        up *= 2.0f;
+        up *= Time::getInstance().deltaTime;
+
+        cam.moveWorld(up);
     }
 
     input.setMouseVisible(true);

@@ -40,8 +40,8 @@ float waterNoise(vec3 v)
 
 void main()
 {
-	//vec4 colorTex = texture(colorTex1, uv) * color;
-	vec3 toLight = normalize(lightDir);
+	 color_out = texture(worldTex, uv);
+	/*vec3 toLight = normalize(lightDir);
 	vec3 view = normalize(camPos - wPos);
 
 	vec4 c = color;
@@ -84,5 +84,5 @@ void main()
 	//texColor.y = pow(texColor.y, 2.0);
 	//texColor.z = pow(texColor.z, 2.0);
 
-	color_out = vec4(sqrt(c.rgb), c.a) * texColor;
+	color_out = vec4(sqrt(c.rgb), c.a) * texColor;*/
 }

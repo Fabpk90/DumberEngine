@@ -85,7 +85,7 @@ public :
 
     bool getDraw()
     {
-        return (_Code & CUBE_DRAW_BIT) != 0;
+        return _Code & CUBE_DRAW_BIT ? true : false;
     }
 
     void setDraw(bool draw)

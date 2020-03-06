@@ -40,6 +40,7 @@ public:
     static Camera &getInstance();
 
     void move(glm::vec3 &movement);
+    void moveWorld(glm::vec3& movement);
 
     void rotate(glm::vec2 delta);
 

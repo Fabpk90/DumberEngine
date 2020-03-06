@@ -30,6 +30,7 @@ public:
     virtual int getActualHeight() = 0;
 
     virtual void setSize(int width, int height) = 0;
+    virtual void setVSync(bool isActivated) = 0;
 
     GLFWwindow* getHandle();
 

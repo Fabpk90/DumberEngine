@@ -128,45 +128,53 @@ void Chunk::addCubeToVbo(Vbo *vbo, int& vertexIndex, glm::ivec3 position, float 
     const int trueY = (position.y * size) + chunkPosition.y * CUBE_IN_CHUNK;
     const int trueZ = (position.z * size) + chunkPosition.z * CUBE_IN_CHUNK;
 
+
+
+
     // XY
     a = glm::vec3(trueX, trueY, trueZ + size);
     b = glm::vec3(trueX + size, trueY, trueZ + size);
     c = glm::vec3(trueX + size, trueY + size, trueZ + size);
     d = glm::vec3(trueX, trueY + size, trueZ + size);
     addQuadToVbo(vbo, vertexIndex, a, b, c, d, type);
+    b = glm::vec3(trueX, trueY, trueZ);
+    c = glm::vec3(trueX, trueY + size, trueZ);
+    d = glm::vec3(trueX + size, trueY + size, trueZ);
+    a = glm::vec3(trueX + size, trueY, trueZ);
+    addQuadToVbo(vbo, vertexIndex, a, b, c, d, type);
 
-    if(cubes[position.x][position.y][position.z].isOpaque())
-    {
-        b = glm::vec3(trueX, trueY, trueZ);
-        c = glm::vec3(trueX, trueY + size, trueZ);
-        d = glm::vec3(trueX + size, trueY + size, trueZ);
+    //if(cubes[position.x][position.y][position.z].isOpaque())
+    //{
+
+        // YZ
+
         a = glm::vec3(trueX + size, trueY, trueZ);
+        b = glm::vec3(trueX + size, trueY + size, trueZ);
+        c = glm::vec3(trueX + size, trueY + size, trueZ + size);
+        d = glm::vec3(trueX + size, trueY, trueZ + size);
+        addQuadToVbo(vbo, vertexIndex, a, b, c, d, type);
+        b = glm::vec3(trueX, trueY, trueZ);
+        c = glm::vec3(trueX, trueY, trueZ + size);
+        d = glm::vec3(trueX, trueY + size, trueZ + size);
+        a = glm::vec3(trueX, trueY + size, trueZ);
         addQuadToVbo(vbo, vertexIndex, a, b, c, d, type);
 
+
+    b = glm::vec3(trueX, trueY + size, trueZ);
+    c = glm::vec3(trueX, trueY + size, trueZ + size);
+    d = glm::vec3(trueX + size, trueY + size, trueZ + size);
+    a = glm::vec3(trueX + size, trueY + size, trueZ);
+    addQuadToVbo(vbo, vertexIndex, a, b, c, d, type);
         // XZ
         a = glm::vec3(trueX, trueY, trueZ);
         b = glm::vec3(trueX + size, trueY, trueZ);
         c = glm::vec3(trueX + size, trueY, trueZ + size);
         d = glm::vec3(trueX, trueY, trueZ + size);
         addQuadToVbo(vbo, vertexIndex, a, b, c, d, type);
-        b = glm::vec3(trueX, trueY + size, trueZ);
-        c = glm::vec3(trueX, trueY + size, trueZ + size);
-        d = glm::vec3(trueX + size, trueY + size, trueZ + size);
-        a = glm::vec3(trueX + size, trueY + size, trueZ);
-        addQuadToVbo(vbo, vertexIndex, a, b, c, d, type);
 
-        // YZ
-        b = glm::vec3(trueX, trueY, trueZ);
-        c = glm::vec3(trueX, trueY, trueZ + size);
-        d = glm::vec3(trueX, trueY + size, trueZ + size);
-        a = glm::vec3(trueX, trueY + size, trueZ);
-        addQuadToVbo(vbo, vertexIndex, a, b, c, d, type);
-        a = glm::vec3(trueX + size, trueY, trueZ);
-        b = glm::vec3(trueX + size, trueY + size, trueZ);
-        c = glm::vec3(trueX + size, trueY + size, trueZ + size);
-        d = glm::vec3(trueX + size, trueY, trueZ + size);
-        addQuadToVbo(vbo, vertexIndex, a, b, c, d, type);
-    }
+
+
+    //}
 }
 
 void Chunk::countCube(unsigned int &transparent, unsigned int &opaque)
@@ -212,7 +220,7 @@ glm::vec2 Chunk::getAtlasPosition(float type)
 void Chunk::initCubes()
 {
     PerlinNoise p;
-    p.setFreq(0.2f);
+    p.setFreq(0.02f);
     for (int i = 0; i < CUBE_IN_CHUNK; ++i)
     {
         for (int j = 0; j < CUBE_IN_CHUNK; ++j)
@@ -223,9 +231,9 @@ void Chunk::initCubes()
                 float sample = p.sample(i, j, k);
 
                 if(sample >= 0.5f)
-                    t = Cube::CUBE_TERRE;
-                /*else if(sample > 0.4f)
-                    t = Cube::CUBE_EAU;*/
+                    t = Cube::CUBE_HERBE;
+                else if(sample > 0.4f)
+                    t = Cube::CUBE_EAU;
 
 
                 cubes[i][j][k].setType(t);

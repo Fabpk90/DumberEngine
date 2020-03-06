@@ -261,6 +261,7 @@ int main(int argc, char **argv)
     data.name = "Dumber Engine";
 
     renderer.init(data);
+    renderer.setVSync(true);
 
     auto handle = renderer.getHandle();
 
