@@ -9,9 +9,12 @@
 
 #include "../../../headers/rendering/helper/Shader.hpp"
 
+std::list<Shader*> Shader::shadersLoaded = std::list<Shader*>();
+
 Shader::Shader(const char *path) : path(path)
 {
     load();
+    shadersLoaded.push_back(this);
 }
 
 void Shader::load()
@@ -114,8 +117,6 @@ void Shader::load()
     glDeleteShader(fragmentShader);
 
     i.close();
-
-
 }
 
 void Shader::reload()
@@ -157,6 +158,14 @@ void Shader::setVec4(const char *name, glm::vec4 &vec)
 {
     GLint location = glGetUniformLocation(shaderProgram, name);
     glUniform4f(location, vec.x, vec.y, vec.z, vec.w);
+}
+
+void Shader::reloadShaders()
+{
+    for(Shader* s : shadersLoaded)
+    {
+        s->reload();
+    }
 }
 
 

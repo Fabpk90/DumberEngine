@@ -281,7 +281,13 @@ int main(int argc, char **argv)
     {
         float currentFrame = glfwGetTime();
         Time::getInstance().deltaTime = currentFrame - lastFrame;
+        Time::getInstance().time += Time::getInstance().deltaTime;
         lastFrame = currentFrame;
+
+        if(InputManager::getInstance().isKeyPressed(GLFW_KEY_F5))
+        {
+            Shader::reloadShaders();
+        }
 
         glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

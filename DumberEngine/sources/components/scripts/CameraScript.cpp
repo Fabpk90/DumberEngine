@@ -46,9 +46,8 @@ void CameraScript::update()
 
     if(input.isKeyPressed(GLFW_KEY_SPACE))
     {
-        glm::vec3 up = glm::vec3(0, 1, 0);
+        glm::vec3 up = glm::vec3(0, 3, 0);
 
-        up *= 2.0f;
         up *= Time::getInstance().deltaTime;
 
         cam.moveWorld(up);

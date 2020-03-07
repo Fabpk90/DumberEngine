@@ -24,7 +24,7 @@ const float ambientLevel = 0.4;
 
 float waterNoise(vec3 v)
 {
-	vec2 dir = vec2(v.x, v.y);
+	vec2 dir = vec2(v.x, v.z);
 
 	float d = dot(vec2(1, 1), dir);
 	float n = sin(d + elapsed) / 2;
@@ -40,8 +40,7 @@ float waterNoise(vec3 v)
 
 void main()
 {
-	 color_out = texture(worldTex, uv);
-	/*vec3 toLight = normalize(lightDir);
+	vec3 toLight = normalize(lightDir);
 	vec3 view = normalize(camPos - wPos);
 
 	vec4 c = color;
@@ -51,13 +50,13 @@ void main()
 	if(type == CUBE_EAU)
 	{
 		vec3 A = wPos;
-		A.z += waterNoise(wPos) - 1;
+		A.y += waterNoise(wPos) - 1;
 
 		vec3 B = wPos + vec3(0.1f, 0, 0);
-		B.z += waterNoise(B) - 1;
+		B.y += waterNoise(B) - 1;
 
-		vec3 C = wPos + vec3(0, 0.1f, 0);
-		C.z += waterNoise(C) - 1;
+		vec3 C = wPos + vec3(0, 0, 0.1f);
+		C.y += waterNoise(C) - 1;
 
 		N = cross( normalize(B-A), normalize(C-A));
 
@@ -84,5 +83,7 @@ void main()
 	//texColor.y = pow(texColor.y, 2.0);
 	//texColor.z = pow(texColor.z, 2.0);
 
-	color_out = vec4(sqrt(c.rgb), c.a) * texColor;*/
+	color_out = vec4(sqrt(c.rgb), c.a) * texColor;
+
+	//color_out = texColor * color;
 }

@@ -4,12 +4,14 @@
 
 
 
+#include <imgui/imgui.h>
 #include "../../headers/components/GameObject.hpp"
 
 
 GameObject::GameObject(const char *name) : name(name)
 {
     components = std::list<IComponent *>();
+    isSelectedInspector = false;
 }
 
 
@@ -100,8 +102,11 @@ GameObject::~GameObject()
 
 void GameObject::drawInspector()
 {
-    for (IComponent *i : components)
+    if(ImGui::CollapsingHeader(name.c_str()))
     {
-        i->drawInspector();
+        for (IComponent *i : components)
+        {
+            i->drawInspector();
+        }
     }
 }

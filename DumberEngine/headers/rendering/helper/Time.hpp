@@ -23,6 +23,7 @@ public:
     }
 
     float deltaTime = 0.0f;
+    float time = 0.0f; //time in ms since the start of the app
 };
 
 #endif //DUMBERENGINE_TIME_HPP

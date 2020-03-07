@@ -13,7 +13,7 @@ class GameObject : public IComponent
 {
 private:
     std::list<IComponent *> components;
-
+    bool isSelectedInspector;
 public:
 
     std::string name;

@@ -69,6 +69,7 @@ void Scene::drawInspector()
 
         while (iter != gameObjects.end())
         {
+
             (*iter)->drawInspector();
             ++iter;
         }

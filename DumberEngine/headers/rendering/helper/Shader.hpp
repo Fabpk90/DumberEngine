@@ -7,6 +7,7 @@
 
 #include <string>
 #include <glad/glad.h>
+#include <list>
 #include "glm/glm.hpp"
 
 class Shader
@@ -34,8 +35,12 @@ public:
 
     void setVec4(const char *string, glm::vec4 &vec);
 
+    static void reloadShaders();
+
 private:
     void load();
+
+    static std::list<Shader*> shadersLoaded;
 
     const char *path;
     GLuint shaderProgram;

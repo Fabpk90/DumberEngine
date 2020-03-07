@@ -5,6 +5,7 @@
 #include <imgui/imgui.h>
 #include "../../../headers/components/scripts/World.hpp"
 #include "../../../headers/rendering/renderer/Camera.hpp"
+#include "../../../headers/rendering/helper/Time.hpp"
 
 void World::start()
 {
@@ -35,6 +36,8 @@ void World::draw()
     shaderWorld.setVec3("sunColor", sunColor);
 
     shaderWorld.setVec3("camPosition", Camera::getInstance().position);
+
+    shaderWorld.setFloat("elapsed", Time::getInstance().time);
 
     texture.use(0);
     shaderWorld.setInt("worldTex", 0);
@@ -68,7 +71,10 @@ void World::draw()
 
 void World::drawInspector()
 {
-    ImGui::Text("World: %d chunks ", CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE);
+    ImGui::Text("%d chunks ", CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE);
+    ImGui::DragFloat3("SkyColor", &skyColor.x, 0.01f);
+    ImGui::DragFloat3("SunColor", &sunColor.x, 0.01f);
+    ImGui::DragFloat3("SunDirection", &sunDirection.x, 0.01f);
 }
 
 World::World() : shaderWorld("shaders/world/")
@@ -88,6 +94,7 @@ World::World() : shaderWorld("shaders/world/")
 
     sunColor = glm::vec3(1.0f, 1.0f, 0.8f);
     skyColor = glm::vec3(0.0f, 181.f / 255.f, 221.f / 255.f);
+    sunDirection = glm::vec3(0, 1, 0);
 }
 
 World::~World()

@@ -26,6 +26,8 @@ void Texture2D::loadFrom(const char *path)
             glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
         else if(nrChannels == 4)
             glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+        else
+            std::cout << "The texture has an unknown number of channels" << std::endl;
 
         glGenerateMipmap(GL_TEXTURE_2D);
     }

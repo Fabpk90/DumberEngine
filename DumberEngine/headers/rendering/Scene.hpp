@@ -12,6 +12,9 @@ class Scene : public IComponent
 {
 private:
     std::list<GameObject *> gameObjects;
+
+    GameObject* selectedGO;
+
 public:
     Scene();
 

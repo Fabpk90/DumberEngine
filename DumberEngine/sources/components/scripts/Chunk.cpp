@@ -129,23 +129,20 @@ void Chunk::addCubeToVbo(Vbo *vbo, int& vertexIndex, glm::ivec3 position, float 
     const int trueZ = (position.z * size) + chunkPosition.z * CUBE_IN_CHUNK;
 
 
-
-
-    // XY
-    a = glm::vec3(trueX, trueY, trueZ + size);
-    b = glm::vec3(trueX + size, trueY, trueZ + size);
-    c = glm::vec3(trueX + size, trueY + size, trueZ + size);
-    d = glm::vec3(trueX, trueY + size, trueZ + size);
+    b = glm::vec3(trueX, trueY + size, trueZ);
+    c = glm::vec3(trueX, trueY + size, trueZ + size);
+    d = glm::vec3(trueX + size, trueY + size, trueZ + size);
+    a = glm::vec3(trueX + size, trueY + size, trueZ);
     addQuadToVbo(vbo, vertexIndex, a, b, c, d, type);
-    b = glm::vec3(trueX, trueY, trueZ);
-    c = glm::vec3(trueX, trueY + size, trueZ);
-    d = glm::vec3(trueX + size, trueY + size, trueZ);
-    a = glm::vec3(trueX + size, trueY, trueZ);
+    // XZ
+    a = glm::vec3(trueX, trueY, trueZ);
+    b = glm::vec3(trueX + size, trueY, trueZ);
+    c = glm::vec3(trueX + size, trueY, trueZ + size);
+    d = glm::vec3(trueX, trueY, trueZ + size);
     addQuadToVbo(vbo, vertexIndex, a, b, c, d, type);
 
-    //if(cubes[position.x][position.y][position.z].isOpaque())
-    //{
-
+    if(cubes[position.x][position.y][position.z].isOpaque())
+    {
         // YZ
 
         a = glm::vec3(trueX + size, trueY, trueZ);
@@ -159,22 +156,18 @@ void Chunk::addCubeToVbo(Vbo *vbo, int& vertexIndex, glm::ivec3 position, float 
         a = glm::vec3(trueX, trueY + size, trueZ);
         addQuadToVbo(vbo, vertexIndex, a, b, c, d, type);
 
-
-    b = glm::vec3(trueX, trueY + size, trueZ);
-    c = glm::vec3(trueX, trueY + size, trueZ + size);
-    d = glm::vec3(trueX + size, trueY + size, trueZ + size);
-    a = glm::vec3(trueX + size, trueY + size, trueZ);
-    addQuadToVbo(vbo, vertexIndex, a, b, c, d, type);
-        // XZ
-        a = glm::vec3(trueX, trueY, trueZ);
-        b = glm::vec3(trueX + size, trueY, trueZ);
-        c = glm::vec3(trueX + size, trueY, trueZ + size);
-        d = glm::vec3(trueX, trueY, trueZ + size);
+        // XY
+        a = glm::vec3(trueX, trueY, trueZ + size);
+        b = glm::vec3(trueX + size, trueY, trueZ + size);
+        c = glm::vec3(trueX + size, trueY + size, trueZ + size);
+        d = glm::vec3(trueX, trueY + size, trueZ + size);
         addQuadToVbo(vbo, vertexIndex, a, b, c, d, type);
-
-
-
-    //}
+        b = glm::vec3(trueX, trueY, trueZ);
+        c = glm::vec3(trueX, trueY + size, trueZ);
+        d = glm::vec3(trueX + size, trueY + size, trueZ);
+        a = glm::vec3(trueX + size, trueY, trueZ);
+        addQuadToVbo(vbo, vertexIndex, a, b, c, d, type);
+    }
 }
 
 void Chunk::countCube(unsigned int &transparent, unsigned int &opaque)
