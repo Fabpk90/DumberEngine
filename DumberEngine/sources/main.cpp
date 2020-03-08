@@ -29,6 +29,7 @@
 #include "../headers/components/GameObject.hpp"
 #include "../headers/components/scripts/CameraScript.hpp"
 #include "../headers/components/scripts/World.hpp"
+#include "../headers/components/Transform.hpp"
 
 
 Vbo *createCube()
@@ -262,6 +263,8 @@ int main(int argc, char **argv)
 
     renderer.init(data);
     renderer.setVSync(true);
+
+    Transform t;
 
     auto handle = renderer.getHandle();
 

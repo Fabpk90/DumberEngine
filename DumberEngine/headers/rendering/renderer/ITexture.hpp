@@ -8,7 +8,8 @@
 class ITexture
 {
 public:
-    virtual void loadFrom(const char* path) = 0;
+    virtual void loadFrom(const char *path, unsigned int flagWrapS, unsigned int flagWrapT, unsigned int flagMinFilter,
+                          unsigned int flagMagFilter) = 0;
     virtual void use(int textureUnit) = 0;
 
 

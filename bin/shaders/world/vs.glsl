@@ -47,12 +47,12 @@ void main()
 
 	uv = vs_uv_in;
 
-	//Couleur par défaut blanc
+	//default color
 	color = vec4(1.0,1.0,1.0,1.0);
 
 	wPos = vecInW.xyz;
 
-	//Couleur fonction du type
+	//FIX ME: take out this nightmare
 	if(vs_type_in == CUBE_HERBE)
 		color = vec4(154 / 255,255 / 255,87/255,1);
 	else if(vs_type_in == CUBE_TERRE)

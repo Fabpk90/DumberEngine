@@ -5,17 +5,29 @@
 #ifndef DUMBERENGINE_TRANSFORM_HPP
 #define DUMBERENGINE_TRANSFORM_HPP
 
+#include <glm/glm.hpp>
+#include<glm/gtc/quaternion.hpp>
 #include "IComponent.hpp"
 
-class Transform : public IComponent
+class Transform
 {
-    void start() override;
+private:
+    glm::mat4 modelMatrix;
+    glm::quat quat;
+    glm::vec3 position;
+    glm::vec3 scale;
 
-    void update() override;
+    void updateMatrix();
 
-    void draw() override;
+public:
+    Transform();
 
-    void drawInspector() override;
+    void addPosition(glm::vec3 pos);
+    void addPosition(float x, float y = 0, float z = 0);
+    void rotate(glm::vec3 axis, float angle);
+
+    glm::mat4& getModelMatrix() { return modelMatrix; };
+    glm::vec3& getPosition() { return position; };
 };
 
 #endif //DUMBERENGINE_TRANSFORM_HPP

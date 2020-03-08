@@ -14,7 +14,8 @@ private:
     GLuint id;
 
 public:
-    void loadFrom(const char *path) override;
+    void loadFrom(const char *path, unsigned int flagWrapS = GL_REPEAT, unsigned int flagWrapT = GL_REPEAT, unsigned int flagMinFilter = GL_NEAREST,
+                  unsigned int flagMagFilter = GL_NEAREST) override;
 
     void use(int textureUnit) override;
 

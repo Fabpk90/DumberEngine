@@ -7,7 +7,8 @@
 #include <iostream>
 #include "../../../../headers/rendering/renderer/opengl/Texture2D.hpp"
 
-void Texture2D::loadFrom(const char *path)
+void Texture2D::loadFrom(const char *path, unsigned int flagWrapS, unsigned int flagWrapT, unsigned int flagMinFilter,
+                         unsigned int flagMagFilter)
 {
     int width, height, nrChannels;
     unsigned char *data = stbi_load(path, &width, &height, &nrChannels, 0);
@@ -17,10 +18,10 @@ void Texture2D::loadFrom(const char *path)
         glGenTextures(1, &id);
         glBindTexture(GL_TEXTURE_2D, id);
 
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, flagWrapS);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, flagWrapT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, flagMinFilter);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, flagMagFilter);
 
         if(nrChannels == 3)
             glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
