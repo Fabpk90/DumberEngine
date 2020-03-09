@@ -7,45 +7,28 @@
 
 Transform::Transform()
 {
-    position = glm::vec3(1.0f);
+    position = glm::vec3(0.f);
     quat = glm::quat();
     modelMatrix = glm::mat4(1.0f);
-
-    modelMatrix = glm::translate(modelMatrix, position);
-
-    rotate(glm::vec3(-0.408, 0.816, 0.408), 40);
 }
 
 void Transform::addPosition(glm::vec3 pos)
 {
     position += pos;
-
 }
 
 void Transform::updateMatrix()
 {
     modelMatrix = glm::mat4(1.0f);
     modelMatrix = glm::translate(modelMatrix, position);
-}
+    modelMatrix = glm::scale(modelMatrix, scale);
 
-void Transform::rotate(glm::vec3 axis, float angle)
-{
-    axis = glm::normalize(axis);
-    axis = glm::sin(glm::radians(angle/2)) * axis;
-
-    glm::quat q;
-    q.x = glm::cos(glm::radians(angle / 2)); //a
-    q.y = axis.x; // b
-    q.z = axis.y; // c
-    q.w = axis.z; // d
-
-    quat *= q;
-
+    //This is done manually for learning purpose
     /*  Rotation matrix =
-     *   a^2+b^2-c^2-d^2 & 2bc-2ad & 2ac+2bd \\
-        2ad+2bc & a^2-b^2+c^2-d^2 & 2cd-2ab \\
-        2bd-2ac & 2ab+2cd & a^2-b^2-c^2+d^2
-     */
+    *   a^2+b^2-c^2-d^2 & 2bc-2ad & 2ac+2bd \\
+       2ad+2bc & a^2-b^2+c^2-d^2 & 2cd-2ab \\
+       2bd-2ac & 2ab+2cd & a^2-b^2-c^2+d^2
+    */
     //could store all the temp var
     float a2 = quat.x * quat.x;
     float b2 = quat.y * quat.y;
@@ -66,15 +49,21 @@ void Transform::rotate(glm::vec3 axis, float angle)
     rot[2][1] = 2 * (quat.x * quat.y) + 2 * (quat.z * quat.w);
     rot[2][2] = a2-b2-c2+d2;
 
-    for (int i = 0; i < 4; i++) {
-        for (int j = 0; j < 4; j++) {
-            std::cout << rot[i][j] <<  " ";
-        }
-        std::cout << std::endl;
-    }
-
-    modelMatrix = glm::mat4(1.0f);
-    modelMatrix = glm::translate(modelMatrix, position);
-    modelMatrix = glm::scale(modelMatrix, scale);
     modelMatrix = modelMatrix * rot;
+}
+
+void Transform::rotate(glm::vec3 axis, float angle)
+{
+    axis = glm::normalize(axis);
+    axis = glm::sin(glm::radians(angle/2)) * axis;
+
+    glm::quat q;
+    q.x = glm::cos(glm::radians(angle / 2)); //a
+    q.y = axis.x; // b
+    q.z = axis.y; // c
+    q.w = axis.z; // d
+
+    quat *= q;
+
+    updateMatrix();
 }

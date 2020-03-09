@@ -6,6 +6,7 @@
 #define DUMBERENGINE_GAMEOBJECT_HPP
 
 #include "IComponent.hpp"
+#include "Transform.hpp"
 #include <list>
 #include <string>
 
@@ -14,6 +15,10 @@ class GameObject : public IComponent
 private:
     std::list<IComponent *> components;
     bool isSelectedInspector;
+    Transform transform;
+public:
+unsigned int indexInScene;
+
 public:
 
     std::string name;
@@ -32,6 +37,7 @@ public:
 
     void addComponent(IComponent *comp);
 
+    Transform& getTransform() { return transform; }
 
     template<class T>
     T *getComponent();

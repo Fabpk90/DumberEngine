@@ -5,30 +5,31 @@
 #ifndef DUMBERENGINE_SCENE_HPP
 #define DUMBERENGINE_SCENE_HPP
 
-#include <list>
+#include <unordered_map>
 #include "../components/GameObject.hpp"
 
-class Scene : public IComponent
+class Scene
 {
 private:
-    std::list<GameObject *> gameObjects;
+    static std::unordered_map<unsigned int, GameObject *> gameObjects;
+    unsigned int indexCounter;
 
     GameObject* selectedGO;
 
 public:
     Scene();
 
-    void start() override;
+    void update();
 
-    void update() override;
-
-    void draw() override;
+    void draw();
 
     void addGameObject(GameObject *go);
 
     void removeGameObject(std::string name);
 
-    void drawInspector() override;
+    void drawInspector();
+
+     static GameObject* getGameObject(unsigned int index);
 };
 
 #endif //DUMBERENGINE_SCENE_HPP

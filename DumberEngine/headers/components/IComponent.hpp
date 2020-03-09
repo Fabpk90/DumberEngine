@@ -5,8 +5,6 @@
 #ifndef DUMBERENGINE_ICOMPONENT_HPP
 #define DUMBERENGINE_ICOMPONENT_HPP
 
-class GameObject;
-
 class IComponent
 {
 public:
@@ -22,7 +20,8 @@ public:
     virtual ~IComponent()
     {};
 
-    GameObject *gameObject;
+public:
+    unsigned int gameObjectIndex;
 };
 
 #endif //DUMBERENGINE_ICOMPONENT_HPP

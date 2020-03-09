@@ -12,6 +12,7 @@ GameObject::GameObject(const char *name) : name(name)
 {
     components = std::list<IComponent *>();
     isSelectedInspector = false;
+    transform = Transform();
 }
 
 
@@ -69,7 +70,7 @@ void GameObject::draw()
 
 void GameObject::addComponent(IComponent *comp)
 {
-    comp->gameObject = this;
+    comp->gameObjectIndex = indexInScene;
     components.push_back(comp);
 }
 

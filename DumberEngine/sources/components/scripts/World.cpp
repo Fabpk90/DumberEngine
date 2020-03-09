@@ -6,6 +6,7 @@
 #include "../../../headers/components/scripts/World.hpp"
 #include "../../../headers/rendering/renderer/Camera.hpp"
 #include "../../../headers/rendering/helper/Time.hpp"
+#include "../../../headers/rendering/Scene.hpp"
 
 void World::start()
 {
@@ -20,7 +21,7 @@ void World::update()
 void World::draw()
 {
     shaderWorld.use();
-    glm::mat4 m = glm::mat4(1.0f);
+    glm::mat4 m = Scene::getGameObject(gameObjectIndex)->getTransform().getModelMatrix();
     shaderWorld.setMatrix4("m", m);
     glm::mat4 v = Camera::getInstance().getViewMatrix();
     shaderWorld.setMatrix4("v", v);

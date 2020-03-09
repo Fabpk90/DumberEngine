@@ -5,16 +5,18 @@
 #include <imgui/imgui.h>
 #include "../headers/rendering/Scene.hpp"
 
+std::unordered_map<unsigned int, GameObject *> Scene::gameObjects;
+
 void Scene::addGameObject(GameObject *go)
 {
-    gameObjects.push_back(go);
+    std::pair<unsigned int, GameObject*> pair;
+
+    pair.first = indexCounter++;
+    pair.second = go;
+
+    gameObjects.insert(pair);
 
     go->start();
-}
-
-void Scene::start()
-{
-
 }
 
 void Scene::update()
@@ -23,7 +25,7 @@ void Scene::update()
 
     while (iter != gameObjects.end())
     {
-        (*iter)->update();
+        (*iter).second->update();
         ++iter;
     }
 }
@@ -34,7 +36,7 @@ void Scene::draw()
 
     while (iter != gameObjects.end())
     {
-        (*iter)->draw();
+        (*iter).second->draw();
         ++iter;
     }
 }
@@ -45,9 +47,9 @@ void Scene::removeGameObject(std::string name)
 
     while (iter != gameObjects.end())
     {
-        if ((*iter)->name == name)
+        if ((*iter).second->name == name)
         {
-            gameObjects.remove(*iter);
+            gameObjects.erase(iter);
             break;
         }
         else
@@ -57,7 +59,7 @@ void Scene::removeGameObject(std::string name)
 
 Scene::Scene()
 {
-    gameObjects = std::list<GameObject *>();
+    gameObjects = std::unordered_map<unsigned int, GameObject *>();
 }
 
 void Scene::drawInspector()
@@ -70,11 +72,24 @@ void Scene::drawInspector()
         while (iter != gameObjects.end())
         {
 
-            (*iter)->drawInspector();
+            (*iter).second->drawInspector();
             ++iter;
         }
 
         ImGui::End();
     }
+}
+
+GameObject *Scene::getGameObject(unsigned int index)
+{
+    auto iter = gameObjects.begin();
+
+    while (iter != gameObjects.end())
+    {
+        if((*iter).first == index)
+            return (*iter).second;
+    }
+
+    return nullptr;
 }
 
