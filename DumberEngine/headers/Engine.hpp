@@ -18,6 +18,9 @@ private:
     std::list<ISystem*> systems;
 
 public:
+
+    ~Engine();
+
     void start();
     void update();
 };

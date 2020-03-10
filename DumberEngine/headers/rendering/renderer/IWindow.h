@@ -24,8 +24,6 @@ public:
 
     virtual void closeWindow() = 0;
 
-    virtual void release() = 0;
-
     virtual int getActualWidth() = 0;
     virtual int getActualHeight() = 0;
 

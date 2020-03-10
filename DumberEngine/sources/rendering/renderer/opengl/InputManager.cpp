@@ -30,21 +30,17 @@ InputManager::InputManager()
 
 void InputManager::keyPressed(GLFWwindow *window, int key, int scancode, int action, int mods)
 {
-    instance->keys[key] = action == GLFW_PRESS || action == GLFW_REPEAT;
+    instance->setKey(key, instance->toInputEvent(action));
 }
 
 void InputManager::mouseButtonClicked(GLFWwindow *h, int button, int action, int mode)
 {
-    instance->mouseButtonState[button] = action == GLFW_PRESS || action == GLFW_REPEAT;
+    instance->setMouseButton(button, instance->toInputEvent(action));
 }
 
 void InputManager::mouseMoved(GLFWwindow *, double xPos, double yPos)
 {
-    instance->mouseDelta.x = instance->mousePosition.x - xPos;
-    instance->mouseDelta.y = instance->mousePosition.y - yPos;
-
-    instance->mousePosition.x = xPos;
-    instance->mousePosition.y = yPos;
+    instance->setMousePosition(glm::vec2(xPos, yPos));
 }
 
 bool InputManager::isMouseButtonPressed(int button)
@@ -55,12 +51,12 @@ bool InputManager::isMouseButtonPressed(int button)
 void InputManager::setMouseVisible(bool isVisible)
 {
     isMouseShown = isVisible;
-    glfwSetInputMode(renderer->getHandle(), GLFW_CURSOR, isMouseShown ? GLFW_CURSOR_NORMAL : GLFW_CURSOR_HIDDEN);
+    glfwSetInputMode(IWindow::instance->getHandle(), GLFW_CURSOR, isMouseShown ? GLFW_CURSOR_NORMAL : GLFW_CURSOR_HIDDEN);
 }
 
 void InputManager::setMousePosition(glm::vec2 position)
 {
-    glfwSetCursorPos(renderer->getHandle(), position.x, position.y);
+    glfwSetCursorPos(IWindow::instance->getHandle(), position.x, position.y);
 
     mouseDelta = mousePosition - position;
     mousePosition = position;
@@ -73,9 +69,17 @@ glm::vec2 InputManager::getMouseDelta()
 
 void InputManager::init()
 {
+    std::cout << "Initializing the Input Manager" << std::endl;
     mousePosition = glm::vec2();
-    memset(keys, 0, sizeof(void *) * GLFW_KEY_LAST);
-    memset(mouseButtonState, 0, sizeof(void *) * GLFW_MOUSE_BUTTON_LAST);
+
+    keys = new bool[GLFW_KEY_LAST];
+    mouseButtonState = new bool[GLFW_MOUSE_BUTTON_LAST];
+
+    memset(keys, 0, sizeof(bool) * GLFW_KEY_LAST);
+    memset(mouseButtonState, 0, sizeof(bool) * GLFW_MOUSE_BUTTON_LAST);
+
+
+    std::cout << "Initialized the Input Manager" << std::endl;
 }
 
 void InputManager::update()
@@ -83,9 +87,49 @@ void InputManager::update()
 
 }
 
-void InputManager::destroy()
+IInputManager::EInputEvent InputManager::toInputEvent(int event)
 {
+    switch (event)
+    {
+        case GLFW_PRESS:
+            return PRESSED;
+        case GLFW_REPEAT:
+            return REPEAT;
+        case GLFW_RELEASE:
+            return RELEASED;
+    }
 
+    return UNKNOWN;
+}
+
+void InputManager::setKey(int code, IInputManager::EInputEvent event)
+{
+    //TODO: handle key down/pressed (one shot)
+    switch (event)
+    {
+        case PRESSED:
+            keys[code] = true;
+            break;
+        case RELEASED:
+            keys[code] = false;
+            break;
+        case REPEAT:
+            keys[code] = true;
+            break;
+        case UNKNOWN:
+            break;
+    }
+}
+
+void InputManager::setMouseButton(int button, IInputManager::EInputEvent event)
+{
+    mouseButtonState[button] = event == PRESSED || event == REPEAT;
+}
+
+InputManager::~InputManager()
+{
+    delete[] keys;
+    delete[] mouseButtonState;
 }
 
 

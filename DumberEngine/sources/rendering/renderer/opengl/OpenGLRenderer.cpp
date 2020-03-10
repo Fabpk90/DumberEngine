@@ -33,7 +33,6 @@ void OpenGLRenderer::init(SWindowData data)
     if (windowHandle == NULL)
     {
         std::cout << "Failed to create GLFW window" << std::endl;
-        release();
     }
     glfwMakeContextCurrent(windowHandle);
     glfwSetFramebufferSizeCallback(windowHandle, resizeCallback);
@@ -41,21 +40,15 @@ void OpenGLRenderer::init(SWindowData data)
     if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress))
     {
         std::cout << "Failed to initialize GLAD" << std::endl;
-        release();
     }
 
     glEnable(GL_DEPTH_TEST);
 
     std::cout << "Opengl Renderer initialized" << std::endl;
 
-    std::cout << "Initializing the Input Manager" << std::endl;
-    InputManager::instance->renderer = this;
-
     glfwSetKeyCallback(windowHandle, InputManager::keyPressed);
     glfwSetCursorPosCallback(windowHandle, InputManager::mouseMoved);
     glfwSetMouseButtonCallback(windowHandle, InputManager::mouseButtonClicked);
-
-    std::cout << "Input Manager initialized" << std::endl;
 
     std::cout << "Initializing ImGUI" << std::endl;
     ImGui::CreateContext();
@@ -71,7 +64,7 @@ void OpenGLRenderer::init(SWindowData data)
     std::cout << "ImGui initialized" << std::endl;
 }
 
-void OpenGLRenderer::release()
+OpenGLRenderer::~OpenGLRenderer()
 {
     // Cleanup
     ImGui_ImplOpenGL3_Shutdown();
@@ -81,11 +74,6 @@ void OpenGLRenderer::release()
     glfwDestroyWindow(windowHandle);
     glfwTerminate();
     windowHandle = nullptr;
-}
-
-OpenGLRenderer::~OpenGLRenderer()
-{
-    release();
 
     std::cout << "Destroying the OpenGL Renderer" << std::endl;
 }

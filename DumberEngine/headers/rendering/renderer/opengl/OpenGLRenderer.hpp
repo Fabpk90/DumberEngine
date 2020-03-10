@@ -21,8 +21,6 @@ public:
 
     void closeWindow() override;
 
-    void release() override;
-
     int getActualWidth() override;
 
     int getActualHeight() override;

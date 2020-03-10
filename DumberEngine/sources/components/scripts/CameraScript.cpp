@@ -42,7 +42,7 @@ void CameraScript::update()
 
     if (input.isKeyPressed(GLFW_KEY_ESCAPE))
     {
-        input.renderer->closeWindow();
+        IWindow::instance->closeWindow();
     }
 
     if(input.isKeyPressed(GLFW_KEY_SPACE))
@@ -58,15 +58,12 @@ void CameraScript::update()
 
     if (input.isMouseButtonPressed(GLFW_MOUSE_BUTTON_RIGHT))
     {
-
         isCursorvisible = false;
         input.setMouseVisible(false);
-        //std::cout << "pressed " << std::endl;
     }
     else
     {
         isCursorvisible = true;
-        //std::cout << "released " << std::endl;
     }
 
     movement *= Time::getInstance().deltaTime;
@@ -75,7 +72,7 @@ void CameraScript::update()
     if (!isCursorvisible)
     {
         glm::vec2 delta, center;
-        center = glm::vec2(input.renderer->getActualWidth() >> 1, input.renderer->getActualHeight() >> 1);
+        center = glm::vec2(IWindow::instance->getActualWidth() >> 1, IWindow::instance->getActualHeight() >> 1);
 
         delta = input.getMousePosition() - center;
 

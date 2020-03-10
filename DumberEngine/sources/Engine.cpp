@@ -10,11 +10,13 @@
 #include "../headers/rendering/helper/Shader.hpp"
 #include "../headers/systems/input/IInputManager.hpp"
 #include "../headers/rendering/renderer/opengl/InputManager.hpp"
+#include "../headers/components/scripts/CameraScript.hpp"
+#include "../headers/components/scripts/World.hpp"
 
 #include <imgui/imgui_impl_opengl3.h>
 #include <imgui/imgui_impl_glfw.h>
 
-
+#include "bullet/btBulletDynamicsCommon.h"
 
 void Engine::start()
 {
@@ -25,13 +27,36 @@ void Engine::start()
 
     window = new OpenGLRenderer();
     window->init(data);
+    window->setVSync(true);
+
+    systems =  std::list<ISystem*>();
 
     InputManager* inputManager = new InputManager();
+    inputManager->init();
 
+    systems.push_front(inputManager);
+
+    scene = new Scene();
+
+    auto *o = new GameObject("Camera");
+    o->addComponent(new CameraScript());
+
+    auto* worldGO = new GameObject("World");
+    worldGO->addComponent(new World());
+
+    scene->addGameObject(worldGO);
+    scene->addGameObject(o);
+
+    btBoxShape* box = new btBoxShape(btVector3(0, 1, 0));
 }
 
 void Engine::update()
 {
+    for(ISystem* s : systems)
+    {
+        s->update();
+    }
+
     float lastFrame = 0;
     while (!glfwWindowShouldClose(window->getHandle()))
     {
@@ -65,5 +90,16 @@ void Engine::update()
         glfwSwapBuffers(window->getHandle());
         glfwPollEvents();
     }
+}
+
+Engine::~Engine()
+{
+    for(ISystem* s : systems)
+    {
+        delete s;
+    }
+
+    delete scene;
+    delete window;
 }
 

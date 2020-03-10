@@ -10,18 +10,10 @@
 
 class InputManager : public IInputManager
 {
-private:
-    bool keys[GLFW_KEY_LAST];
-
-    bool mouseButtonState[GLFW_MOUSE_BUTTON_LAST];
-
-    bool isMouseShown;
-
-    glm::vec2 mousePosition;
-    glm::vec2 mouseDelta;
-
 public:
+    ~InputManager();
 
+    InputManager();
     InputManager(const InputManager &) = delete;
 
     static void keyPressed(GLFWwindow *window, int key, int scancode, int action, int mods);
@@ -29,6 +21,10 @@ public:
     static void mouseMoved(GLFWwindow *, double xPos, double yPos);
 
     static void mouseButtonClicked(GLFWwindow *, int button, int action, int mods);
+
+    EInputEvent toInputEvent(int event) override;
+
+    void setKey(int code, EInputEvent event) override;
 
     bool isKeyPressed(int code) override;
 
@@ -40,6 +36,8 @@ public:
 
     void setMousePosition(glm::vec2 position) override;
 
+    void setMouseButton(int button, EInputEvent event) override;
+
     glm::vec2 getMouseDelta() override;
 
     glm::vec2 &getMousePosition() override;
@@ -47,10 +45,6 @@ public:
     void init() override;
 
     void update() override;
-
-    void destroy() override;
-
-    InputManager();
 };
 
 #endif //DUMBERENGINE_INPUTMANAGER_HPP
