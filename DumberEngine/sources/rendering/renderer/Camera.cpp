@@ -17,7 +17,7 @@ void Camera::updateVecs()
     up = glm::normalize(glm::cross(right, direction));
 }
 
-void Camera::move(glm::vec3 &m)
+void Camera::move(glm::vec3 m)
 {
     position += direction * m.z;
     position += right * m.x;
@@ -57,6 +57,7 @@ Camera &Camera::getInstance()
 
 Camera::Camera()
 {
+    position = glm::vec3(0.f);
     angles = glm::vec2();
     forward = glm::vec3(0, 0, -1);
     updateVecs();
@@ -93,7 +94,7 @@ glm::mat4 Camera::getProjectionMatrix()
     return glm::perspective(glm::radians(60.0f), (float) IWindow::instance->getActualWidth() / (float) IWindow::instance->getActualHeight(), 0.1f, 100.0f);
 }
 
-void Camera::moveWorld(glm::vec3& movement)
+void Camera::moveWorld(glm::vec3 movement)
 {
     position += movement;
 

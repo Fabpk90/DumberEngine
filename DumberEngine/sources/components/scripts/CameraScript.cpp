@@ -12,7 +12,8 @@
 
 void CameraScript::start()
 {
-
+    auto &cam = (Camera::getInstance());
+    cam.moveWorld(glm::vec3(0, 0, -2));
 }
 
 void CameraScript::update()
