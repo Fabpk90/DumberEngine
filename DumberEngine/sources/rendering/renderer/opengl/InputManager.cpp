@@ -6,8 +6,6 @@
 #include <iostream>
 #include "../../../../headers/rendering/renderer/opengl/InputManager.hpp"
 
-InputManager InputManager::instance;
-
 bool InputManager::isKeyPressed(int code)
 {
     return keys[code];
@@ -27,28 +25,26 @@ glm::vec2 &InputManager::getMousePosition()
 
 InputManager::InputManager()
 {
-    mousePosition = glm::vec2();
-    memset(keys, 0, sizeof(void *) * GLFW_KEY_LAST);
-    memset(mouseButtonState, 0, sizeof(void *) * GLFW_MOUSE_BUTTON_LAST);
+    instance = this;
 }
 
 void InputManager::keyPressed(GLFWwindow *window, int key, int scancode, int action, int mods)
 {
-    instance.keys[key] = action == GLFW_PRESS || action == GLFW_REPEAT;
+    instance->keys[key] = action == GLFW_PRESS || action == GLFW_REPEAT;
 }
 
 void InputManager::mouseButtonClicked(GLFWwindow *h, int button, int action, int mode)
 {
-    instance.mouseButtonState[button] = action == GLFW_PRESS || action == GLFW_REPEAT;
+    instance->mouseButtonState[button] = action == GLFW_PRESS || action == GLFW_REPEAT;
 }
 
 void InputManager::mouseMoved(GLFWwindow *, double xPos, double yPos)
 {
-    instance.mouseDelta.x = instance.mousePosition.x - xPos;
-    instance.mouseDelta.y = instance.mousePosition.y - yPos;
+    instance->mouseDelta.x = instance->mousePosition.x - xPos;
+    instance->mouseDelta.y = instance->mousePosition.y - yPos;
 
-    instance.mousePosition.x = xPos;
-    instance.mousePosition.y = yPos;
+    instance->mousePosition.x = xPos;
+    instance->mousePosition.y = yPos;
 }
 
 bool InputManager::isMouseButtonPressed(int button)
@@ -73,6 +69,23 @@ void InputManager::setMousePosition(glm::vec2 position)
 glm::vec2 InputManager::getMouseDelta()
 {
     return mouseDelta;
+}
+
+void InputManager::init()
+{
+    mousePosition = glm::vec2();
+    memset(keys, 0, sizeof(void *) * GLFW_KEY_LAST);
+    memset(mouseButtonState, 0, sizeof(void *) * GLFW_MOUSE_BUTTON_LAST);
+}
+
+void InputManager::update()
+{
+
+}
+
+void InputManager::destroy()
+{
+
 }
 
 

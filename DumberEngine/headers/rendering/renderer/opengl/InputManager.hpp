@@ -5,7 +5,7 @@
 #ifndef DUMBERENGINE_INPUTMANAGER_HPP
 #define DUMBERENGINE_INPUTMANAGER_HPP
 
-#include "../IInputManager.hpp"
+#include "../../../systems/input/IInputManager.hpp"
 #include "../IWindow.h"
 
 class InputManager : public IInputManager
@@ -20,18 +20,9 @@ private:
     glm::vec2 mousePosition;
     glm::vec2 mouseDelta;
 
-    InputManager();
-
-
-    static InputManager instance;
 public:
 
     InputManager(const InputManager &) = delete;
-
-    static InputManager &getInstance()
-    {
-        return instance;
-    }
 
     static void keyPressed(GLFWwindow *window, int key, int scancode, int action, int mods);
 
@@ -53,7 +44,13 @@ public:
 
     glm::vec2 &getMousePosition() override;
 
-    IWindow *renderer;
+    void init() override;
+
+    void update() override;
+
+    void destroy() override;
+
+    InputManager();
 };
 
 #endif //DUMBERENGINE_INPUTMANAGER_HPP

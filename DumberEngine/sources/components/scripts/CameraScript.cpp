@@ -19,7 +19,7 @@ void CameraScript::start()
 void CameraScript::update()
 {
     auto &cam = (Camera::getInstance());
-    auto &input = InputManager::getInstance();
+    auto &input = *InputManager::instance;
 
     glm::vec3 movement = glm::vec3();
 

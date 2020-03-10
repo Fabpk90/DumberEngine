@@ -49,7 +49,7 @@ void OpenGLRenderer::init(SWindowData data)
     std::cout << "Opengl Renderer initialized" << std::endl;
 
     std::cout << "Initializing the Input Manager" << std::endl;
-    InputManager::getInstance().renderer = this;
+    InputManager::instance->renderer = this;
 
     glfwSetKeyCallback(windowHandle, InputManager::keyPressed);
     glfwSetCursorPosCallback(windowHandle, InputManager::mouseMoved);

@@ -11,7 +11,6 @@
 GameObject::GameObject(const char *name) : name(name)
 {
     components = std::list<IComponent *>();
-    isSelectedInspector = false;
     transform = Transform();
 }
 

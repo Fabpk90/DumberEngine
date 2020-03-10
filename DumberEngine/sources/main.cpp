@@ -31,6 +31,7 @@
 #include "../headers/components/scripts/World.hpp"
 #include "../headers/components/Transform.hpp"
 
+#include "bullet/btBulletDynamicsCommon.h"
 
 Vbo *createCube()
 {
@@ -264,11 +265,11 @@ int main(int argc, char **argv)
     renderer.init(data);
     renderer.setVSync(true);
 
-    Transform t;
-
     auto handle = renderer.getHandle();
 
-    Scene *scene = new Scene();
+    btBoxShape* box = new btBoxShape(btVector3(0, 1, 0));
+
+    auto *scene = new Scene();
     auto *o = new GameObject("Camera");
     o->addComponent(new CameraScript());
 
@@ -287,7 +288,7 @@ int main(int argc, char **argv)
         Time::getInstance().time += Time::getInstance().deltaTime;
         lastFrame = currentFrame;
 
-        if(InputManager::getInstance().isKeyPressed(GLFW_KEY_F5))
+        if(InputManager::instance->isKeyPressed(GLFW_KEY_F5))
         {
             Shader::reloadShaders();
         }
