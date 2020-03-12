@@ -4,6 +4,7 @@
 
 #include "../../../headers/components/scripts/Chunk.hpp"
 #include "../../../headers/utils/PerlinNoise.hpp"
+#include "../../../headers/utils/BetterNoise.hpp"
 #include <glm/glm.hpp>
 #include <iostream>
 
@@ -199,24 +200,31 @@ glm::vec2 Chunk::getAtlasPosition(float type)
 
 void Chunk::initCubes()
 {
-    PerlinNoise p;
+    BetterNoise p;
     p.setFreq(0.02f);
-    for (int i = 0; i < CUBE_IN_CHUNK; ++i)
+    for (int x = 0; x < CUBE_IN_CHUNK; ++x)
     {
-        for (int j = 0; j < CUBE_IN_CHUNK; ++j)
+        for (int y = 0; y < CUBE_IN_CHUNK; ++y)
         {
-            for (int k = 0; k < CUBE_IN_CHUNK; ++k)
+            for (int z = 0; z < CUBE_IN_CHUNK; ++z)
             {
-                Cube::CubeType t = Cube::CUBE_AIR;
-                float sample = p.sample(i, j, k);
+                p.doPenaltyMiddle = true;
+                p.setFreq(0.04f);
+                float val = p.sample((float)x, (float)y, (float)z);
+                p.doPenaltyMiddle = false;
+                p.setFreq(0.2f);
+                val -= (1.0f - max(val, p.sample((float)x, (float)y, (float)z))) / 20.0f;
 
-                if(sample >= 0.5f)
-                    t = Cube::CUBE_HERBE;
-                else if(sample > 0.4f)
-                    t = Cube::CUBE_EAU;
+                Cube& cube = cubes[x][y][z];
 
-
-                cubes[i][j][k].setType(t);
+                if (val > 0.5f)
+                    cube.setType(Cube::CUBE_HERBE);
+                if (val > 0.51f)
+                    cube.setType(Cube::CUBE_TERRE);
+                if (val < 0.5 && z <= 0.1)
+                    cube.setType(Cube::CUBE_EAU);
+                if (val > 0.56)
+                    cube.setType(Cube::CUBE_EAU);
             }
         }
     }

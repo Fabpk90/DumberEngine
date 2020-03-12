@@ -7,35 +7,35 @@
 
 PerlinNoise::PerlinNoise()
 {
-    Width = 41;
-    Size = Width * Width*Width;
-    Gradients = new glm::vec3[Size];
+    width = 41;
+    size = width * width * width;
+    gradients = new glm::vec3[size];
     updateVecs();
-    Freq = 1;
+    freq = 1;
 }
 
 void PerlinNoise::updateVecs()
 {
-    for (int i = 0; i < Size; i++)
+    for (int i = 0; i < size; i++)
     {
-        Gradients[i].x = (float)randf();
-        Gradients[i].y = (float)randf();
-        Gradients[i].z = (float)randf();
+        gradients[i].x = (float)randf();
+        gradients[i].y = (float)randf();
+        gradients[i].z = (float)randf();
     }
 }
 
 float PerlinNoise::sample(float xBase, float yBase, float zBase)
 {
-    float x = xBase * Freq;
-    float y = yBase * Freq;
-    float z = zBase * Freq;
+    float x = xBase * freq;
+    float y = yBase * freq;
+    float z = zBase * freq;
 
-    while (x >= Width - 1)
-        x -= Width - 1;
-    while (y >= Width - 1)
-        y -= Width - 1;
-    while (z >= Width - 1)
-        z -= Width - 1;
+    while (x >= width - 1)
+        x -= width - 1;
+    while (y >= width - 1)
+        y -= width - 1;
+    while (z >= width - 1)
+        z -= width - 1;
 
     int x1 = (int)floor(x);
     int x2 = (int)floor(x) + 1;
@@ -63,7 +63,7 @@ float PerlinNoise::sample(float xBase, float yBase, float zBase)
 
     float angles[8];
     for (int i = 0; i < 8; i++)
-        angles[i] = glm::dot((pos - sommets[i]), Gradients[(int)(sommets[i].x * Width * Width + sommets[i].y * Width + sommets[i].z)]);
+        angles[i] = glm::dot((pos - sommets[i]), gradients[(int)(sommets[i].x * width * width + sommets[i].y * width + sommets[i].z)]);
 
     //plan X2
     float ybas = lerp(angles[0], angles[3], dy);
@@ -85,6 +85,6 @@ float PerlinNoise::sample(float xBase, float yBase, float zBase)
 
 PerlinNoise::~PerlinNoise()
 {
-    delete[] Gradients;
+    delete[] gradients;
 }
 

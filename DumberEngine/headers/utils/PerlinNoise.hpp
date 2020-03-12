@@ -10,11 +10,11 @@
 
 class PerlinNoise
 {
-private:
-    glm::vec3 * Gradients;
-    int Width;
-    int Size;
-    float Freq;
+protected:
+    glm::vec3 * gradients;
+    int width;
+    int size;
+    float freq;
 
     void updateVecs();
 
@@ -33,7 +33,7 @@ public:
 
     void setFreq(float freq)
     {
-        Freq = freq;
+        this->freq = freq;
     }
 
     virtual float sample(float xBase, float yBase, float zBase);
