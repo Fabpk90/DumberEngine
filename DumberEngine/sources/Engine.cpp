@@ -48,6 +48,7 @@ void Engine::start()
     scene->addGameObject(o);
 
     btBoxShape* box = new btBoxShape(btVector3(0, 1, 0));
+    
 }
 
 void Engine::update()

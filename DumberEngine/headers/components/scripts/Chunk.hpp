@@ -23,6 +23,10 @@ private:
 
     void initCubes();
 
+    void foreachVisibleTriangle(bool countOnly, int * nbVertOpaque, int * nbVertTrasp, Vbo * VboOpaque, Vbo * VboTrasparent);
+    void get_surrounding_cubes(int x, int y, int z, Cube ** cubeXPrev, Cube ** cubeXNext,
+                               Cube ** cubeYPrev, Cube ** cubeYNext,
+                               Cube ** cubeZPrev, Cube ** cubeZNext);
 
 public:
     static const int CUBE_IN_CHUNK = 64;
@@ -30,6 +34,8 @@ public:
     Cube cubes[CUBE_IN_CHUNK][CUBE_IN_CHUNK][CUBE_IN_CHUNK];
     Vbo* vboOpaque;
     Vbo* vboTransparent;
+
+    Chunk* neighborhood[6];
 
     glm::vec3 chunkPosition;
 
@@ -40,6 +46,11 @@ public:
     void toVbo();
 
     void draw(bool isTransparentPass);
+
+    void setNeighboors(Chunk *xPrev, Chunk *xNext, Chunk *yPrev, Chunk *yNext, Chunk *zPrev, Chunk *zNext);
+
+    bool testHiddenCube(int x, int y, int z);
+    void disableHiddenCubes();
 };
 
 #endif //DUMBERENGINE_CHUNK_HPP

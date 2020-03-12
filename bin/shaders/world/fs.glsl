@@ -71,14 +71,14 @@ void main()
 
 	//Spec
 	vec3 halfVec = normalize(toLight + view);
-	float spec = abs(dot(normal, toLight));
+	float spec = abs(dot(normal, halfVec));
 	spec = 5.f * pow(spec, 300);
 
 	c.rgb += sunColor * spec;
 
 	//Ambient
 	c.rgb += 0.1 * skyColor * (1 - diffuse);
-	vec4 texColor =texture(worldTex, uv);
+	vec4 texColor = texture(worldTex, uv);
 	//texColor.x = pow(texColor.x, 2.0);
 	//texColor.y = pow(texColor.y, 2.0);
 	//texColor.z = pow(texColor.z, 2.0);

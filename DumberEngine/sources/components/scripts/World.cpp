@@ -91,11 +91,55 @@ World::World() : shaderWorld("shaders/world/")
         }
     }
 
+    setNeighborhood();
+    for (int i = 0; i < CHUNK_SIZE; ++i)
+    {
+        for (int j = 0; j < CHUNK_SIZE; ++j)
+        {
+            for (int k = 0; k < CHUNK_SIZE; ++k)
+            {
+                chunks[i][k][j]->disableHiddenCubes();
+                chunks[i][k][j]->toVbo();
+            }
+        }
+    }
+
     texture.loadFrom("textures/terrain.png");
 
     sunColor = glm::vec3(1.0f, 1.0f, 0.8f);
     skyColor = glm::vec3(0.0f, 181.f / 255.f, 221.f / 255.f);
     sunDirection = glm::vec3(0, 1, 0);
+}
+
+void World::setNeighborhood()
+{
+    for(int x=0;x<CHUNK_SIZE;x++)
+        for(int y=0;y<CHUNK_SIZE;y++)
+            for(int z=0;z<CHUNK_SIZE;z++)
+            {
+                Chunk * cxPrev = NULL;
+                if(x > 0)
+                    cxPrev = chunks[x-1][y][z];
+                Chunk * cxNext = NULL;
+                if(x < CHUNK_SIZE-1)
+                    cxNext = chunks[x+1][y][z];
+
+                Chunk * cyPrev = NULL;
+                if(y > 0)
+                    cyPrev = chunks[x][y-1][z];
+                Chunk * cyNext = NULL;
+                if(y < CHUNK_SIZE-1)
+                    cyNext = chunks[x][y+1][z];
+
+                Chunk * czPrev = NULL;
+                if(z > 0)
+                    czPrev = chunks[x][y][z-1];
+                Chunk * czNext = NULL;
+                if(z < CHUNK_SIZE-1)
+                    czNext = chunks[x][y][z+1];
+
+                chunks[x][y][z]->setNeighboors(cxPrev,cxNext,cyPrev,cyNext,czPrev,czNext);
+            }
 }
 
 World::~World()

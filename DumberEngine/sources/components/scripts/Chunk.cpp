@@ -33,12 +33,15 @@ void Chunk::draw(bool isTransparentPass)
 
 void Chunk::toVbo()
 {
-    unsigned int transparentCubes = 0, opaqueCubes = 0;
-
-    countCube(transparentCubes, opaqueCubes);
+    int transparentCubes = -1, opaqueCubes = -1;
 
     delete vboTransparent;
     delete vboOpaque;
+
+    //we count the vertices
+    foreachVisibleTriangle(true, &opaqueCubes, &transparentCubes, vboOpaque, vboTransparent);
+
+
 
     vboOpaque = new Vbo(4, opaqueCubes * 36);
 
@@ -58,25 +61,9 @@ void Chunk::toVbo()
 
     vboTransparent->createCPUSide();
 
-    int vertexIndexTransparent = 0, vertexIndexOpaque = 0;
-    for (int i = 0; i < CUBE_IN_CHUNK; ++i)
-    {
-        for (int j = 0; j < CUBE_IN_CHUNK; ++j)
-        {
-            for (int k = 0; k < CUBE_IN_CHUNK; ++k)
-            {
-                auto& cube = cubes[i][j][k];
+    //we fill the vbos
+    foreachVisibleTriangle(false, &opaqueCubes, &transparentCubes, vboOpaque, vboTransparent);
 
-                if(cube.getType() != Cube::CUBE_AIR)
-                {
-                    if(cube.isTransparent())
-                        addCubeToVbo(vboTransparent, vertexIndexTransparent, glm::vec3(i, j, k), cube.getType());
-                    else
-                        addCubeToVbo(vboOpaque, vertexIndexOpaque, glm::vec3(i, j, k),  cube.getType());
-                }
-            }
-        }
-    }
 
     vboOpaque->createGPUSide();
     vboTransparent->createGPUSide();
@@ -233,8 +220,16 @@ void Chunk::initCubes()
             }
         }
     }
+}
 
-    toVbo();
+void Chunk::setNeighboors(Chunk *xPrev, Chunk *xNext, Chunk *yPrev, Chunk *yNext, Chunk *zPrev, Chunk *zNext)
+{
+    neighborhood[0] = xPrev;
+    neighborhood[1] = xNext;
+    neighborhood[2] = yPrev;
+    neighborhood[3] = yNext;
+    neighborhood[4] = zPrev;
+    neighborhood[5] = zNext;
 }
 
 Chunk::~Chunk()
@@ -242,6 +237,237 @@ Chunk::~Chunk()
     delete vboOpaque;
     delete vboTransparent;
 }
+
+void Chunk::foreachVisibleTriangle(bool countOnly, int *nbVertOpaque, int *nbVertTrasp, Vbo *VboOpaque, Vbo *VboTrasparent)
+{
+    int type = 0;
+    Cube * cube = nullptr;
+    int nbVertices = 0;
+    int iVerticeOpaque = 0;
+    int iVerticeTransp = 0;
+    int * iVertice = &iVerticeOpaque;
+    //On parcourt tous nos cubes
+    for (int x = 0; x < CUBE_IN_CHUNK; x++)
+    {
+        for (int y = 0; y < CUBE_IN_CHUNK; y++)
+        {
+            for (int z = 0; z < CUBE_IN_CHUNK; z++)
+            {
+                cube = &(cubes[x][y][z]);
+                type = cube->getType();
+
+                if (cube->getDraw() && type != Cube::CUBE_AIR)
+                {
+                    //Position du cube (coin bas gauche face avant)
+                    float xPos = x * (float)Cube::CUBE_SIZE;
+                    float yPos = y * (float)Cube::CUBE_SIZE;
+                    float zPos = z * (float)Cube::CUBE_SIZE;
+
+                    glm::vec3 a(xPos + Cube::CUBE_SIZE, yPos, zPos);
+                    glm::vec3 b(xPos + Cube::CUBE_SIZE, yPos + Cube::CUBE_SIZE, zPos);
+                    glm::vec3 c(xPos + Cube::CUBE_SIZE, yPos + Cube::CUBE_SIZE, zPos + Cube::CUBE_SIZE);
+                    glm::vec3 d(xPos + Cube::CUBE_SIZE, yPos, zPos + Cube::CUBE_SIZE);
+                    glm::vec3 e(xPos, yPos, zPos);
+                    glm::vec3 f(xPos, yPos + Cube::CUBE_SIZE, zPos);
+                    glm::vec3 g(xPos, yPos + Cube::CUBE_SIZE, zPos + Cube::CUBE_SIZE);
+                    glm::vec3 h(xPos, yPos, zPos + Cube::CUBE_SIZE);
+
+                    Cube * cubeXPrev = NULL;
+                    Cube * cubeXNext = NULL;
+                    Cube * cubeYPrev = NULL;
+                    Cube * cubeYNext = NULL;
+                    Cube * cubeZPrev = NULL;
+                    Cube * cubeZNext = NULL;
+
+                    get_surrounding_cubes(
+                            x, y, z,
+                            &cubeXPrev, &cubeXNext,
+                            &cubeYPrev, &cubeYNext,
+                            &cubeZPrev, &cubeZNext);
+
+                    iVertice = &iVerticeTransp;
+                    if (countOnly)
+                        iVertice = nbVertTrasp;
+                    Vbo * vbo = VboTrasparent;
+                    if (cube->isOpaque()) {
+                        iVertice = &iVerticeOpaque;
+                        if (countOnly)
+                            iVertice = nbVertOpaque;
+                        vbo = VboOpaque;
+                    }
+
+                    //Premier QUAD (x+)
+                    if (cubeXNext == NULL ||
+                        (cube->isOpaque() && !cubeXNext->isOpaque()) || //Je suis un cube opaque et le cube a cote de moi est transparent
+                        (!cube->isOpaque() && cubeXNext->getType() != type)) //Je suis un cube transparent et le cube a cote de moi est de l'air (on rend le transparent qu'au contact de l'air)
+                    {
+                        if (!countOnly)
+                            addQuadToVbo(vbo, *iVertice, a, b, c, d, type); //x+
+                        *iVertice += 6;
+                    }
+
+                    //Second QUAD (x-)
+                    if (cubeXPrev == NULL ||
+                        (cube->isOpaque() && !cubeXPrev->isOpaque()) || //Je suis un cube opaque et le cube a cote de moi est transparent
+                        (!cube->isOpaque() && cubeXPrev->getType() != type)) //Je suis un cube transparent et le cube a cote de moi est de l'air (on rend le transparent qu'au contact de l'air)
+                    {
+                        if (!countOnly)
+                            addQuadToVbo(vbo, *iVertice, f, e, h, g, type); //x-
+                        *iVertice += 6;
+                    }
+
+
+                    //Troisieme QUAD (y+)
+                    if (cubeYNext == NULL ||
+                        (cube->isOpaque() && !cubeYNext->isOpaque()) || //Je suis un cube opaque et le cube a cote de moi est transparent
+                        (!cube->isOpaque() && cubeYNext->getType() != type)) //Je suis un cube transparent et le cube a cote de moi est de l'air (on rend le transparent qu'au contact de l'air)
+                    {
+                        if (!countOnly)
+                            addQuadToVbo(vbo, *iVertice, b, f, g, c, type); //y+
+                        *iVertice += 6;
+                    }
+
+                    //Quatrieme QUAD (y-)
+                    if (cubeYPrev == NULL ||
+                        (cube->isOpaque() && !cubeYPrev->isOpaque()) || //Je suis un cube opaque et le cube a cote de moi est transparent
+                        (!cube->isOpaque() && cubeYPrev->getType() != type)) //Je suis un cube transparent et le cube a cote de moi est de l'air (on rend le transparent qu'au contact de l'air)
+                    {
+                        if (!countOnly)
+                            addQuadToVbo(vbo, *iVertice, e, a, d, h, type); //y-
+                        *iVertice += 6;
+                    }
+
+                    //Cinquieme QUAD (z+)
+                    if (cubeZNext == NULL ||
+                        (cube->isOpaque() && !cubeZNext->isOpaque()) || //Je suis un cube opaque et le cube a cote de moi est transparent
+                        (!cube->isOpaque() && cubeZNext->getType() != type)) //Je suis un cube transparent et le cube a cote de moi est de l'air (on rend le transparent qu'au contact de l'air)
+                    {
+                        if (!countOnly)
+                            addQuadToVbo(vbo, *iVertice, c, g, h, d, type); //z+
+                        *iVertice += 6;
+                    }
+
+                    //Sixième QUAD (le z-)
+                    if (cubeZPrev == NULL ||
+                        (cube->isOpaque() && !cubeZPrev->isOpaque()) || //Je suis un cube opaque et le cube a cote de moi est transparent
+                        (!cube->isOpaque() && cubeZPrev->getType() != type)) //Je suis un cube transparent et le cube a cote de moi est de l'air (on rend le transparent qu'au contact d'un cube !=)
+                    {
+                        if (!countOnly)
+                            addQuadToVbo(vbo, *iVertice, e, f, b, a, type); //z-
+                        *iVertice += 6;
+                    }
+                }
+            }
+        }
+    }
+}
+
+void Chunk::get_surrounding_cubes(int x, int y, int z, Cube **cubeXPrev, Cube **cubeXNext, Cube **cubeYPrev,
+                                  Cube **cubeYNext, Cube **cubeZPrev, Cube **cubeZNext)
+{
+    *cubeXPrev = NULL;
+    *cubeXNext = NULL;
+    *cubeYPrev = NULL;
+    *cubeYNext = NULL;
+    *cubeZPrev = NULL;
+    *cubeZNext = NULL;
+
+    if (x == 0 && neighborhood[0] != NULL)
+        *cubeXPrev = &(neighborhood[0]->cubes[CUBE_IN_CHUNK - 1][y][z]);
+    else if (x > 0)
+        *cubeXPrev = &(cubes[x - 1][y][z]);
+
+    if (x == CUBE_IN_CHUNK - 1 && neighborhood[1] != NULL)
+        *cubeXNext = &(neighborhood[1]->cubes[0][y][z]);
+    else if (x < CUBE_IN_CHUNK - 1)
+        *cubeXNext = &(cubes[x + 1][y][z]);
+
+    if (y == 0 && neighborhood[2] != NULL)
+        *cubeYPrev = &(neighborhood[2]->cubes[x][CUBE_IN_CHUNK - 1][z]);
+    else if (y > 0)
+        *cubeYPrev = &(cubes[x][y - 1][z]);
+
+    if (y == CUBE_IN_CHUNK - 1 && neighborhood[3] != NULL)
+        *cubeYNext = &(neighborhood[3]->cubes[x][0][z]);
+    else if (y < CUBE_IN_CHUNK - 1)
+        *cubeYNext = &(cubes[x][y + 1][z]);
+
+    if (z == 0 && neighborhood[4] != NULL)
+        *cubeZPrev = &(neighborhood[4]->cubes[x][y][CUBE_IN_CHUNK - 1]);
+    else if (z > 0)
+        *cubeZPrev = &(cubes[x][y][z - 1]);
+
+    if (z == CUBE_IN_CHUNK - 1 && neighborhood[5] != NULL)
+        *cubeZNext = &(neighborhood[5]->cubes[x][y][0]);
+    else if (z < CUBE_IN_CHUNK - 1)
+        *cubeZNext = &(cubes[x][y][z + 1]);
+}
+
+void Chunk::disableHiddenCubes()
+{
+    for(int x=0;x<CUBE_IN_CHUNK;x++)
+        for(int y=0;y<CUBE_IN_CHUNK;y++)
+            for(int z=0;z<CUBE_IN_CHUNK;z++)
+            {
+                cubes[x][y][z].setDraw(true);
+                if(testHiddenCube(x, y, z))
+                    cubes[x][y][z].setDraw(false);
+            }
+}
+
+bool Chunk::testHiddenCube(int x, int y, int z)
+{
+    Cube * cubeXPrev = NULL;
+    Cube * cubeXNext = NULL;
+    Cube * cubeYPrev = NULL;
+    Cube * cubeYNext = NULL;
+    Cube * cubeZPrev = NULL;
+    Cube * cubeZNext = NULL;
+
+    if(x == 0 && neighborhood[0] != NULL)
+        cubeXPrev = &(neighborhood[0]->cubes[CUBE_IN_CHUNK-1][y][z]);
+    else if(x > 0)
+        cubeXPrev = &(cubes[x-1][y][z]);
+
+    if(x == CUBE_IN_CHUNK-1 && neighborhood[1] != NULL)
+        cubeXNext = &(neighborhood[1]->cubes[0][y][z]);
+    else if(x < CUBE_IN_CHUNK-1)
+        cubeXNext = &(cubes[x+1][y][z]);
+
+    if(y == 0 && neighborhood[2] != NULL)
+        cubeYPrev = &(neighborhood[2]->cubes[x][CUBE_IN_CHUNK-1][z]);
+    else if(y > 0)
+        cubeYPrev = &(cubes[x][y-1][z]);
+
+    if(y == CUBE_IN_CHUNK-1 && neighborhood[3] != NULL)
+        cubeYNext = &(neighborhood[3]->cubes[x][0][z]);
+    else if(y < CUBE_IN_CHUNK-1)
+        cubeYNext = &(cubes[x][y+1][z]);
+
+    if(z == 0 && neighborhood[4] != NULL)
+        cubeZPrev = &(neighborhood[4]->cubes[x][y][CUBE_IN_CHUNK-1]);
+    else if(z > 0)
+        cubeZPrev = &(cubes[x][y][z-1]);
+
+    if(z == CUBE_IN_CHUNK-1 && neighborhood[5] != NULL)
+        cubeZNext = &(neighborhood[5]->cubes[x][y][0]);
+    else if(z < CUBE_IN_CHUNK-1)
+        cubeZNext = &(cubes[x][y][z+1]);
+
+    if( cubeXPrev == NULL || cubeXNext == NULL ||
+        cubeYPrev == NULL || cubeYNext == NULL ||
+        cubeZPrev == NULL || cubeZNext == NULL )
+        return false;
+
+    return cubeXPrev->isOpaque() == true && //right
+           cubeXNext->isOpaque() == true && //left
+           cubeYPrev->isOpaque() == true && //up
+           cubeYNext->isOpaque() == true && //down
+           cubeZPrev->isOpaque() == true && //forward
+           cubeZNext->isOpaque() == true;
+}
+
+
 
 
 

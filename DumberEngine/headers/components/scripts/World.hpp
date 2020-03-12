@@ -22,6 +22,9 @@ private:
     glm::vec3 sunDirection;
     glm::vec3 skyColor;
     glm::vec3 sunColor;
+
+    void setNeighborhood();
+
 public:
     ~World();
     World();
