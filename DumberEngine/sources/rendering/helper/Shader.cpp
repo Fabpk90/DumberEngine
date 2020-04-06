@@ -122,6 +122,7 @@ void Shader::load()
 void Shader::reload()
 {
     glDeleteProgram(shaderProgram);
+    std::cout << "Reloading " << path << std::endl;
     load();
 }
 
@@ -148,6 +149,12 @@ void Shader::setFloat(const std::string &name, float f1)
     glUniform1f(location, f1);
 }
 
+void Shader::setVec2(const char *name, glm::vec2 val)
+{
+    GLint location = glGetUniformLocation(shaderProgram, name);
+    glUniform2f(location, val.x, val.y);
+}
+
 void Shader::setVec3(const char *name, glm::vec3& vec)
 {
     GLint location = glGetUniformLocation(shaderProgram, name);
@@ -167,5 +174,7 @@ void Shader::reloadShaders()
         s->reload();
     }
 }
+
+
 
 

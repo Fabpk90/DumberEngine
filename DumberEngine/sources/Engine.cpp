@@ -17,6 +17,10 @@
 #include <imgui/imgui_impl_glfw.h>
 
 #include "bullet/btBulletDynamicsCommon.h"
+#include "../headers/rendering/renderer/opengl/Fbo.hpp"
+
+#include "../headers/debug/DebugOpenGl.hpp"
+#include "../headers/debug/CubeDebug.hpp"
 
 void Engine::start()
 {
@@ -38,6 +42,8 @@ void Engine::start()
 
     scene = new Scene();
 
+    Camera* cam = new Camera();
+
     auto *o = new GameObject("Camera");
     o->addComponent(new CameraScript());
 
@@ -47,8 +53,8 @@ void Engine::start()
     scene->addGameObject(worldGO);
     scene->addGameObject(o);
 
+    //just for testing the bullet3 impl
     btBoxShape* box = new btBoxShape(btVector3(0, 1, 0));
-    
 }
 
 void Engine::update()
@@ -71,11 +77,23 @@ void Engine::update()
             Shader::reloadShaders();
         }
 
-        glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+        Camera::getInstance().getFbo().bind();
+
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glEnable(GL_DEPTH_TEST);
 
         scene->update();
         scene->draw();
+
+        Camera::getInstance().getFbo().unBind();
+
+
+        glClearColor(1.f, 1.f, 1.f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT);
+
+        glDisable(GL_DEPTH_TEST);
+        Camera::getInstance().activatePostProcessing();
 
         // Start the Dear ImGui frame
         ImGui_ImplOpenGL3_NewFrame();

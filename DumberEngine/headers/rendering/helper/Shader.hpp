@@ -37,6 +37,8 @@ public:
 
     static void reloadShaders();
 
+    void setVec2(const char *name, glm::vec2 val);
+
 private:
     void load();
 

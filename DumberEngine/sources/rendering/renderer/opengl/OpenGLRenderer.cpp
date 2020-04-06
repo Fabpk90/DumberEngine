@@ -42,8 +42,6 @@ void OpenGLRenderer::init(SWindowData data)
         std::cout << "Failed to initialize GLAD" << std::endl;
     }
 
-    glEnable(GL_DEPTH_TEST);
-
     std::cout << "Opengl Renderer initialized" << std::endl;
 
     glfwSetKeyCallback(windowHandle, InputManager::keyPressed);

@@ -21,6 +21,7 @@ void World::update()
 void World::draw()
 {
     shaderWorld.use();
+
     glm::mat4 m = Scene::getGameObject(gameObjectIndex)->getTransform().getModelMatrix();
     shaderWorld.setMatrix4("m", m);
     glm::mat4 v = Camera::getInstance().getViewMatrix();
@@ -33,7 +34,6 @@ void World::draw()
     shaderWorld.setVec3("lightDir", sunDirection);
 
     shaderWorld.setVec3("skyColor", skyColor);
-
     shaderWorld.setVec3("sunColor", sunColor);
 
     shaderWorld.setVec3("camPosition", Camera::getInstance().position);
