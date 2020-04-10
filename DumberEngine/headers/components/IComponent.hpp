@@ -5,7 +5,9 @@
 #ifndef DUMBERENGINE_ICOMPONENT_HPP
 #define DUMBERENGINE_ICOMPONENT_HPP
 
-class IComponent
+#include "GuiComponent.hpp"
+
+class IComponent : public GuiComponent
 {
 public:
     virtual void start() = 0;
@@ -13,9 +15,6 @@ public:
     virtual void update() = 0;
 
     virtual void draw() = 0;
-
-    //used to show params in the inspector
-    virtual void drawInspector() = 0;
 
     virtual ~IComponent()
     {};

@@ -8,14 +8,12 @@
 
 bool InputManager::isKeyPressed(int code)
 {
-    return keys[code];
+    return keysPressed[code];
 }
 
 bool InputManager::isKeyDown(int code)
 {
-
-    //TODO: handle this -> repeat
-    return false;
+    return keysDown[code];
 }
 
 glm::vec2 &InputManager::getMousePosition()
@@ -72,10 +70,12 @@ void InputManager::init()
     std::cout << "Initializing the Input Manager" << std::endl;
     mousePosition = glm::vec2();
 
-    keys = new bool[GLFW_KEY_LAST];
+    keysDown = new bool[GLFW_KEY_LAST];
+    keysPressed = new bool[GLFW_KEY_LAST];
     mouseButtonState = new bool[GLFW_MOUSE_BUTTON_LAST];
 
-    memset(keys, 0, sizeof(bool) * GLFW_KEY_LAST);
+    memset(keysDown, 0, sizeof(bool) * GLFW_KEY_LAST);
+    memset(keysPressed, 0, sizeof(bool) * GLFW_KEY_LAST);
     memset(mouseButtonState, 0, sizeof(bool) * GLFW_MOUSE_BUTTON_LAST);
 
 
@@ -84,7 +84,7 @@ void InputManager::init()
 
 void InputManager::update()
 {
-
+   memset(keysPressed, 0, sizeof(bool) * GLFW_KEY_LAST);
 }
 
 IInputManager::EInputEvent InputManager::toInputEvent(int event)
@@ -108,13 +108,16 @@ void InputManager::setKey(int code, IInputManager::EInputEvent event)
     switch (event)
     {
         case PRESSED:
-            keys[code] = true;
+            keysDown[code] = true;
+            keysPressed[code] = true;
             break;
         case RELEASED:
-            keys[code] = false;
+            keysDown[code] = false;
+            keysPressed[code] = false;
             break;
         case REPEAT:
-            keys[code] = true;
+            keysDown[code] = true;
+            keysPressed[code] = false;
             break;
         case UNKNOWN:
             break;
@@ -128,7 +131,8 @@ void InputManager::setMouseButton(int button, IInputManager::EInputEvent event)
 
 InputManager::~InputManager()
 {
-    delete[] keys;
+    delete[] keysDown;
+    delete[] keysPressed;
     delete[] mouseButtonState;
 }
 

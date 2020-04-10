@@ -14,6 +14,8 @@ class GameObject : public IComponent
 {
 private:
     std::list<IComponent *> components;
+    std::list<GuiComponent*> guiComponents;
+    
     Transform transform;
 public:
 unsigned int indexInScene;

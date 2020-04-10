@@ -12,7 +12,9 @@
 class IInputManager : public ISystem
 {
 protected:
-    bool* keys;
+    bool* keysDown;
+    bool* keysPressed;
+
     bool* mouseButtonState;
 
     bool isMouseShown;
@@ -44,7 +46,6 @@ public:
     virtual void setMouseVisible(bool isVisible) = 0;
     virtual void setMousePosition(glm::vec2 position) = 0;
     virtual void setMouseButton(int button, EInputEvent event) = 0;
-
 
 
     virtual glm::vec2 getMouseDelta() = 0;

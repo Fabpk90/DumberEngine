@@ -3,6 +3,12 @@
 //
 
 #include <iostream>
+#include <stb/stb_image_write.h>
+
+#include <chrono>
+#include <time.h>
+#include <string>
+
 #include "../../../../headers/rendering/renderer/opengl/Fbo.hpp"
 
 Fbo::~Fbo()
@@ -19,7 +25,26 @@ void Fbo::bind()
 
 void Fbo::writeToDisk()
 {
+    auto now = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+    std::string s = "screenshots/";
 
+    time_t t;
+
+    s += std::to_string(time(&t));
+    s += ".bmp";
+
+    std::cout << "Saving " << s << std::endl;
+
+    char *data =  new char[width * height * 3]; // 3 components (R, G, B)
+
+
+    glPixelStorei(GL_PACK_ALIGNMENT, 1);
+    glReadPixels(0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, data);
+
+    stbi_flip_vertically_on_write(true);
+    stbi_write_bmp(s.c_str(), width, height, 3, data);
+
+    delete[] data;
 }
 
 Fbo::Fbo(int width, int height, bool hasDepth, bool hasColor) : IFbo(width, height, hasDepth, hasColor)

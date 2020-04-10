@@ -59,10 +59,7 @@ void Engine::start()
 
 void Engine::update()
 {
-    for(ISystem* s : systems)
-    {
-        s->update();
-    }
+
 
     float lastFrame = 0;
     while (!glfwWindowShouldClose(window->getHandle()))
@@ -105,6 +102,14 @@ void Engine::update()
         ImGui::Render();
 
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+        if(IInputManager::instance->isKeyPressed(GLFW_KEY_F2))
+            Camera::getInstance().getFbo().writeToDisk();
+
+        for(ISystem* s : systems)
+        {
+            s->update();
+        }
 
         glfwSwapBuffers(window->getHandle());
         glfwPollEvents();

@@ -23,29 +23,29 @@ void CameraScript::update()
 
     glm::vec3 movement = glm::vec3();
 
-    if (input.isKeyPressed(GLFW_KEY_W))
+    if (input.isKeyDown(GLFW_KEY_W))
     {
         movement.z += 2;
     }
-    else if (input.isKeyPressed(GLFW_KEY_S))
+    else if (input.isKeyDown(GLFW_KEY_S))
     {
         movement.z -= 2;
     }
-    if (input.isKeyPressed(GLFW_KEY_A))
+    if (input.isKeyDown(GLFW_KEY_A))
     {
         movement.x -= 2;
     }
-    else if (input.isKeyPressed(GLFW_KEY_D))
+    else if (input.isKeyDown(GLFW_KEY_D))
     {
         movement.x += 2;
     }
 
-    if (input.isKeyPressed(GLFW_KEY_ESCAPE))
+    if (input.isKeyDown(GLFW_KEY_ESCAPE))
     {
         IWindow::instance->closeWindow();
     }
 
-    if(input.isKeyPressed(GLFW_KEY_SPACE))
+    if(input.isKeyDown(GLFW_KEY_SPACE))
     {
         glm::vec3 up = glm::vec3(0, 3, 0);
 
