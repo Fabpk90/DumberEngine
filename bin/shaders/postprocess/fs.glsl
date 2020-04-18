@@ -1,12 +1,16 @@
-#version 400
+#version 330 core
 
 in vec2 uv;
 
 uniform sampler2D TexColor;
 uniform sampler2D TexDepth;
-uniform float screen_width;
-uniform float screen_height;
-uniform vec2 near_far;
+
+layout(std140) uniform globalPPParameters
+{
+	float screen_width;
+	float screen_height;
+	vec2 near_far;
+};
 
 out vec4 color_out;
 
@@ -33,12 +37,12 @@ float LinearizeDepth(float z)
 
 void main (void)
 {
-	float xstep = 1.0/screen_width;
-	float ystep = 1.0/screen_height;
+	float xstep = 1.0 / screen_width;
+	float ystep = 1.0 / screen_height;
 	float ratio = screen_width / screen_height;
 
 	vec4 color = texture2D( TexColor , uv );
-	float depth = texture2D( TexDepth , uv ).r;	
+	float depth = texture2D( TexDepth , uv ).r;
 	
 	//Permet de scaler la profondeur
 	depth = LinearizeDepth(depth);

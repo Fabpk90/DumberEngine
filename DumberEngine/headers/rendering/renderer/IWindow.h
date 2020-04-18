@@ -6,6 +6,8 @@
 #define DUMBERENGINE_IWINDOW_H
 
 #include <glfw/glfw3.h>
+#include <vector>
+#include <functional>
 
 struct SWindowData
 {
@@ -29,6 +31,12 @@ public:
 
     virtual void setSize(int width, int height) = 0;
     virtual void setVSync(bool isActivated) = 0;
+
+    virtual void setFramerate(int framerate) = 0;
+
+    virtual void addWindowLoseFocusCallback(std::function<void(bool)>) = 0;
+
+    virtual std::vector<std::function<void(bool)>>& getCallbacksLoseFocus() = 0;
 
     GLFWwindow* getHandle();
 

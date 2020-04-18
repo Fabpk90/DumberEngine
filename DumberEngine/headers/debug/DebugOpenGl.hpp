@@ -6,6 +6,7 @@
 #define DUMBERENGINE_DEBUGOPENGL_HPP
 
 #include <iostream>
+#include <glad/glad.h>
 
 GLenum glCheckError_(const char *file, int line)
 {

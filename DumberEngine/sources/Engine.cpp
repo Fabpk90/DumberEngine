@@ -3,7 +3,6 @@
 //
 #include <imgui/imgui.h>
 
-
 #include "../headers/Engine.hpp"
 #include "../headers/rendering/renderer/opengl/OpenGLRenderer.hpp"
 #include "../headers/rendering/helper/Time.hpp"
@@ -15,12 +14,14 @@
 
 #include <imgui/imgui_impl_opengl3.h>
 #include <imgui/imgui_impl_glfw.h>
+#include <iostream>
 
 #include "bullet/btBulletDynamicsCommon.h"
 #include "../headers/rendering/renderer/opengl/Fbo.hpp"
+#include "../headers/rendering/postprocess/PPOutline.hpp"
 
-#include "../headers/debug/DebugOpenGl.hpp"
-#include "../headers/debug/CubeDebug.hpp"
+static void loseFocus(bool isFocused)
+{}
 
 void Engine::start()
 {
@@ -32,6 +33,8 @@ void Engine::start()
     window = new OpenGLRenderer();
     window->init(data);
     window->setVSync(true);
+
+    window->addWindowLoseFocusCallback(std::function(loseFocus));
 
     systems =  std::list<ISystem*>();
 
@@ -55,12 +58,12 @@ void Engine::start()
 
     //just for testing the bullet3 impl
     btBoxShape* box = new btBoxShape(btVector3(0, 1, 0));
+
+    Camera::getInstance().pp.addPostProcess(new PPOutline("shaders/postprocess/"));
 }
 
 void Engine::update()
 {
-
-
     float lastFrame = 0;
     while (!glfwWindowShouldClose(window->getHandle()))
     {
@@ -74,7 +77,7 @@ void Engine::update()
             Shader::reloadShaders();
         }
 
-        Camera::getInstance().getFbo().bind();
+        Camera::getInstance().pp.getFbo().bind();
 
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -83,14 +86,16 @@ void Engine::update()
         scene->update();
         scene->draw();
 
-        Camera::getInstance().getFbo().unBind();
+        Camera::getInstance().pp.activateEffects();
+        Camera::getInstance().pp.getFbo().unBind();
 
 
         glClearColor(1.f, 1.f, 1.f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
         glDisable(GL_DEPTH_TEST);
-        Camera::getInstance().activatePostProcessing();
+
+        Camera::getInstance().pp.draw();
 
         // Start the Dear ImGui frame
         ImGui_ImplOpenGL3_NewFrame();
@@ -99,12 +104,14 @@ void Engine::update()
 
         scene->drawInspector();
 
+        Camera::getInstance().pp.drawInspector();
+
         ImGui::Render();
 
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
         if(IInputManager::instance->isKeyPressed(GLFW_KEY_F2))
-            Camera::getInstance().getFbo().writeToDisk();
+            Camera::getInstance().pp.getFbo().writeToDisk();
 
         for(ISystem* s : systems)
         {

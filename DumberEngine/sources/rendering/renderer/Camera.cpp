@@ -57,7 +57,7 @@ Camera &Camera::getInstance()
     return *mainCamera;
 }
 
-Camera::Camera() : shaderPostProcessing("shaders/postprocess/"), shaderQuad("shaders/quad/")
+Camera::Camera()
 {
     if(mainCamera == nullptr)
         mainCamera = this;
@@ -66,22 +66,6 @@ Camera::Camera() : shaderPostProcessing("shaders/postprocess/"), shaderQuad("sha
     angles = glm::vec2();
     forward = glm::vec3(0, 0, -1);
     updateVecs();
-
-    fbo = new Fbo(IWindow::instance->getActualWidth(), IWindow::instance->getActualHeight(), true, true);
-
-    vboQuad = new Vbo(1, 6);
-    vboQuad->setElementDescription(0, Vbo::Element(3));
-    vboQuad->createCPUSide();
-
-    vboQuad->setElementData(0, 0, -1, -1, 0);
-    vboQuad->setElementData(0, 1, 1, -1, 0);
-    vboQuad->setElementData(0, 2, -1, 1, 0);
-    vboQuad->setElementData(0, 3, -1, 1, 0);
-    vboQuad->setElementData(0, 4, 1, -1, 0);
-    vboQuad->setElementData(0, 5, 1, 1, 0);
-
-    vboQuad->createGPUSide();
-    vboQuad->deleteCPUSide();
 }
 
 void Camera::start()
@@ -119,37 +103,5 @@ void Camera::moveWorld(glm::vec3 movement)
     position += movement;
 
     updateVecs();
-}
-
-void Camera::drawScene()
-{
-    shaderQuad.use();
-
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, fbo->getColorTexture());
-
-    shaderQuad.setInt("TexColor", 0);
-    vboQuad->draw();
-}
-
-void Camera::activatePostProcessing()
-{
-    shaderPostProcessing.use();
-
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, fbo->getColorTexture());
-
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, fbo->getDepthTexture());
-
-    shaderPostProcessing.setInt("TexColor", 0);
-    shaderPostProcessing.setInt("TexDepth", 1);
-
-    shaderPostProcessing.setFloat("screen_width", fbo->getWidth());
-    shaderPostProcessing.setFloat("screen_height", fbo->getHeight());
-
-    shaderPostProcessing.setVec2("near_far", glm::vec2(0.1f, 100.0f));
-
-    vboQuad->draw();
 }
 

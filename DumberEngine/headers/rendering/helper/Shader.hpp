@@ -39,6 +39,8 @@ public:
 
     void setVec2(const char *name, glm::vec2 val);
 
+    GLuint getID() { return shaderProgram; }
+
 private:
     void load();
 

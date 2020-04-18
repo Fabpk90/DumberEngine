@@ -15,17 +15,28 @@ static void glfwError(int id, const char *description)
     std::cout << description << std::endl;
 }
 
+static void callbackLoseFocus(GLFWwindow *window, int focus)
+{
+    bool isFocused = focus == GL_TRUE;
+
+    for(const std::function<void(bool)>& f : IWindow::instance->getCallbacksLoseFocus())
+    {
+        f(isFocused);
+    }
+}
+
 void OpenGLRenderer::init(SWindowData data)
 {
     instance = this;
+
     windowSize.x = data.width;
     windowSize.y = data.height;
 
     std::cout << "Initializing Opengl Renderer" << std::endl;
     glfwSetErrorCallback(&glfwError);
     glfwInit();
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     windowHandle = glfwCreateWindow(data.width, data.height, data.name, NULL, NULL);
@@ -47,6 +58,7 @@ void OpenGLRenderer::init(SWindowData data)
     glfwSetKeyCallback(windowHandle, InputManager::keyPressed);
     glfwSetCursorPosCallback(windowHandle, InputManager::mouseMoved);
     glfwSetMouseButtonCallback(windowHandle, InputManager::mouseButtonClicked);
+    glfwSetWindowFocusCallback(windowHandle, callbackLoseFocus);
 
     std::cout << "Initializing ImGUI" << std::endl;
     ImGui::CreateContext();
@@ -110,5 +122,20 @@ void OpenGLRenderer::setVSync(bool isActivated)
         glfwSwapInterval(1);
     else
         glfwSwapInterval(0);
+}
+
+void OpenGLRenderer::setFramerate(int framerate)
+{
+
+}
+
+void OpenGLRenderer::addWindowLoseFocusCallback(std::function<void(bool)> func)
+{
+    callbacksWindowLoseFocus.push_back(func);
+}
+
+std::vector<std::function<void(bool)>> &OpenGLRenderer::getCallbacksLoseFocus()
+{
+    return callbacksWindowLoseFocus;
 }
 

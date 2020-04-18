@@ -25,7 +25,7 @@ void Shader::load()
 
     GLuint vertexShader = 0, fragmentShader = 0;
     int compiledShader;
-    char infoLog[512];
+    char infoLog[1024];
 
     //compiling vertex shader
     if (i.good())
@@ -46,7 +46,7 @@ void Shader::load()
 
         if (!compiledShader)
         {
-            glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
+            glGetShaderInfoLog(vertexShader, 1024, NULL, infoLog);
             std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
         }
     }
@@ -80,8 +80,8 @@ void Shader::load()
 
         if (!compiledShader)
         {
-            glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
-            std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
+            glGetShaderInfoLog(fragmentShader, 1024, NULL, infoLog);
+            std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
         }
     }
     else
@@ -101,7 +101,7 @@ void Shader::load()
 
     if (!compiledShader)
     {
-        glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
+        glGetProgramInfoLog(shaderProgram, 1024, NULL, infoLog);
         std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
     }
 

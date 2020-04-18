@@ -10,6 +10,7 @@
 #include "IFbo.hpp"
 #include "opengl/Vbo.hpp"
 #include "../helper/Shader.hpp"
+#include "../postprocess/PostProcessStack.hpp"
 
 class Camera : public IComponent
 {
@@ -21,17 +22,12 @@ public:
     glm::vec3 up;
 
     glm::vec2 angles;
+
+    PostProcessStack pp;
 private:
     static Camera* mainCamera;
 
     void updateVecs();
-
-
-
-    IFbo* fbo;
-    Vbo* vboQuad;
-    Shader shaderPostProcessing;
-    Shader shaderQuad;
 
 public:
     Camera();
@@ -44,17 +40,12 @@ public:
 
     void drawInspector() override;
 
-    void drawScene();
-
     Camera(const Camera &) = delete;
 
     static Camera &getInstance();
 
     void move(glm::vec3 movement);
     void moveWorld(glm::vec3 movement);
-
-    IFbo& getFbo() { return *fbo; }
-    void activatePostProcessing();
 
     void rotate(glm::vec2 delta);
 
