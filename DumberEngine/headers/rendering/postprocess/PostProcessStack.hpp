@@ -27,8 +27,10 @@ private:
 
     Shader shaderQuad;
 
-    Fbo* fbo;
+    Fbo* fbo0;
+    Fbo* fbo1;
     GLuint ubo;
+    bool isFirstFboBound;
 
 public:
     PostProcessStack();
@@ -36,10 +38,8 @@ public:
 
     void drawInspector() override;
 
-    Fbo& getFbo() { return *fbo; }
-    void setFbo(Fbo* f) { fbo = f; }
+    Fbo& getBoundFbo() { return isFirstFboBound ? *fbo0 : *fbo1; }
     void addPostProcess(IPostProcess* pp);
-    const std::list<IPostProcess*>& getStack() { return stack; }
 
     void activateEffects();
     void draw();

@@ -5,6 +5,7 @@
 #ifndef DUMBERENGINE_IPOSTPROCESS_HPP
 #define DUMBERENGINE_IPOSTPROCESS_HPP
 
+#include <imgui/imgui.h>
 #include "../helper/Shader.hpp"
 #include "../renderer/opengl/Vbo.hpp"
 
@@ -32,11 +33,15 @@ public:
     {
         this->isActive = isActive;
     }
-    bool* getIsActive() { return &isActive;}
+    bool getIsActive() { return isActive;}
     const std::string& getName() { return name;}
 
     virtual void renderEffect(Vbo* vboToRenderTo) = 0;
-    virtual void drawInspector() = 0;
+    virtual void drawInspector()
+    {
+        ImGui::Text("%s", name.c_str());
+        ImGui::Checkbox("Activated ?", &isActive);
+    };
 };
 
 #endif //DUMBERENGINE_IPOSTPROCESS_HPP

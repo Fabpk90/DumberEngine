@@ -76,8 +76,9 @@ void Scene::drawInspector()
             ++iter;
         }
 
-        ImGui::End();
+
     }
+    ImGui::End();
 }
 
 GameObject *Scene::getGameObject(unsigned int index)

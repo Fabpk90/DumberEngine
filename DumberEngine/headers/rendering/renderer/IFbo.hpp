@@ -18,6 +18,10 @@ public:
     : width(width), height(height), hasDepth(hasDepth), hasColor(hasColor)
     {}
 
+    IFbo(int width, int height, int colorTexId, int depthTexId)
+    : width(width), height(height)
+    {};
+
     virtual ~IFbo() {};
     virtual void bind() = 0;
     virtual void unBind() = 0;
@@ -29,7 +33,10 @@ public:
     int getHeight() { return height;}
 
     virtual unsigned int getColorTexture() = 0;
+    virtual void setColorTexture(unsigned int id) = 0;
+
     virtual unsigned int getDepthTexture() = 0;
+    virtual void setDepthTexture(unsigned int id) = 0;
 };
 
 #endif //DUMBERENGINE_IFBO_HPP

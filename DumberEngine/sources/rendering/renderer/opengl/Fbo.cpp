@@ -65,14 +65,13 @@ Fbo::Fbo(int width, int height, bool hasDepth, bool hasColor) : IFbo(width, heig
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, nullptr);
 
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, idColorTex, 0);
-
     }
 
     if(hasDepth)
     {
         glGenTextures(1, &idDepthTex);
-
         glBindTexture(GL_TEXTURE_2D, idDepthTex);
+
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -84,11 +83,10 @@ Fbo::Fbo(int width, int height, bool hasDepth, bool hasColor) : IFbo(width, heig
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, idDepthTex, 0);
     }
 
-    if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+    if( (hasColor || hasDepth) && glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
         std::cout << "Ay caramba, framebuffers are not supported by your cg" << std::endl;
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
 }
 
 void Fbo::enableWrite(bool b)
@@ -114,5 +112,39 @@ unsigned int Fbo::getColorTexture()
 unsigned int Fbo::getDepthTexture()
 {
     return idDepthTex;
+}
+
+void Fbo::setDepthTexture(unsigned int id)
+{
+    //if(idDepthTex != -1) handle referencing
+
+    idDepthTex = id;
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, idDepthTex, 0);
+}
+
+void Fbo::setColorTexture(unsigned int id)
+{
+    //TODO: handle referencing here as well and bound fbo
+
+    idColorTex = id;
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, idColorTex, 0);
+}
+
+Fbo::Fbo(int width, int height, int colorTexId, int depthTexId) : IFbo(width, height, colorTexId, depthTexId)
+{
+    glGenFramebuffers(1, &idFbo);
+    glBindFramebuffer(GL_FRAMEBUFFER, idFbo);
+
+    if(colorTexId != -1)
+    {
+        idColorTex = colorTexId;
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, idColorTex, 0);
+    }
+
+    if(depthTexId != -1)
+    {
+        idDepthTex = depthTexId;
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, idDepthTex, 0);
+    }
 }
 

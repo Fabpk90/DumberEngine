@@ -12,7 +12,7 @@ PPOutline::PPOutline(const char *shaderPath) : IPostProcess(shaderPath)
 
 void PPOutline::drawInspector()
 {
-
+    IPostProcess::drawInspector();
 }
 
 void PPOutline::renderEffect(Vbo* vboToRenderTo)
@@ -20,6 +20,8 @@ void PPOutline::renderEffect(Vbo* vboToRenderTo)
     shader.use();
     unsigned int parameters = glGetUniformBlockIndex(shader.getID(), "globalPPParameters");
     glUniformBlockBinding(shader.getID(), parameters, 0);
+
+    shader.setInt("TexDepth", 1);
 
     vboToRenderTo->draw();
 }

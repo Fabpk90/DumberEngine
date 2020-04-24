@@ -42,10 +42,6 @@ void main (void)
 	float ratio = screen_width / screen_height;
 
 	vec4 color = texture2D( TexColor , uv );
-	float depth = texture2D( TexDepth , uv ).r;
-	
-	//Permet de scaler la profondeur
-	depth = LinearizeDepth(depth);
 
 	vec2 offsets[9] = vec2[](
 		vec2(-offset,  offset), // top-left
@@ -64,7 +60,8 @@ void main (void)
 	vec3 sampleTex[9];
 	for(int i = 0; i < 9; ++i)
 	{
-		sampleTex[i] = vec3(texture(TexColor, uv + offsets[i]));
+		float val = LinearizeDepth(texture(TexDepth, uv + offsets[i]).r);
+		sampleTex[i] = vec3(val);
 	}
 
 	float gx = dot(kernelX[0], sampleTex[0]) + dot(kernelX[1], sampleTex[1]) + dot(kernelX[2], sampleTex[2]);
@@ -77,7 +74,7 @@ void main (void)
 	color.g = pow(color.g,1.0/2.2);
 	color.b = pow(color.b,1.0/2.2);
 
-	vec3 edgeColor = vec3(0.0, 0.0, 1.0);
+	vec4 edgeColor = vec4(0.0, 0.0, 1.0, 1.0);
 
-	color_out = color * (g * vec4(edgeColor, 1.0f));
+	color_out = mix(color, edgeColor, g);
 }

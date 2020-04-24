@@ -15,22 +15,23 @@ void PostProcessStack::addPostProcess(IPostProcess *pp)
 
 void PostProcessStack::drawInspector()
 {
+    ImGui::Begin("Post Process");
     for(IPostProcess* pp : stack)
     {
-        ImGui::Text("%s", pp->getName().c_str());
-        ImGui::Checkbox("Activated ?", pp->getIsActive());
-
         //TODO: change this, make it all into the pp (virtual in IPostProcess)
         pp->drawInspector();
     }
+    ImGui::End();
 }
 
 void PostProcessStack::draw()
 {
     shaderQuad.use();
 
+    auto& fbo = getBoundFbo();
+
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, fbo->getColorTexture());
+    glBindTexture(GL_TEXTURE_2D, fbo.getColorTexture());
 
     shaderQuad.setInt("TexColor", 0);
 
@@ -66,7 +67,12 @@ PostProcessStack::PostProcessStack() : shaderQuad("shaders/quad/")
     glBufferData(GL_UNIFORM_BUFFER, sizeof(SUniforms), &uni, GL_STREAM_DRAW);
     glBufferSubData(GL_UNIFORM_BUFFER, sizeof(SUniforms) - sizeof(glm::vec2), sizeof(glm::vec2), glm::value_ptr(uni.near_far));
 
-    fbo = new Fbo(uni.screen_width, uni.screen_height, true, true);
+    fbo0 = new Fbo(uni.screen_width, uni.screen_height, true, true);
+    GLuint texcolor;
+
+    glGenTextures(1, &texcolor);
+
+    fbo1 = new Fbo(uni.screen_width, uni.screen_height, (int)texcolor,-1);
 }
 
 PostProcessStack::~PostProcessStack()
@@ -84,18 +90,42 @@ void PostProcessStack::activateEffects()
     glBindBuffer(GL_UNIFORM_BUFFER, ubo);
 
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, fbo->getColorTexture());
+    glBindTexture(GL_TEXTURE_2D, fbo0->getColorTexture());
 
     glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, fbo->getDepthTexture());
+    glBindTexture(GL_TEXTURE_2D, fbo0->getDepthTexture());
 
     glBindBufferBase(GL_UNIFORM_BUFFER, 0, ubo);
 
     for(IPostProcess* pp : stack)
     {
-        if(*pp->getIsActive())
+        if(pp->getIsActive())
+        {
             pp->renderEffect(vboQuad);
+
+            if(isFirstFboBound)
+            {
+                fbo0->bind();
+
+                glActiveTexture(GL_TEXTURE0);
+                glBindTexture(GL_TEXTURE_2D, fbo1->getColorTexture());
+
+                isFirstFboBound = false;
+            }
+            else
+            {
+                fbo1->bind();
+
+                glActiveTexture(GL_TEXTURE0);
+                glBindTexture(GL_TEXTURE_2D, fbo0->getColorTexture());
+
+                isFirstFboBound = true;
+            }
+        }
     }
+
+    isFirstFboBound = true;
+    fbo0->bind();
 
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }

@@ -17,6 +17,7 @@ protected:
 public:
 
     Fbo(int width, int height, bool hasDepth = true, bool hasColor = false);
+    Fbo(int width, int height, int colorTexId, int depthTexId);
 
     ~Fbo() override;
 
@@ -31,6 +32,10 @@ public:
     void enableRead(bool b) override;
 
     unsigned int getColorTexture() override;
+
+    void setColorTexture(unsigned int id) override;
+
+    void setDepthTexture(unsigned int id) override;
 
     unsigned int getDepthTexture() override;
 
