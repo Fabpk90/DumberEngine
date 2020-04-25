@@ -12,7 +12,8 @@ PPOutline::PPOutline(const char *shaderPath) : IPostProcess(shaderPath)
 
 void PPOutline::drawInspector()
 {
-    IPostProcess::drawInspector();
+    ImGui::Text("%s", name.c_str());
+    ImGui::Checkbox("Activated ?", &isActive);
 }
 
 void PPOutline::renderEffect(Vbo* vboToRenderTo)

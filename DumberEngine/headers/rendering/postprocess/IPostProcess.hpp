@@ -37,11 +37,7 @@ public:
     const std::string& getName() { return name;}
 
     virtual void renderEffect(Vbo* vboToRenderTo) = 0;
-    virtual void drawInspector()
-    {
-        ImGui::Text("%s", name.c_str());
-        ImGui::Checkbox("Activated ?", &isActive);
-    };
+    virtual void drawInspector() = 0;
 };
 
 #endif //DUMBERENGINE_IPOSTPROCESS_HPP

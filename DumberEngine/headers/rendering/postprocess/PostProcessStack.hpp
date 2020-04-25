@@ -28,7 +28,8 @@ private:
     Shader shaderQuad;
 
     Fbo* fbo0;
-    Fbo* fbo1;
+    GLuint texFBO1;
+    GLuint texFBO0;
     GLuint ubo;
     bool isFirstFboBound;
 
@@ -38,7 +39,7 @@ public:
 
     void drawInspector() override;
 
-    Fbo& getBoundFbo() { return isFirstFboBound ? *fbo0 : *fbo1; }
+    Fbo& getFBO() { return *fbo0; }
     void addPostProcess(IPostProcess* pp);
 
     void activateEffects();

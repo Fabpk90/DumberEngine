@@ -59,7 +59,10 @@ void Engine::start()
     //just for testing the bullet3 impl
     btBoxShape* box = new btBoxShape(btVector3(0, 1, 0));
 
-    Camera::getInstance().pp.addPostProcess(new PPOutline("shaders/postprocess/"));
+    Camera::getInstance().pp.addPostProcess(new PPOutline("shaders/postprocess/Outline/"));
+    Camera::getInstance().pp.addPostProcess(new PPOutline("shaders/postprocess/Blur/"));
+
+    //Camera::getInstance().pp.addPostProcess(new PPOutline("shaders/postprocess/Outline/"));
 }
 
 void Engine::update()
@@ -77,7 +80,7 @@ void Engine::update()
             Shader::reloadShaders();
         }
 
-        Camera::getInstance().pp.getBoundFbo().bind();
+        Camera::getInstance().pp.getFBO().bind();
 
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -88,7 +91,7 @@ void Engine::update()
 
         glDisable(GL_DEPTH_TEST);
         Camera::getInstance().pp.activateEffects();
-        Camera::getInstance().pp.getBoundFbo().unBind();
+        Camera::getInstance().pp.getFBO().unBind();
 
         glClearColor(0.f, 0.f, 0.f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
@@ -100,6 +103,7 @@ void Engine::update()
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
+        ImGui::ShowMetricsWindow();
 
         scene->drawInspector();
 
@@ -110,7 +114,7 @@ void Engine::update()
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
         if(IInputManager::instance->isKeyPressed(GLFW_KEY_F2))
-            Camera::getInstance().pp.getBoundFbo().writeToDisk();
+            Camera::getInstance().pp.getFBO().writeToDisk();
 
         for(ISystem* s : systems)
         {

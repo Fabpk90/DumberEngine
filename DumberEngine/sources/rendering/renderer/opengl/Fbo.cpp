@@ -126,6 +126,8 @@ void Fbo::setColorTexture(unsigned int id)
 {
     //TODO: handle referencing here as well and bound fbo
 
+    hasColor = true;
+
     idColorTex = id;
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, idColorTex, 0);
 }

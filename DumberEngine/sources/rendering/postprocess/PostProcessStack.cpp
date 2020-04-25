@@ -18,7 +18,6 @@ void PostProcessStack::drawInspector()
     ImGui::Begin("Post Process");
     for(IPostProcess* pp : stack)
     {
-        //TODO: change this, make it all into the pp (virtual in IPostProcess)
         pp->drawInspector();
     }
     ImGui::End();
@@ -28,10 +27,8 @@ void PostProcessStack::draw()
 {
     shaderQuad.use();
 
-    auto& fbo = getBoundFbo();
-
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, fbo.getColorTexture());
+    glBindTexture(GL_TEXTURE_2D, fbo0->getColorTexture());
 
     shaderQuad.setInt("TexColor", 0);
 
@@ -67,12 +64,25 @@ PostProcessStack::PostProcessStack() : shaderQuad("shaders/quad/")
     glBufferData(GL_UNIFORM_BUFFER, sizeof(SUniforms), &uni, GL_STREAM_DRAW);
     glBufferSubData(GL_UNIFORM_BUFFER, sizeof(SUniforms) - sizeof(glm::vec2), sizeof(glm::vec2), glm::value_ptr(uni.near_far));
 
-    fbo0 = new Fbo(uni.screen_width, uni.screen_height, true, true);
-    GLuint texcolor;
+    fbo0 = new Fbo(uni.screen_width, uni.screen_height, true, false);
+    glGenTextures(1, &texFBO0);
+    glGenTextures(1, &texFBO1);
 
-    glGenTextures(1, &texcolor);
+    glBindTexture(GL_TEXTURE_2D, texFBO0);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, uni.screen_width,  uni.screen_height, 0, GL_RGB, GL_UNSIGNED_BYTE, nullptr);
 
-    fbo1 = new Fbo(uni.screen_width, uni.screen_height, (int)texcolor,-1);
+    glBindTexture(GL_TEXTURE_2D, texFBO1);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, uni.screen_width,  uni.screen_height, 0, GL_RGB, GL_UNSIGNED_BYTE, nullptr);
+
+    fbo0->setColorTexture(texFBO0);
 }
 
 PostProcessStack::~PostProcessStack()
@@ -89,9 +99,6 @@ void PostProcessStack::activateEffects()
 {
     glBindBuffer(GL_UNIFORM_BUFFER, ubo);
 
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, fbo0->getColorTexture());
-
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, fbo0->getDepthTexture());
 
@@ -101,31 +108,28 @@ void PostProcessStack::activateEffects()
     {
         if(pp->getIsActive())
         {
-            pp->renderEffect(vboQuad);
-
             if(isFirstFboBound)
             {
-                fbo0->bind();
+                fbo0->setColorTexture(texFBO1);
 
                 glActiveTexture(GL_TEXTURE0);
-                glBindTexture(GL_TEXTURE_2D, fbo1->getColorTexture());
+                glBindTexture(GL_TEXTURE_2D, texFBO0);
 
                 isFirstFboBound = false;
             }
             else
             {
-                fbo1->bind();
+                fbo0->setColorTexture(texFBO0);
 
                 glActiveTexture(GL_TEXTURE0);
-                glBindTexture(GL_TEXTURE_2D, fbo0->getColorTexture());
+                glBindTexture(GL_TEXTURE_2D, texFBO1);
 
                 isFirstFboBound = true;
             }
+
+            pp->renderEffect(vboQuad);
         }
     }
-
-    isFirstFboBound = true;
-    fbo0->bind();
 
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
