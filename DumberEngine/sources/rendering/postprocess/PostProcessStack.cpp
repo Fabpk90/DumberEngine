@@ -64,7 +64,7 @@ PostProcessStack::PostProcessStack() : shaderQuad("shaders/quad/")
     glBufferData(GL_UNIFORM_BUFFER, sizeof(SUniforms), &uni, GL_STREAM_DRAW);
     glBufferSubData(GL_UNIFORM_BUFFER, sizeof(SUniforms) - sizeof(glm::vec2), sizeof(glm::vec2), glm::value_ptr(uni.near_far));
 
-    fbo0 = new Fbo(uni.screen_width, uni.screen_height, true, false);
+    fbo0 = new Fbo(uni.screen_width, uni.screen_height, true, false, true);
     glGenTextures(1, &texFBO0);
     glGenTextures(1, &texFBO1);
 
@@ -83,6 +83,8 @@ PostProcessStack::PostProcessStack() : shaderQuad("shaders/quad/")
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, uni.screen_width,  uni.screen_height, 0, GL_RGB, GL_UNSIGNED_BYTE, nullptr);
 
     fbo0->setColorTexture(texFBO0);
+
+    IWindow::instance->addWindowResizeCallback(this);
 }
 
 PostProcessStack::~PostProcessStack()
@@ -132,5 +134,25 @@ void PostProcessStack::activateEffects()
     }
 
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
+}
+
+void PostProcessStack::OnResize(int width, int height)
+{
+    glBindBuffer(GL_UNIFORM_BUFFER, ubo);
+    SUniforms uni;
+
+    uni.screen_height = IWindow::instance->getActualHeight();
+    uni.screen_width = IWindow::instance->getActualWidth();
+
+    uni.near_far = glm::vec2(0.1f, 100.0f);
+
+    glBufferData(GL_UNIFORM_BUFFER, sizeof(SUniforms), &uni, GL_STREAM_DRAW);
+    glBufferSubData(GL_UNIFORM_BUFFER, sizeof(SUniforms) - sizeof(glm::vec2), sizeof(glm::vec2), glm::value_ptr(uni.near_far));
+    glBindBuffer(GL_UNIFORM_BUFFER, 0);
+
+    glBindTexture(GL_TEXTURE_2D, texFBO0);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, uni.screen_width,  uni.screen_height, 0, GL_RGB, GL_UNSIGNED_BYTE, nullptr);
+    glBindTexture(GL_TEXTURE_2D, texFBO1);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, uni.screen_width,  uni.screen_height, 0, GL_RGB, GL_UNSIGNED_BYTE, nullptr);
 }
 

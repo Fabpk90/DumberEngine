@@ -10,6 +10,7 @@
 #include <string>
 
 #include "../../../../headers/rendering/renderer/opengl/Fbo.hpp"
+#include "../../../../headers/rendering/renderer/IWindow.h"
 
 Fbo::~Fbo()
 {
@@ -37,7 +38,6 @@ void Fbo::writeToDisk()
 
     char *data =  new char[width * height * 3]; // 3 components (R, G, B)
 
-
     glPixelStorei(GL_PACK_ALIGNMENT, 1);
     glReadPixels(0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, data);
 
@@ -47,7 +47,8 @@ void Fbo::writeToDisk()
     delete[] data;
 }
 
-Fbo::Fbo(int width, int height, bool hasDepth, bool hasColor) : IFbo(width, height, hasDepth, hasColor)
+Fbo::Fbo(int width, int height, bool hasDepth, bool hasColor, bool updateOnResize)
+: IFbo(width, height, hasDepth, hasColor, updateOnResize)
 {
     glGenFramebuffers(1, &idFbo);
     glBindFramebuffer(GL_FRAMEBUFFER, idFbo);
@@ -87,6 +88,11 @@ Fbo::Fbo(int width, int height, bool hasDepth, bool hasColor) : IFbo(width, heig
         std::cout << "Ay caramba, framebuffers are not supported by your cg" << std::endl;
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+    if(updateOnResize)
+    {
+        IWindow::instance->addWindowResizeCallback(this);
+    }
 }
 
 void Fbo::enableWrite(bool b)
@@ -150,3 +156,21 @@ Fbo::Fbo(int width, int height, int colorTexId, int depthTexId) : IFbo(width, he
     }
 }
 
+void Fbo::OnResize(int width, int height)
+{
+    this->width = width;
+    this->height = height;
+
+    if(hasColor)
+    {
+        glBindTexture(GL_TEXTURE_2D, idColorTex);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, nullptr);
+    }
+
+    if(hasDepth)
+    {
+        glBindTexture(GL_TEXTURE_2D, idDepthTex);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, width, height, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE,
+                     nullptr);
+    }
+}

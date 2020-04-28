@@ -8,12 +8,17 @@
 PPOutline::PPOutline(const char *shaderPath) : IPostProcess(shaderPath)
 {
     name = shaderPath;
+
+    uiString = "Enable " + name + " ?";
 }
 
 void PPOutline::drawInspector()
 {
-    ImGui::Text("%s", name.c_str());
-    ImGui::Checkbox("Activated ?", &isActive);
+    if(ImGui::CollapsingHeader(name.c_str()))
+    {
+        ImGui::Checkbox(uiString.c_str(), &isActive);
+    }
+
 }
 
 void PPOutline::renderEffect(Vbo* vboToRenderTo)

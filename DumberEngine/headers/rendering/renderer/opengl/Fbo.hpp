@@ -16,7 +16,7 @@ protected:
     GLuint idDepthTex;
 public:
 
-    Fbo(int width, int height, bool hasDepth = true, bool hasColor = false);
+    Fbo(int width, int height, bool hasDepth = true, bool hasColor = false, bool updateOnResize = false);
     Fbo(int width, int height, int colorTexId, int depthTexId);
 
     ~Fbo() override;
@@ -38,6 +38,9 @@ public:
     void setDepthTexture(unsigned int id) override;
 
     unsigned int getDepthTexture() override;
+
+public:
+    void OnResize(int i, int i1) override;
 
 };
 

@@ -12,6 +12,7 @@ class PPOutline : public IPostProcess
 {
 private:
     float strength;
+    std::string uiString;
 public:
     PPOutline(const char* shaderPath);
 

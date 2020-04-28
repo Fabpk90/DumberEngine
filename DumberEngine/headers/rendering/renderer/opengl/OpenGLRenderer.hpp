@@ -16,6 +16,7 @@ private:
     glm::vec2 windowSize;
     static void resizeCallback(GLFWwindow *window, int width, int height);
     std::vector<std::function<void(bool)>> callbacksWindowLoseFocus;
+    std::vector<ICallbackResize*> callbacksWindowResize;
 
 public:
     ~OpenGLRenderer() override;
@@ -34,7 +35,11 @@ public:
 
     void addWindowLoseFocusCallback(std::function<void(bool)>) override;
 
+    void addWindowResizeCallback(ICallbackResize* callBack) override;
+
     std::vector<std::function<void(bool)>> &getCallbacksLoseFocus() override;
+
+    std::vector<ICallbackResize*> &getCallBacksResize() override;
 
     void setSize(int width, int height) override;
 };

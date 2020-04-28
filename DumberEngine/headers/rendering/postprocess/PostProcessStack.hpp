@@ -11,7 +11,7 @@
 #include "../renderer/opengl/Vbo.hpp"
 #include "../renderer/opengl/Fbo.hpp"
 
-class PostProcessStack : GuiComponent
+class PostProcessStack : GuiComponent, ICallbackResize
 {
 private:
     struct SUniforms
@@ -44,5 +44,8 @@ public:
 
     void activateEffects();
     void draw();
+
+public:
+    void OnResize(int width, int height) override;
 };
 #endif //DUMBERENGINE_POSTPROCESSSTACK_HPP

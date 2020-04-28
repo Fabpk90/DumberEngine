@@ -61,8 +61,6 @@ void Engine::start()
 
     Camera::getInstance().pp.addPostProcess(new PPOutline("shaders/postprocess/Outline/"));
     Camera::getInstance().pp.addPostProcess(new PPOutline("shaders/postprocess/Blur/"));
-
-    //Camera::getInstance().pp.addPostProcess(new PPOutline("shaders/postprocess/Outline/"));
 }
 
 void Engine::update()
@@ -104,6 +102,7 @@ void Engine::update()
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
         ImGui::ShowMetricsWindow();
+        ImGui::ShowDemoWindow();
 
         scene->drawInspector();
 

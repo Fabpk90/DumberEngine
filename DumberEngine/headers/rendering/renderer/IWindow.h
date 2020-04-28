@@ -9,6 +9,12 @@
 #include <vector>
 #include <functional>
 
+class ICallbackResize
+{
+public:
+    virtual void OnResize(int, int) = 0;
+};
+
 struct SWindowData
 {
     int width;
@@ -35,8 +41,10 @@ public:
     virtual void setFramerate(int framerate) = 0;
 
     virtual void addWindowLoseFocusCallback(std::function<void(bool)>) = 0;
+    virtual void addWindowResizeCallback(ICallbackResize* callBack) = 0;
 
     virtual std::vector<std::function<void(bool)>>& getCallbacksLoseFocus() = 0;
+    virtual std::vector<ICallbackResize*>& getCallBacksResize() = 0;
 
     GLFWwindow* getHandle();
 

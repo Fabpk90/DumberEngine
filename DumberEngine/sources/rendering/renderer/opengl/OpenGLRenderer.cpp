@@ -105,15 +105,20 @@ int OpenGLRenderer::getActualHeight()
 
 void OpenGLRenderer::resizeCallback(GLFWwindow *window, int width, int height)
 {
-    glViewport(0, 0, width, height);
-
     IWindow::instance->setSize(width, height);
+
+    for(ICallbackResize* c : instance->getCallBacksResize())
+    {
+        c->OnResize(width, height);
+    }
 }
 
 void OpenGLRenderer::setSize(int width, int height)
 {
     windowSize.x = width;
     windowSize.y = height;
+
+    glViewport(0, 0, width, height);
 }
 
 void OpenGLRenderer::setVSync(bool isActivated)
@@ -137,5 +142,15 @@ void OpenGLRenderer::addWindowLoseFocusCallback(std::function<void(bool)> func)
 std::vector<std::function<void(bool)>> &OpenGLRenderer::getCallbacksLoseFocus()
 {
     return callbacksWindowLoseFocus;
+}
+
+std::vector<ICallbackResize*> &OpenGLRenderer::getCallBacksResize()
+{
+    return callbacksWindowResize;
+}
+
+void OpenGLRenderer::addWindowResizeCallback(ICallbackResize* callBack)
+{
+    callbacksWindowResize.push_back(callBack);
 }
 
