@@ -1,6 +1,7 @@
 #version 400
 
 uniform float elapsed;
+uniform mat4 mvp;
 uniform mat4 m;
 uniform mat4 v;
 uniform mat4 p;
@@ -24,47 +25,47 @@ flat out float type;
 
 float waterNoise(vec4 v)
 {
-	vec2 dir = vec2(v.x, v.z);
+	vec2 dir = vec2(v.x, v.y);
 
 	float d = dot(vec2(1, 1), dir);
-	float n = sin(d + elapsed) / 2;
+	float n = (1+sin(d + elapsed)) / 4;
 
 	d = dot(vec2(1, .5), dir);
-	n += sin(d + elapsed) / 4;
+	n += (1+sin(d + elapsed)) / 2;
 
 	d = dot(vec2(.5, 1), dir);
-	n += sin(d + elapsed) / 4;
+	n += (1+ sin(d + elapsed)) / 4;
 
-	return n;
+	return n / 2.75;
 }
 
 void main()
 {
 	vec4 vecIn = vec4(vs_position_in,1.0);
 	vec4 vecInW = m * vecIn;
-		
-	normal = ( inverse(transpose(m)) * vec4(vs_normal_in,1.0)).xyz;
+
+	normal = (inverse(transpose(m)) * vec4(vs_normal_in,1.0)).xyz;
 
 	uv = vs_uv_in;
 
-	//default color
+	//Couleur par défaut blanc
 	color = vec4(1.0,1.0,1.0,1.0);
 
 	wPos = vecInW.xyz;
 
-	//FIX ME: take out this nightmare
+	//Couleur fonction du type
 	if(vs_type_in == CUBE_HERBE)
-		color = vec4(154 / 255,255 / 255,87/255,1);
+	color = vec4(154 / 255,255 / 255,87/255,1);
 	else if(vs_type_in == CUBE_TERRE)
-		color = vec4(0.2,0.1,0,1);
+	color = vec4(0.2,0.1,0,1);
 	else if(vs_type_in == CUBE_EAU)
-	 {
-		color = vec4(0.0,0.0,1.0,0.5);	
-		vecInW.y += waterNoise(vecInW);
-	 }
+	{
+		color = vec4(0.0,0.0,1.0,0.5);
+		vecInW.y -= waterNoise(vecInW);
+	}
 
-	 type = int(vs_type_in);
+	type = int(vs_type_in);
 
-	 
-	 gl_Position = p * v * vecInW;
+
+	gl_Position = p * v * vecInW;
 }

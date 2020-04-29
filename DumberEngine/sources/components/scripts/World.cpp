@@ -30,8 +30,6 @@ void World::draw()
     auto p = Camera::getInstance().getProjectionMatrix();
     shaderWorld.setMatrix4("p", p);
 
-
-
     shaderWorld.setVec3("lightDir", sunDirection);
 
     shaderWorld.setVec3("skyColor", skyColor);
@@ -75,6 +73,7 @@ void World::drawInspector()
 {
     ImGui::Text("%d chunks ", CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE);
     ImGui::DragFloat3("SkyColor", &skyColor.x, 0.01f);
+    IWindow::instance->setClearColor(skyColor);
     ImGui::DragFloat3("SunColor", &sunColor.x, 0.01f);
     ImGui::DragFloat3("SunDirection", &sunDirection.x, 0.01f);
 }
@@ -159,7 +158,6 @@ World::~World()
 
 void World::deleteCube(int x, int y, int z)
 {
-    std::cout << "bong" << std::endl;
     Cube * cube = getCube(x,y,z);
     cube->setType(Cube::CUBE_AIR);
     cube->setDraw(false);

@@ -8,6 +8,7 @@
 #include <glfw/glfw3.h>
 #include <vector>
 #include <functional>
+#include <glm/glm.hpp>
 
 class ICallbackResize
 {
@@ -40,6 +41,9 @@ public:
 
     virtual void setFramerate(int framerate) = 0;
 
+    void setClearColor(glm::vec3 color) { clearColor = color; }
+    glm::vec3& getClearColor() { return clearColor; }
+
     virtual void addWindowLoseFocusCallback(std::function<void(bool)>) = 0;
     virtual void addWindowResizeCallback(ICallbackResize* callBack) = 0;
 
@@ -52,6 +56,7 @@ public:
 
 protected:
     GLFWwindow* windowHandle = nullptr;
+    glm::vec3 clearColor;
 
 };
 

@@ -48,15 +48,10 @@ void main (void)
 	vec4 val = vec4(0);
 	for(int i = 0; i < 9; ++i)
 	{
-		val += texture(TexColor, uv + offsets[i]);
+		val += texture2D(TexColor, uv + offsets[i]);
 	}
 
 	val /= 9;
-
-	//Gamma correction
-	val.r = pow(val.r,1.0/2.2);
-	val.g = pow(val.g,1.0/2.2);
-	val.b = pow(val.b,1.0/2.2);
 
 	color_out = val;
 }

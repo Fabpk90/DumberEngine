@@ -55,7 +55,7 @@ void Engine::start()
     World* world = new World();
     worldGO->addComponent(world);
 
-    auto* avatarGO = new GameObject("World");
+    auto* avatarGO = new GameObject("Avatar");
     Avatar* avatar = new Avatar();
     avatar->setWorld(world);
     avatar->setCamera(cam);
@@ -71,6 +71,7 @@ void Engine::start()
 
     Camera::getInstance().pp.addPostProcess(new PPOutline("shaders/postprocess/Outline/"));
     Camera::getInstance().pp.addPostProcess(new PPOutline("shaders/postprocess/Blur/"));
+    Camera::getInstance().pp.addPostProcess(new PPOutline("shaders/postprocess/GammaCorrection/"));
 }
 
 void Engine::update()
@@ -90,7 +91,7 @@ void Engine::update()
 
         Camera::getInstance().pp.getFBO().bind();
 
-        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        glClearColor(window->getClearColor().x, window->getClearColor().y, window->getClearColor().z, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glEnable(GL_DEPTH_TEST);
 
@@ -101,7 +102,7 @@ void Engine::update()
         Camera::getInstance().pp.activateEffects();
         Camera::getInstance().pp.getFBO().unBind();
 
-        glClearColor(0.f, 0.f, 0.f, 1.0f);
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
 
@@ -111,8 +112,7 @@ void Engine::update()
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
-        ImGui::ShowMetricsWindow();
-        ImGui::ShowDemoWindow();
+       // ImGui::ShowMetricsWindow();
 
         scene->drawInspector();
 

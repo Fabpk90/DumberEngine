@@ -52,7 +52,6 @@ void Avatar::draw()
 
 void Avatar::rayCast()
 {
-    std::cout << "raycasting" << std::endl;
     startPositionRayCast = cam->position;
     endPositionRayCast = (startPositionRayCast + cam->direction * 5.0f);
 

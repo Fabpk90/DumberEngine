@@ -45,6 +45,9 @@ void CameraScript::update()
         IWindow::instance->closeWindow();
     }
 
+    if(input.isKeyDown(GLFW_KEY_LEFT_SHIFT))
+        movement *= 2.0f;
+
     if(input.isKeyDown(GLFW_KEY_SPACE))
     {
         glm::vec3 up = glm::vec3(0, 3, 0);
