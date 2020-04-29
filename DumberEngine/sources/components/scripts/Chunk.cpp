@@ -42,8 +42,6 @@ void Chunk::toVbo()
     //we count the vertices
     foreachVisibleTriangle(true, &opaqueCubes, &transparentCubes, vboOpaque, vboTransparent);
 
-
-
     vboOpaque = new Vbo(4, opaqueCubes * 36);
 
     vboOpaque->setElementDescription(0, Vbo::Element(3));
@@ -64,7 +62,6 @@ void Chunk::toVbo()
 
     //we fill the vbos
     foreachVisibleTriangle(false, &opaqueCubes, &transparentCubes, vboOpaque, vboTransparent);
-
 
     vboOpaque->createGPUSide();
     vboTransparent->createGPUSide();
@@ -467,12 +464,23 @@ bool Chunk::testHiddenCube(int x, int y, int z)
         cubeZPrev == NULL || cubeZNext == NULL )
         return false;
 
-    return cubeXPrev->isOpaque() == true && //right
-           cubeXNext->isOpaque() == true && //left
-           cubeYPrev->isOpaque() == true && //up
-           cubeYNext->isOpaque() == true && //down
-           cubeZPrev->isOpaque() == true && //forward
-           cubeZNext->isOpaque() == true;
+    return cubeXPrev->isOpaque() && //right
+           cubeXNext->isOpaque() && //left
+           cubeYPrev->isOpaque() && //up
+           cubeYNext->isOpaque() && //down
+           cubeZPrev->isOpaque() && //forward
+           cubeZNext->isOpaque();
+}
+
+Cube *Chunk::getCubeAt(int x, int y, int z)
+{
+    if(x < 0 || y < 0 || z < 0 ||
+    x >= CUBE_IN_CHUNK ||
+    y >= CUBE_IN_CHUNK ||
+    z >= CUBE_IN_CHUNK)
+        return nullptr;
+
+    return &cubes[x][y][z];
 }
 
 

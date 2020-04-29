@@ -3,6 +3,7 @@
 //
 
 #include <imgui/imgui.h>
+#include <iostream>
 #include "../../../headers/components/scripts/World.hpp"
 #include "../../../headers/rendering/renderer/Camera.hpp"
 #include "../../../headers/rendering/helper/Time.hpp"
@@ -154,4 +155,73 @@ World::~World()
             }
         }
     }
+}
+
+void World::deleteCube(int x, int y, int z)
+{
+    std::cout << "bong" << std::endl;
+    Cube * cube = getCube(x,y,z);
+    cube->setType(Cube::CUBE_AIR);
+    cube->setDraw(false);
+    updateCube(x,y,z);
+}
+
+Cube *World::getCube(int x, int y, int z)
+{
+    if (x < 0)x = 0;
+    if (y < 0)y = 0;
+    if (z < 0)z = 0;
+
+    int xIndex = x / Chunk::CUBE_IN_CHUNK;
+    int yIndex = y / Chunk::CUBE_IN_CHUNK;
+    int zIndex = z / Chunk::CUBE_IN_CHUNK;
+
+    for (int i = 0; i < CHUNK_SIZE; ++i)
+    {
+        for (int j = 0; j < CHUNK_SIZE; ++j)
+        {
+            for (int k = 0; k < CHUNK_SIZE; ++k)
+            {
+                auto chunk = chunks[i][j][k];
+                if(chunk->chunkPosition.x == xIndex
+                  && chunk->chunkPosition.y == yIndex
+                  && chunk->chunkPosition.z == zIndex)
+                {
+                    return chunk->getCubeAt(x % Chunk::CUBE_IN_CHUNK, y % Chunk::CUBE_IN_CHUNK, z % Chunk::CUBE_IN_CHUNK);
+                }
+            }
+        }
+    }
+
+    return nullptr;
+}
+
+void World::updateCube(int x, int y, int z)
+{
+    int xIndex = x / Chunk::CUBE_IN_CHUNK;
+    int yIndex = y / Chunk::CUBE_IN_CHUNK;
+    int zIndex = z / Chunk::CUBE_IN_CHUNK;
+
+    for (int i = 0; i < CHUNK_SIZE; ++i)
+    {
+        for (int j = 0; j < CHUNK_SIZE; ++j)
+        {
+            for (int k = 0; k < CHUNK_SIZE; ++k)
+            {
+                auto chunk = chunks[i][j][k];
+                if(chunk->chunkPosition.x == xIndex
+                   && chunk->chunkPosition.y == yIndex
+                   && chunk->chunkPosition.z == zIndex)
+                {
+                    chunk->disableHiddenCubes();
+                    chunk->toVbo();
+                }
+            }
+        }
+    }
+}
+
+Chunk *World::getChunkAt(int x, int y, int z)
+{
+    return chunks[x][y][z];
 }

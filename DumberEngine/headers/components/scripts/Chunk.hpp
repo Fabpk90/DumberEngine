@@ -29,7 +29,7 @@ private:
                                Cube ** cubeZPrev, Cube ** cubeZNext);
 
 public:
-    static const int CUBE_IN_CHUNK = 64;
+    static const int CUBE_IN_CHUNK = 32;
 
     Cube cubes[CUBE_IN_CHUNK][CUBE_IN_CHUNK][CUBE_IN_CHUNK];
     Vbo* vboOpaque;
@@ -51,6 +51,8 @@ public:
 
     bool testHiddenCube(int x, int y, int z);
     void disableHiddenCubes();
+
+    Cube *getCubeAt(int x, int y, int z);
 };
 
 #endif //DUMBERENGINE_CHUNK_HPP

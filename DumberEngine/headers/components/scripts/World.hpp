@@ -36,6 +36,14 @@ public:
     void draw() override;
 
     void drawInspector() override;
+
+    void deleteCube(int x, int y, int z);
+
+    Cube *getCube(int x, int y, int z);
+
+    void updateCube(int x, int y, int z);
+
+    Chunk *getChunkAt(int x, int y, int z);
 };
 
 #endif //DUMBERENGINE_WORLD_HPP

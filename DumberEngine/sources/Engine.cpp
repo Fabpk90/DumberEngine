@@ -19,6 +19,7 @@
 #include "bullet/btBulletDynamicsCommon.h"
 #include "../headers/rendering/renderer/opengl/Fbo.hpp"
 #include "../headers/rendering/postprocess/PPOutline.hpp"
+#include "../headers/components/scripts/Avatar.hpp"
 
 static void loseFocus(bool isFocused)
 {}
@@ -51,10 +52,19 @@ void Engine::start()
     o->addComponent(new CameraScript());
 
     auto* worldGO = new GameObject("World");
-    worldGO->addComponent(new World());
+    World* world = new World();
+    worldGO->addComponent(world);
+
+    auto* avatarGO = new GameObject("World");
+    Avatar* avatar = new Avatar();
+    avatar->setWorld(world);
+    avatar->setCamera(cam);
+
+    avatarGO->addComponent(avatar);
 
     scene->addGameObject(worldGO);
     scene->addGameObject(o);
+    scene->addGameObject(avatarGO);
 
     //just for testing the bullet3 impl
     btBoxShape* box = new btBoxShape(btVector3(0, 1, 0));
