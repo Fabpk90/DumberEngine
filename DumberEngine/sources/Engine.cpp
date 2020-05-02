@@ -98,7 +98,7 @@ void Engine::update()
         //shadow pass
         ShadowMapping::getInstance()->draw();
 
-
+        //post process
         Camera::getInstance().pp.getFBO().bind();
         glViewport(0, 0, IWindow::instance->getActualWidth(), IWindow::instance->getActualHeight());
 
@@ -118,6 +118,7 @@ void Engine::update()
 
         Camera::getInstance().pp.draw();
 
+        //GUI
         // Start the Dear ImGui frame
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
