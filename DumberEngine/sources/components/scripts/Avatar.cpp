@@ -16,7 +16,7 @@ void Avatar::drawInspector()
 
 void Avatar::start()
 {
-    position = glm::vec3(10, 80, 10);
+    position = glm::vec3(10, 120, 10);
     height = 1.8f;
     currentHeight = height;
     width = 0.5f;

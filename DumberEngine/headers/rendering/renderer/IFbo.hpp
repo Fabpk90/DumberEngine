@@ -42,8 +42,6 @@ public:
 
     virtual unsigned int getDepthTexture() = 0;
     virtual void setDepthTexture(unsigned int id) = 0;
-
-    static IFbo* shadowFBO;
 };
 
 #endif //DUMBERENGINE_IFBO_HPP

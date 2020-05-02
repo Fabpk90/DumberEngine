@@ -8,6 +8,7 @@
 #include "../../../headers/rendering/renderer/Camera.hpp"
 #include "../../../headers/rendering/helper/Time.hpp"
 #include "../../../headers/rendering/Scene.hpp"
+#include "../../../headers/systems/rendering/ShadowMapping.hpp"
 
 glm::vec3 World::sunDirection = glm::vec3(0);
 
@@ -44,20 +45,13 @@ void World::draw()
 
     shaderWorld.setFloat("elapsed", Time::getInstance().time);
 
-    glm::mat4 lightProjection = glm::ortho(-64.0f, 64.0f, -64.0f, 64.0f, 1.f, 150.0f);
-    glm::mat4 lightLookAt =  glm::lookAt((sunDirection),
-                                         glm::vec3( 0.0f, 0.0f,  0.0f),
-                                         glm::vec3( 0.0f, 1.0f,  0.0f));
-    glm::mat4 lightVP = lightProjection * lightLookAt;
-
-
-    shaderWorld.setMatrix4("lightSpaceMatrix", lightVP);
+    shaderWorld.setMatrix4("lightSpaceMatrix", ShadowMapping::getInstance()->getProjectionMatrix());
 
     texture.use(0);
     shaderWorld.setInt("worldTex", 0);
 
     glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, IFbo::shadowFBO->getDepthTexture());
+    glBindTexture(GL_TEXTURE_2D, ShadowMapping::getInstance()->getFbo().getDepthTexture());
     shaderWorld.setInt("shadowTex",  1);
 
     bool isTransparentPass = false;

@@ -19,9 +19,6 @@ private:
     Scene* scene;
 
     std::list<ISystem*> systems;
-    Shader* shaderShadow;
-
-    TextureDebug* debug;
 
 public:
 
