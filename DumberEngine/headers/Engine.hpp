@@ -20,6 +20,8 @@ private:
 
     std::list<ISystem*> systems;
 
+    GLuint colorBuffer;
+
 public:
 
     ~Engine();

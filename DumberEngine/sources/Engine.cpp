@@ -1,12 +1,12 @@
 //
 // Created by ELE5d5b9c842bce2 on 10/03/2020.
 //
+#include <glad/glad.h>
 #include <imgui/imgui.h>
 
 #include "../headers/Engine.hpp"
 #include "../headers/rendering/renderer/opengl/OpenGLRenderer.hpp"
 #include "../headers/rendering/helper/Time.hpp"
-#include "../headers/rendering/helper/Shader.hpp"
 #include "../headers/systems/input/IInputManager.hpp"
 #include "../headers/rendering/renderer/opengl/InputManager.hpp"
 #include "../headers/components/scripts/CameraScript.hpp"
@@ -14,10 +14,8 @@
 
 #include <imgui/imgui_impl_opengl3.h>
 #include <imgui/imgui_impl_glfw.h>
-#include <iostream>
 
 #include "bullet/btBulletDynamicsCommon.h"
-#include "../headers/rendering/renderer/opengl/Fbo.hpp"
 #include "../headers/rendering/postprocess/PPOutline.hpp"
 #include "../headers/components/scripts/Avatar.hpp"
 #include "../headers/systems/rendering/ShadowMapping.hpp"
