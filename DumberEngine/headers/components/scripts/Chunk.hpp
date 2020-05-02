@@ -29,7 +29,7 @@ private:
                                Cube ** cubeZPrev, Cube ** cubeZNext);
 
 public:
-    static const int CUBE_IN_CHUNK = 32;
+    static const int CUBE_IN_CHUNK = 64;
 
     Cube cubes[CUBE_IN_CHUNK][CUBE_IN_CHUNK][CUBE_IN_CHUNK];
     Vbo* vboOpaque;

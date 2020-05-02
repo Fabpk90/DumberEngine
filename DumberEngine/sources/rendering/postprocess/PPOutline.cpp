@@ -5,7 +5,7 @@
 #include "../../../headers/rendering/postprocess/PPOutline.hpp"
 
 
-PPOutline::PPOutline(const char *shaderPath) : IPostProcess(shaderPath)
+PPOutline::PPOutline(const char *shaderPath, bool isActive) : IPostProcess(shaderPath, isActive)
 {
     name = shaderPath;
 

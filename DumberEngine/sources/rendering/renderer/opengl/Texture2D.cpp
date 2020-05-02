@@ -50,3 +50,8 @@ Texture2D::~Texture2D()
 {
     glDeleteTextures(1, &id);
 }
+
+void Texture2D::setID(GLuint id)
+{
+    this->id = id;
+}

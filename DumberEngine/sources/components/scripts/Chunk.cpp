@@ -198,7 +198,8 @@ glm::vec2 Chunk::getAtlasPosition(float type)
 void Chunk::initCubes()
 {
     BetterNoise p;
-    p.setFreq(0.02f);
+    p.updateVecs();
+    p.setZDecay(CUBE_IN_CHUNK - 5, 0.5f);
     for (int x = 0; x < CUBE_IN_CHUNK; ++x)
     {
         for (int y = 0; y < CUBE_IN_CHUNK; ++y)
@@ -218,7 +219,7 @@ void Chunk::initCubes()
                     cube.setType(Cube::CUBE_HERBE);
                 if (val > 0.51f)
                     cube.setType(Cube::CUBE_TERRE);
-                if (val < 0.5 && z <= 0.1)
+                if (val < 0.5 && y <= 0.1)
                     cube.setType(Cube::CUBE_EAU);
                 if (val > 0.56)
                     cube.setType(Cube::CUBE_EAU);

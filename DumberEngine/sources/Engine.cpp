@@ -71,7 +71,22 @@ void Engine::start()
 
     Camera::getInstance().pp.addPostProcess(new PPOutline("shaders/postprocess/Outline/"));
     Camera::getInstance().pp.addPostProcess(new PPOutline("shaders/postprocess/Blur/"));
-    Camera::getInstance().pp.addPostProcess(new PPOutline("shaders/postprocess/GammaCorrection/"));
+    Camera::getInstance().pp.addPostProcess(new PPOutline("shaders/postprocess/GammaCorrection/", true));
+
+    IFbo::shadowFBO = new Fbo(1024, 1024, true, false);
+    IFbo::shadowFBO->setUpdateOnResize(true);
+    IFbo::shadowFBO->bind();
+    glDrawBuffer(GL_NONE);
+    glReadBuffer(GL_NONE);
+
+    IFbo::shadowFBO->unBind();
+
+    shaderShadow = new Shader("shaders/shadow/");
+
+    glEnable(GL_CULL_FACE);
+    glDepthFunc(GL_LEQUAL);
+
+    debug = new TextureDebug(IFbo::shadowFBO->getDepthTexture(), glm::vec2(0.5, 0.5));
 }
 
 void Engine::update()
@@ -89,14 +104,40 @@ void Engine::update()
             Shader::reloadShaders();
         }
 
+        scene->update();
+
+        //shadow pass
+        IFbo::shadowFBO->bind();
+        glClear(GL_DEPTH_BUFFER_BIT);
+        glDisable(GL_BLEND);
+
+        glViewport(0, 0, IFbo::shadowFBO->getWidth(), IFbo::shadowFBO->getHeight());
+
+        glEnable(GL_DEPTH_TEST);
+        //glCullFace(GL_FRONT);
+
+
+        shaderShadow->use();
+
+        glm::mat4 lightProjection = glm::ortho(-64.0f, 64.0f, -64.0f, 64.0f, 1.f, 150.0f);
+        glm::mat4 lightLookAt =  glm::lookAt((World::sunDirection),
+                                             glm::vec3( 0.0f, 0.0f,  0.0f),
+                                             glm::vec3( 0.0f, 1.0f,  0.0f));
+        glm::mat4 lightVP = lightProjection * lightLookAt;
+        shaderShadow->setMatrix4("lightSpaceMatrix", lightVP);
+
+        scene->drawCastingShadowObjects(shaderShadow);
+
+
+        glViewport(0, 0, IWindow::instance->getActualWidth(), IWindow::instance->getActualHeight());
         Camera::getInstance().pp.getFBO().bind();
 
         glClearColor(window->getClearColor().x, window->getClearColor().y, window->getClearColor().z, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        glEnable(GL_DEPTH_TEST);
+        glCullFace(GL_BACK);
 
-        scene->update();
         scene->draw();
+        //debug->draw();
 
         glDisable(GL_DEPTH_TEST);
         Camera::getInstance().pp.activateEffects();
@@ -104,7 +145,6 @@ void Engine::update()
 
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
-
 
         Camera::getInstance().pp.draw();
 

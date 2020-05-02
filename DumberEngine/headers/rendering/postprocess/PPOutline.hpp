@@ -14,7 +14,7 @@ private:
     float strength;
     std::string uiString;
 public:
-    PPOutline(const char* shaderPath);
+    PPOutline(const char* shaderPath, bool isActive = false);
 
     void renderEffect(Vbo* vboToRenderTo) override;
 

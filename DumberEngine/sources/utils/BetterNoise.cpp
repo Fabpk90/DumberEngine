@@ -19,7 +19,7 @@ float BetterNoise::sample(float xBase, float yBase, float zBase)
     float sample = PerlinNoise::sample(xBase, yBase, zBase);
 
     //Plus light plus on est haut
-    float zDecay_Norm = zBase / zDecayZMax;
+    float zDecay_Norm = yBase / zDecayZMax;
     float penalty = 0;
     if (zDecayCut < 1 && zDecayCut >= 0) {
         //Cut au dessus

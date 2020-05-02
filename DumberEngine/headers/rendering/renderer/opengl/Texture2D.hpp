@@ -20,6 +20,8 @@ public:
     void use(int textureUnit) override;
 
     ~Texture2D() override;
+
+    void setID(GLuint id);
 };
 
 #endif //DUMBERENGINE_TEXTURE2D_HPP

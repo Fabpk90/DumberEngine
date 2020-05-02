@@ -9,6 +9,8 @@
 #include "../../../headers/rendering/helper/Time.hpp"
 #include "../../../headers/rendering/Scene.hpp"
 
+glm::vec3 World::sunDirection = glm::vec3(0);
+
 void World::start()
 {
 
@@ -21,6 +23,9 @@ void World::update()
 
 void World::draw()
 {
+
+    debug->draw();
+
     shaderWorld.use();
 
     glm::mat4 m = Scene::getGameObject(gameObjectIndex)->getTransform().getModelMatrix();
@@ -39,8 +44,21 @@ void World::draw()
 
     shaderWorld.setFloat("elapsed", Time::getInstance().time);
 
+    glm::mat4 lightProjection = glm::ortho(-64.0f, 64.0f, -64.0f, 64.0f, 1.f, 150.0f);
+    glm::mat4 lightLookAt =  glm::lookAt((sunDirection),
+                                         glm::vec3( 0.0f, 0.0f,  0.0f),
+                                         glm::vec3( 0.0f, 1.0f,  0.0f));
+    glm::mat4 lightVP = lightProjection * lightLookAt;
+
+
+    shaderWorld.setMatrix4("lightSpaceMatrix", lightVP);
+
     texture.use(0);
     shaderWorld.setInt("worldTex", 0);
+
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, IFbo::shadowFBO->getDepthTexture());
+    shaderWorld.setInt("shadowTex",  1);
 
     bool isTransparentPass = false;
     glDisable(GL_BLEND);
@@ -75,7 +93,11 @@ void World::drawInspector()
     ImGui::DragFloat3("SkyColor", &skyColor.x, 0.01f);
     IWindow::instance->setClearColor(skyColor);
     ImGui::DragFloat3("SunColor", &sunColor.x, 0.01f);
-    ImGui::DragFloat3("SunDirection", &sunDirection.x, 0.01f);
+    if(ImGui::DragFloat3("SunDirection", &sunDirection.x, 0.01f))
+    {
+        delete debug;
+        debug = new CubeDebug(sunDirection);
+    }
 }
 
 World::World() : shaderWorld("shaders/world/")
@@ -108,7 +130,11 @@ World::World() : shaderWorld("shaders/world/")
 
     sunColor = glm::vec3(1.0f, 1.0f, 0.8f);
     skyColor = glm::vec3(0.0f, 181.f / 255.f, 221.f / 255.f);
-    sunDirection = glm::vec3(0, 1, 0);
+    sunDirection = glm::vec3(20, 65, 12);
+
+    debug = new CubeDebug(sunDirection);
+
+    IWindow::instance->setClearColor(skyColor);
 }
 
 void World::setNeighborhood()
@@ -221,5 +247,228 @@ void World::updateCube(int x, int y, int z)
 
 Chunk *World::getChunkAt(int x, int y, int z)
 {
-    return chunks[x][y][z];
+    if(x >= 0 && x < CHUNK_SIZE
+    && y >= 0 && y < CHUNK_SIZE
+    && z >= 0 && z < CHUNK_SIZE)
+        return chunks[x][y][z];
+
+    return nullptr;
+}
+
+void World::drawShadow(Shader *pShader)
+{
+    glm::mat4 m = Scene::getGameObject(gameObjectIndex)->getTransform().getModelMatrix();
+    pShader->setMatrix4("model", m);
+    for (int i = 0; i < CHUNK_SIZE; ++i)
+    {
+        for (int j = 0; j < CHUNK_SIZE; ++j)
+        {
+            for (int k = 0; k < CHUNK_SIZE; ++k)
+            {
+                chunks[i][j][k]->draw(false);
+            }
+        }
+    }
+}
+
+World::MAxis World::getMinCol(glm::vec3 pos, glm::vec3 dir, float width, float height, float &valueColMin, bool oneShot)
+{
+    int x = (int)(pos.x / Cube::CUBE_SIZE);
+    int y = (int)(pos.y / Cube::CUBE_SIZE);
+    int z = (int)(pos.z / Cube::CUBE_SIZE);
+
+    if (getCube(x, y, z) == nullptr) return 0;
+
+
+    int xNext = (int)((pos.x + width / 2.0f) / Cube::CUBE_SIZE);
+    int yNext = (int)((pos.y + width / 2.0f) / Cube::CUBE_SIZE);
+    int zNext = (int)((pos.z + height / 2.0f) / Cube::CUBE_SIZE);
+
+    int xPrev = (int)((pos.x - width / 2.0f) / Cube::CUBE_SIZE);
+    int yPrev = (int)((pos.y - width / 2.0f) / Cube::CUBE_SIZE);
+    int zPrev = (int)((pos.z - height / 2.0f) / Cube::CUBE_SIZE);
+
+    if (x < 0)	x = 0;
+    if (y < 0)	y = 0;
+    if (z < 0)	z = 0;
+
+    if (xPrev < 0)	xPrev = 0;
+    if (yPrev < 0)	yPrev = 0;
+    if (zPrev < 0)	zPrev = 0;
+
+    if (xNext < 0)	xNext = 0;
+    if (yNext < 0)	yNext = 0;
+    if (zNext < 0)	zNext = 0;
+
+    if (x >= Chunk::CUBE_IN_CHUNK)	x = Chunk::CUBE_IN_CHUNK - 1;
+    if (y >= Chunk::CUBE_IN_CHUNK)	y = Chunk::CUBE_IN_CHUNK - 1;
+    if (z >= Chunk::CUBE_IN_CHUNK)	z = Chunk::CUBE_IN_CHUNK - 1;
+
+    if (xPrev >= Chunk::CUBE_IN_CHUNK)	xPrev = Chunk::CUBE_IN_CHUNK - 1;
+    if (yPrev >= Chunk::CUBE_IN_CHUNK)	yPrev = Chunk::CUBE_IN_CHUNK - 1;
+    if (zPrev >= Chunk::CUBE_IN_CHUNK)	zPrev = Chunk::CUBE_IN_CHUNK - 1;
+
+    if (xNext >= Chunk::CUBE_IN_CHUNK)	xNext = Chunk::CUBE_IN_CHUNK - 1;
+    if (yNext >= Chunk::CUBE_IN_CHUNK)	yNext = Chunk::CUBE_IN_CHUNK - 1;
+    if (zNext >= Chunk::CUBE_IN_CHUNK)	zNext = Chunk::CUBE_IN_CHUNK - 1;
+
+    //On fait chaque axe
+    MAxis axis = 0x00;
+    valueColMin = oneShot ? 0.5f : 10000.0f;
+    float seuil = 0.0000001f;
+    float prodScalMin = 1.0f;
+    if (dir.length() > 1)
+        dir = glm::normalize(dir);
+
+    //On verif tout les 4 angles de gauche
+    if (getCube(xPrev, yPrev, zPrev)->isSolid() ||
+        getCube(xPrev, yPrev, zNext)->isSolid() ||
+        getCube(xPrev, yNext, zPrev)->isSolid() ||
+        getCube(xPrev, yNext, zNext)->isSolid())
+    {
+        //On verif que resoudre cette collision est utile
+        if (!(getCube(xPrev + 1, yPrev, zPrev)->isSolid() ||
+              getCube(xPrev + 1, yPrev, zNext)->isSolid() ||
+              getCube(xPrev + 1, yNext, zPrev)->isSolid() ||
+              getCube(xPrev + 1, yNext, zNext)->isSolid()) || !oneShot)
+        {
+            float depassement = ((xPrev + 1) * Cube::CUBE_SIZE) - (pos.x - width / 2.0f);
+            float prodScal = abs(dir.x);
+            if (abs(depassement) > seuil)
+                if (abs(depassement) < abs(valueColMin))
+                {
+                    prodScalMin = prodScal;
+                    valueColMin = depassement;
+                    axis = AXIS_X;
+                }
+        }
+    }
+
+    //float depassementx2 = (xNext * NYCube::CUBE_SIZE) - (pos.X + width / 2.0f);
+
+    //On verif tout les 4 angles de droite
+    if (getCube(xNext, yPrev, zPrev)->isSolid() ||
+        getCube(xNext, yPrev, zNext)->isSolid() ||
+        getCube(xNext, yNext, zPrev)->isSolid() ||
+        getCube(xNext, yNext, zNext)->isSolid())
+    {
+        //On verif que resoudre cette collision est utile
+        if (!(getCube(xNext - 1, yPrev, zPrev)->isSolid() ||
+              getCube(xNext - 1, yPrev, zNext)->isSolid() ||
+              getCube(xNext - 1, yNext, zPrev)->isSolid() ||
+              getCube(xNext - 1, yNext, zNext)->isSolid()) || !oneShot)
+        {
+            float depassement = (xNext * Cube::CUBE_SIZE) - (pos.x + width / 2.0f);
+            float prodScal = abs(dir.x);
+            if (abs(depassement) > seuil)
+                if (abs(depassement) < abs(valueColMin))
+                {
+                    prodScalMin = prodScal;
+                    valueColMin = depassement;
+                    axis = AXIS_X;
+                }
+        }
+    }
+
+    //float depassementy1 = (yNext * NYCube::CUBE_SIZE) - (pos.Y + width / 2.0f);
+
+    //On verif tout les 4 angles de devant
+    if (getCube(xPrev, yNext, zPrev)->isSolid() ||
+        getCube(xPrev, yNext, zNext)->isSolid() ||
+        getCube(xNext, yNext, zPrev)->isSolid() ||
+        getCube(xNext, yNext, zNext)->isSolid())
+    {
+        //On verif que resoudre cette collision est utile
+        if (!(getCube(xPrev, yNext - 1, zPrev)->isSolid() ||
+              getCube(xPrev, yNext - 1, zNext)->isSolid() ||
+              getCube(xNext, yNext - 1, zPrev)->isSolid() ||
+              getCube(xNext, yNext - 1, zNext)->isSolid()) || !oneShot)
+        {
+            float depassement = (yNext * Cube::CUBE_SIZE) - (pos.y + width / 2.0f);
+            float prodScal = abs(dir.y);
+            if (abs(depassement) > seuil)
+                if (abs(depassement) < abs(valueColMin))
+                {
+                    prodScalMin = prodScal;
+                    valueColMin = depassement;
+                    axis = AXIS_Y;
+                }
+        }
+    }
+
+    //float depassementy2 = ((yPrev + 1) * NYCube::CUBE_SIZE) - (pos.Y - width / 2.0f);
+
+    //On verif tout les 4 angles de derriere
+    if (getCube(xPrev, yPrev, zPrev)->isSolid() ||
+        getCube(xPrev, yPrev, zNext)->isSolid() ||
+        getCube(xNext, yPrev, zPrev)->isSolid() ||
+        getCube(xNext, yPrev, zNext)->isSolid())
+    {
+        //On verif que resoudre cette collision est utile
+        if (!(getCube(xPrev, yPrev + 1, zPrev)->isSolid() ||
+              getCube(xPrev, yPrev + 1, zNext)->isSolid() ||
+              getCube(xNext, yPrev + 1, zPrev)->isSolid() ||
+              getCube(xNext, yPrev + 1, zNext)->isSolid()) || !oneShot)
+        {
+            float depassement = ((yPrev + 1) * Cube::CUBE_SIZE) - (pos.y - width / 2.0f);
+            float prodScal = abs(dir.y);
+            if (abs(depassement) > seuil)
+                if (abs(depassement) < abs(valueColMin))
+                {
+                    prodScalMin = prodScal;
+                    valueColMin = depassement;
+                    axis = AXIS_Y;
+                }
+        }
+    }
+
+    //On verif tout les 4 angles du haut
+    if (getCube(xPrev, yPrev, zNext)->isSolid() ||
+        getCube(xPrev, yNext, zNext)->isSolid() ||
+        getCube(xNext, yPrev, zNext)->isSolid() ||
+        getCube(xNext, yNext, zNext)->isSolid())
+    {
+        //On verif que resoudre cette collision est utile
+        if (!(getCube(xPrev, yPrev, zNext - 1)->isSolid() ||
+              getCube(xPrev, yNext, zNext - 1)->isSolid() ||
+              getCube(xNext, yPrev, zNext - 1)->isSolid() ||
+              getCube(xNext, yNext, zNext - 1)->isSolid()) || !oneShot)
+        {
+            float depassement = (zNext * Cube::CUBE_SIZE) - (pos.z + height / 2.0f);
+            float prodScal = abs(dir.z);
+            if (abs(depassement) > seuil)
+                if (abs(depassement) < abs(valueColMin))
+                {
+                    prodScalMin = prodScal;
+                    valueColMin = depassement;
+                    axis = AXIS_Z;
+                }
+        }
+    }
+
+    //On verif tout les 4 angles du bas
+    if (getCube(xPrev, yPrev, zPrev)->isSolid() ||
+        getCube(xPrev, yNext, zPrev)->isSolid() ||
+        getCube(xNext, yPrev, zPrev)->isSolid() ||
+        getCube(xNext, yNext, zPrev)->isSolid())
+    {
+        //On verif que resoudre cette collision est utile
+        if (!(getCube(xPrev, yPrev, zPrev + 1)->isSolid() ||
+              getCube(xPrev, yNext, zPrev + 1)->isSolid() ||
+              getCube(xNext, yPrev, zPrev + 1)->isSolid() ||
+              getCube(xNext, yNext, zPrev + 1)->isSolid()) || !oneShot)
+        {
+            float depassement = ((zPrev + 1) * Cube::CUBE_SIZE) - (pos.z - height / 2.0f);
+            float prodScal = abs(dir.z);
+            if (abs(depassement) > seuil)
+                if (abs(depassement) < abs(valueColMin))
+                {
+                    prodScalMin = prodScal;
+                    valueColMin = depassement;
+                    axis = AXIS_Z;
+                }
+        }
+    }
+
+    return axis;
 }

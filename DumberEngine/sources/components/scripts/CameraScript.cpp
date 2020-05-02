@@ -13,6 +13,7 @@
 void CameraScript::start()
 {
     auto &cam = (Camera::getInstance());
+    isControllingMovement = false;
     cam.moveWorld(glm::vec3(0, 0, -2));
 }
 
@@ -23,38 +24,41 @@ void CameraScript::update()
 
     glm::vec3 movement = glm::vec3();
 
-    if (input.isKeyDown(GLFW_KEY_W))
+    if(isControllingMovement)
     {
-        movement.z += 2;
-    }
-    else if (input.isKeyDown(GLFW_KEY_S))
-    {
-        movement.z -= 2;
-    }
-    if (input.isKeyDown(GLFW_KEY_A))
-    {
-        movement.x -= 2;
-    }
-    else if (input.isKeyDown(GLFW_KEY_D))
-    {
-        movement.x += 2;
+        if (input.isKeyDown(GLFW_KEY_W))
+        {
+            movement.z += 2;
+        }
+        else if (input.isKeyDown(GLFW_KEY_S))
+        {
+            movement.z -= 2;
+        }
+        if (input.isKeyDown(GLFW_KEY_A))
+        {
+            movement.x -= 2;
+        }
+        else if (input.isKeyDown(GLFW_KEY_D))
+        {
+            movement.x += 2;
+        }
+
+        if(input.isKeyDown(GLFW_KEY_LEFT_SHIFT))
+            movement *= 2.0f;
+
+        if(input.isKeyDown(GLFW_KEY_SPACE))
+        {
+            glm::vec3 up = glm::vec3(0, 3, 0);
+
+            up *= Time::getInstance().deltaTime;
+
+            cam.moveWorld(up);
+        }
     }
 
     if (input.isKeyDown(GLFW_KEY_ESCAPE))
     {
         IWindow::instance->closeWindow();
-    }
-
-    if(input.isKeyDown(GLFW_KEY_LEFT_SHIFT))
-        movement *= 2.0f;
-
-    if(input.isKeyDown(GLFW_KEY_SPACE))
-    {
-        glm::vec3 up = glm::vec3(0, 3, 0);
-
-        up *= Time::getInstance().deltaTime;
-
-        cam.moveWorld(up);
     }
 
     input.setMouseVisible(true);
@@ -106,4 +110,5 @@ void CameraScript::drawInspector()
 {
     ImGui::Text("CameraScript");
     ImGui::Text("%f %f %f", Camera::getInstance().position.x, Camera::getInstance().position.y, Camera::getInstance().position.z);
+    ImGui::Checkbox("is controlling movement ?", &isControllingMovement);
 }

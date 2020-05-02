@@ -7,6 +7,7 @@
 
 #include "IComponent.hpp"
 #include "Transform.hpp"
+#include "../rendering/helper/Shader.hpp"
 #include <list>
 #include <string>
 
@@ -17,6 +18,7 @@ private:
     std::list<GuiComponent*> guiComponents;
     
     Transform transform;
+    bool isActive;
 public:
 unsigned int indexInScene;
 
@@ -33,6 +35,7 @@ public:
     void update() override;
 
     void draw() override;
+    void drawShadows(Shader *pShader);
 
     void drawInspector() override;
 

@@ -105,3 +105,11 @@ void Camera::moveWorld(glm::vec3 movement)
     updateVecs();
 }
 
+void Camera::setPosition(glm::vec3 position)
+{
+    this->position = position;
+    forward = position + direction * 2.0f;
+
+    updateVecs();
+}
+

@@ -7,6 +7,7 @@
 
 #include <unordered_map>
 #include "../components/GameObject.hpp"
+#include "helper/Shader.hpp"
 
 class Scene
 {
@@ -22,6 +23,7 @@ public:
     void update();
 
     void draw();
+    void drawCastingShadowObjects(Shader *pShader);
 
     void addGameObject(GameObject *go);
 

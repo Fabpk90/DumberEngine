@@ -13,6 +13,7 @@ class CameraScript : public IComponent
 private:
     bool isCursorvisible;
     bool isRightButtonReleased;
+    bool isControllingMovement;
 public:
     CameraScript();
 

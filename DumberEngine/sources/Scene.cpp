@@ -94,3 +94,14 @@ GameObject *Scene::getGameObject(unsigned int index)
     return nullptr;
 }
 
+void Scene::drawCastingShadowObjects(Shader *pShader)
+{
+    auto iter = gameObjects.begin();
+
+    while (iter != gameObjects.end())
+    {
+        (*iter).second->drawShadows(pShader);
+        ++iter;
+    }
+}
+

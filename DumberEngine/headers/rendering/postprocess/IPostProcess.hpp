@@ -21,7 +21,7 @@ protected:
     std::string name;
 
 public:
-    IPostProcess(const char* shaderPath) : shader(shaderPath)
+    IPostProcess(const char* shaderPath, bool isActive) : shader(shaderPath), isActive(isActive)
     {};
 
     virtual ~IPostProcess() = default;

@@ -5,6 +5,8 @@ uniform mat4 mvp;
 uniform mat4 m;
 uniform mat4 v;
 uniform mat4 p;
+uniform mat4 lightSpaceMatrix;
+uniform vec3 camPos;
 
 layout(location=0) in vec3 vs_position_in;
 layout(location=1) in vec3 vs_normal_in;
@@ -16,6 +18,10 @@ out vec3 normal;
 out vec4 color;
 out vec2 uv;
 out vec3 wPos;
+out vec3 camPosition;
+
+out vec4 fragPosInLightSpace;
+
 
 flat out float type;
 
@@ -44,6 +50,15 @@ void main()
 	vec4 vecIn = vec4(vs_position_in,1.0);
 	vec4 vecInW = m * vecIn;
 
+	//world wave
+	//vecInW.y += sin(vecInW.z + elapsed);
+
+	//inception fx
+	//vecInW.y += pow(sqrt(pow(camPos.x - vecInW.x, 2) + pow(camPos.y - vecInW.y, 2)), 1.1);
+
+	//planet fx
+	//vecInW.y -= pow(sqrt(pow(camPos.x - vecInW.x, 2) + pow(camPos.y - vecInW.y, 2)), 1.1);
+
 	normal = (inverse(transpose(m)) * vec4(vs_normal_in,1.0)).xyz;
 
 	uv = vs_uv_in;
@@ -66,6 +81,8 @@ void main()
 
 	type = int(vs_type_in);
 
+	fragPosInLightSpace = lightSpaceMatrix * vecInW;
+	camPosition = camPos;
 
 	gl_Position = p * v * vecInW;
 }

@@ -3,13 +3,14 @@
 //
 
 #include "../../headers/debug/CubeDebug.hpp"
+#include "../../headers/rendering/renderer/Camera.hpp"
 
 CubeDebug::~CubeDebug()
 {
     delete vbo;
 }
 
-CubeDebug::CubeDebug(glm::vec3 position)
+CubeDebug::CubeDebug(glm::vec3 position) : shader("shaders/cube/"), position(position)
 {
     vbo = new Vbo(3, 36);
 
@@ -195,6 +196,16 @@ CubeDebug::CubeDebug(glm::vec3 position)
 
 void CubeDebug::draw()
 {
+    shader.use();
+
+    glm::mat4 m = glm::mat4(1.0f);
+    m[3] = glm::vec4(position, 1.0f);
+    shader.setMatrix4("m", m);
+    glm::mat4 v = Camera::getInstance().getViewMatrix();
+    shader.setMatrix4("v", v);
+    auto p = Camera::getInstance().getProjectionMatrix();
+    shader.setMatrix4("p", p);
+
     vbo->draw();
 }
 

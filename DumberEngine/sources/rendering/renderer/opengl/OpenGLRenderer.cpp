@@ -9,6 +9,7 @@
 #include <glad/glad.h>
 #include "../../../../headers/rendering/renderer/opengl/OpenGLRenderer.hpp"
 #include "../../../../headers/rendering/renderer/opengl/InputManager.hpp"
+#include "../../../../headers/rendering/renderer/IFbo.hpp"
 
 static void glfwError(int id, const char *description)
 {

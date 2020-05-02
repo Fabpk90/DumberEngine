@@ -6,6 +6,7 @@
 #define DUMBERENGINE_ICOMPONENT_HPP
 
 #include "GuiComponent.hpp"
+#include "../rendering/helper/Shader.hpp"
 
 class IComponent : public GuiComponent
 {
@@ -17,6 +18,10 @@ public:
     virtual void draw() = 0;
 
     virtual ~IComponent()
+    {};
+
+    virtual bool castShadow() { return false; }
+    virtual void drawShadow(Shader *pShader)
     {};
 
 public:

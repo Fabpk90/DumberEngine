@@ -8,6 +8,9 @@
 #include "rendering/renderer/IWindow.h"
 #include "rendering/Scene.hpp"
 #include "systems/ISystem.hpp"
+#include "rendering/renderer/IFbo.hpp"
+#include "rendering/helper/Shader.hpp"
+#include "debug/TextureDebug.hpp"
 
 class Engine
 {
@@ -16,6 +19,9 @@ private:
     Scene* scene;
 
     std::list<ISystem*> systems;
+    Shader* shaderShadow;
+
+    TextureDebug* debug;
 
 public:
 

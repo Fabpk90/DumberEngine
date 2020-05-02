@@ -7,11 +7,13 @@
 
 class GuiComponent
 {
+protected:
+    bool isActive;
 public:
     //used to show params in the inspector
     virtual void drawInspector() = 0;
 
-    virtual ~GuiComponent()= default;;
+    virtual ~GuiComponent()= default;
 };
 
 #endif //DUMBERENGINE_GUICOMPONENT_HPP

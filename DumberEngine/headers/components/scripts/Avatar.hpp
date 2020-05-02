@@ -8,6 +8,7 @@
 #include "../IComponent.hpp"
 #include "../../rendering/renderer/Camera.hpp"
 #include "World.hpp"
+#include "../../utils/timer.h"
 
 class Avatar : public IComponent
 {
@@ -31,6 +32,7 @@ private:
     bool crouch;
     bool run;
 
+    glm::vec3 velocity;
     glm::vec3 gravity;
     glm::vec3 damping;
     float mass;
@@ -41,6 +43,17 @@ private:
     glm::vec3 endPositionRayCast;
 
     const float maxRaycastDistance = 2.5f;
+
+    YTimer _TimerStanding;
+
+    void resetDirections()
+    {
+        forward = false;
+        backward = false;
+        left = false;
+        right = false;
+    }
+
 public:
     void drawInspector() override;
 

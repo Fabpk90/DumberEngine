@@ -16,8 +16,6 @@ protected:
     int size;
     float freq;
 
-    void updateVecs();
-
 public:
 
     ~PerlinNoise();
@@ -37,6 +35,8 @@ public:
     }
 
     virtual float sample(float xBase, float yBase, float zBase);
+
+    void updateVecs();
 };
 
 #endif //DUMBERENGINE_PERLINNOISE_HPP
