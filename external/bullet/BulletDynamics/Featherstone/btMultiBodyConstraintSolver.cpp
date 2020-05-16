@@ -32,22 +32,20 @@ btScalar btMultiBodyConstraintSolver::solveSingleIteration(int iteration, btColl
 	//solve featherstone non-contact constraints
 
 	//printf("m_multiBodyNonContactConstraints = %d\n",m_multiBodyNonContactConstraints.size());
-	for (int i = 0; i < infoGlobal.m_numNonContactInnerIterations; ++i)
+
+	for (int j = 0; j < m_multiBodyNonContactConstraints.size(); j++)
 	{
-		for (int j = 0; j < m_multiBodyNonContactConstraints.size(); j++)
-		{
-			int index = iteration & 1 ? j : m_multiBodyNonContactConstraints.size() - 1 - j;
+		int index = iteration & 1 ? j : m_multiBodyNonContactConstraints.size() - 1 - j;
 
-			btMultiBodySolverConstraint& constraint = m_multiBodyNonContactConstraints[index];
+		btMultiBodySolverConstraint& constraint = m_multiBodyNonContactConstraints[index];
 
-			btScalar residual = resolveSingleConstraintRowGeneric(constraint);
-			leastSquaredResidual = btMax(leastSquaredResidual, residual * residual);
+		btScalar residual = resolveSingleConstraintRowGeneric(constraint);
+		leastSquaredResidual = btMax(leastSquaredResidual, residual * residual);
 
-			if (constraint.m_multiBodyA)
-				constraint.m_multiBodyA->setPosUpdated(false);
-			if (constraint.m_multiBodyB)
-				constraint.m_multiBodyB->setPosUpdated(false);
-		}
+		if (constraint.m_multiBodyA)
+			constraint.m_multiBodyA->setPosUpdated(false);
+		if (constraint.m_multiBodyB)
+			constraint.m_multiBodyB->setPosUpdated(false);
 	}
 
 	//solve featherstone normal contact
@@ -1252,7 +1250,7 @@ void btMultiBodyConstraintSolver::convertMultiBodyContact(btPersistentManifold* 
 {
 	const btMultiBodyLinkCollider* fcA = btMultiBodyLinkCollider::upcast(manifold->getBody0());
 	const btMultiBodyLinkCollider* fcB = btMultiBodyLinkCollider::upcast(manifold->getBody1());
-	
+
 	btMultiBody* mbA = fcA ? fcA->m_multiBody : 0;
 	btMultiBody* mbB = fcB ? fcB->m_multiBody : 0;
 
@@ -1272,7 +1270,7 @@ void btMultiBodyConstraintSolver::convertMultiBodyContact(btPersistentManifold* 
 	//	return;
 
 	//only a single rollingFriction per manifold
-	int rollingFriction = 4;
+	int rollingFriction = 1;
 
 	for (int j = 0; j < manifold->getNumContacts(); j++)
 	{

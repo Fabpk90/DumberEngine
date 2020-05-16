@@ -16,7 +16,7 @@ void Avatar::drawInspector()
 
 void Avatar::start()
 {
-    position = glm::vec3(10, 120, 10);
+    position = glm::vec3(10, 50, 10);
     height = 1.8f;
     currentHeight = height;
     width = 0.5f;
@@ -68,6 +68,8 @@ void Avatar::update()
     }
 
     float elapsed = Time::getInstance().deltaTime;
+    if(elapsed > 1 / 60.0f)
+        elapsed = 1 / 60.0f;
 
     //Par defaut, on applique la gravité (-100 sur Z), la moitie si dans l'eau
     glm::vec3 force = glm::vec3(0, -1, 0) * 9.81f;

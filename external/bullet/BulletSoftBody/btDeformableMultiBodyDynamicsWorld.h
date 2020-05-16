@@ -46,7 +46,7 @@ class btDeformableMultiBodyDynamicsWorld : public btMultiBodyDynamicsWorld
     bool m_drawClusterTree;
     btSoftBodyWorldInfo m_sbi;
     btScalar m_internalTime;
-    int m_ccdIterations;
+    int m_contact_iterations;
     bool m_implicit;
     bool m_lineSearch;
     bool m_selfCollision;
@@ -80,7 +80,9 @@ public:
         m_solverCallback = cb;
     }
     
-    virtual ~btDeformableMultiBodyDynamicsWorld();
+    virtual ~btDeformableMultiBodyDynamicsWorld()
+    {
+    }
     
     virtual btMultiBodyDynamicsWorld* getMultiBodyDynamicsWorld()
     {
@@ -157,10 +159,7 @@ public:
     {
         m_lineSearch = lineSearch;
     }
-    
-    void applyRepulsionForce(btScalar timeStep);
-    
-    void performGeometricCollisions(btScalar timeStep);
+
 };
 
 #endif  //BT_DEFORMABLE_MULTIBODY_DYNAMICS_WORLD_H

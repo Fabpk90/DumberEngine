@@ -2,11 +2,10 @@
 // Created by fab on 25/02/2020.
 //
 
-
+//TODO: gameobject index not init !
 
 #include <imgui/imgui.h>
 #include "../../headers/components/GameObject.hpp"
-#include "../../headers/rendering/helper/Shader.hpp"
 
 
 GameObject::GameObject(const char *name) : name(name)
@@ -14,25 +13,6 @@ GameObject::GameObject(const char *name) : name(name)
     isActive = true;
     components = std::list<IComponent *>();
     transform = Transform();
-}
-
-
-template<class T>
-T *GameObject::getComponent()
-{
-    auto ite = components.begin();
-
-    while (ite != components.end())
-    {
-        T *comp = dynamic_cast<T *>(*ite);
-
-        if (comp != nullptr)
-        {
-            return comp;
-        }
-    }
-
-    return nullptr;
 }
 
 void GameObject::start()
@@ -79,27 +59,10 @@ void GameObject::draw()
 
 void GameObject::addComponent(IComponent *comp)
 {
-    comp->gameObjectIndex = indexInScene;
+    comp->gameObjectIndex = gameObjectIndex;
+    comp->transform = &transform;
+
     components.push_back(comp);
-}
-
-template<class T>
-void GameObject::removeComponent()
-{
-    auto ite = components.begin();
-
-    while (ite != components.end())
-    {
-        T *type = dynamic_cast<T *>(*ite);
-
-        if (type != nullptr)
-        {
-            components.remove(*ite);
-            break;
-        }
-        else
-            ++ite;
-    }
 }
 
 GameObject::~GameObject()

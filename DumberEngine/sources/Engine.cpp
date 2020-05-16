@@ -15,10 +15,12 @@
 #include <imgui/imgui_impl_opengl3.h>
 #include <imgui/imgui_impl_glfw.h>
 
-#include "bullet/btBulletDynamicsCommon.h"
-#include "../headers/rendering/postprocess/PPOutline.hpp"
+#include "../headers/rendering/postprocess/PPNoParams.hpp"
 #include "../headers/components/scripts/Avatar.hpp"
 #include "../headers/systems/rendering/ShadowMapping.hpp"
+#include "../headers/systems/physics/Physics.hpp"
+#include "../headers/components/physics/BoxCollider.hpp"
+#include "../headers/components/physics/RigidBody.hpp"
 
 static void loseFocus(bool isFocused)
 {}
@@ -26,8 +28,8 @@ static void loseFocus(bool isFocused)
 void Engine::start()
 {
     SWindowData data{};
-    data.width = 800;
-    data.height = 600;
+    data.width = 1280;
+    data.height = 720;
     data.name = "Dumber Engine";
 
     window = new OpenGLRenderer();
@@ -38,10 +40,8 @@ void Engine::start()
 
     systems =  std::list<ISystem*>();
 
-    InputManager* inputManager = new InputManager();
-    inputManager->init();
-
-    systems.push_front(inputManager);
+    addSystem(new InputManager());
+    addSystem(new Physics());
 
     scene = new Scene();
 
@@ -55,25 +55,35 @@ void Engine::start()
     worldGO->addComponent(world);
 
     auto* avatarGO = new GameObject("Avatar");
+
     Avatar* avatar = new Avatar();
     avatar->setWorld(world);
     avatar->setCamera(cam);
 
     avatarGO->addComponent(avatar);
 
+    auto* phy = new GameObject("RigidBody");
+    phy->addComponent(new BoxCollider());
+    phy->addComponent(new RigidBody());
+
+    auto* box = new GameObject("BoxCollider");
+    box->addComponent(new BoxCollider());
+
     scene->addGameObject(worldGO);
     scene->addGameObject(o);
     scene->addGameObject(avatarGO);
+    scene->addGameObject(phy);
+    scene->addGameObject(box);
 
-    //just for testing the bullet3 impl
-    btBoxShape* box = new btBoxShape(btVector3(0, 1, 0));
-
-    Camera::getInstance().pp.addPostProcess(new PPOutline("shaders/postprocess/Outline/"));
-    Camera::getInstance().pp.addPostProcess(new PPOutline("shaders/postprocess/Blur/"));
-    Camera::getInstance().pp.addPostProcess(new PPOutline("shaders/postprocess/GammaCorrection/", true));
+    Camera::getInstance().pp.addPostProcess(new PPNoParams("shaders/postprocess/Outline/"));
+    Camera::getInstance().pp.addPostProcess(new PPNoParams("shaders/postprocess/Blur/"));
+    Camera::getInstance().pp.addPostProcess(new PPNoParams("shaders/postprocess/GammaCorrection/", true));
 
     glEnable(GL_CULL_FACE);
     glDepthFunc(GL_LEQUAL);
+
+    glfwWindowHint(GLFW_SAMPLES, 4);
+    glEnable(GL_MULTISAMPLE);
 }
 
 void Engine::update()

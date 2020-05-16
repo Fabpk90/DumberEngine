@@ -20,13 +20,16 @@ private:
 
     std::list<ISystem*> systems;
 
-    GLuint colorBuffer;
-
 public:
 
     ~Engine();
 
     void start();
+    void addSystem(ISystem* system)
+    {
+        system->init();
+        systems.push_back(system);
+    }
     void update();
 };
 

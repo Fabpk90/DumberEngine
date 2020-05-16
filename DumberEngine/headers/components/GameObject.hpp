@@ -20,9 +20,6 @@ private:
     Transform transform;
     bool isActive;
 public:
-unsigned int indexInScene;
-
-public:
 
     std::string name;
 
@@ -44,10 +41,43 @@ public:
     Transform& getTransform() { return transform; }
 
     template<class T>
-    T *getComponent();
+    T *getComponent()
+    {
+        auto ite = components.begin();
+
+        while (ite != components.end())
+        {
+            T *comp = dynamic_cast<T *>(*ite);
+
+            if (comp != nullptr)
+            {
+                return comp;
+            }
+
+            ite++;
+        }
+
+        return nullptr;
+    }
 
     template<class T>
-    void removeComponent();
+    void removeComponent()
+    {
+        auto ite = components.begin();
+
+        while (ite != components.end())
+        {
+            T *type = dynamic_cast<T *>(*ite);
+
+            if (type != nullptr)
+            {
+                components.remove(*ite);
+                break;
+            }
+
+            ite++;
+        }
+    }
 };
 
 #endif //DUMBERENGINE_GAMEOBJECT_HPP

@@ -65,7 +65,7 @@ public:
     virtual void solveDeformableConstraints(btScalar solverdt);
     
     // solve the contact between deformable and rigid as well as among deformables
-    btScalar solveContactConstraints(btCollisionObject** deformableBodies,int numDeformableBodies, const btContactSolverInfo& infoGlobal);
+    btScalar solveContactConstraints(btCollisionObject** deformableBodies,int numDeformableBodies);
     
     // solve the position error  between deformable and rigid as well as among deformables;
     btScalar solveSplitImpulse(const btContactSolverInfo& infoGlobal);
@@ -77,7 +77,7 @@ public:
     void reinitialize(const btAlignedObjectArray<btSoftBody *>& softBodies, btScalar dt);
     
     // set up contact constraints
-    void setConstraints(const btContactSolverInfo& infoGlobal);
+    void setConstraints();
     
     // add in elastic forces and gravity to obtain v_{n+1}^* and calls predictDeformableMotion
     virtual void predictMotion(btScalar solverdt);

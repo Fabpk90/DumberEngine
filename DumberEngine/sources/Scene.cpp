@@ -11,8 +11,10 @@ void Scene::addGameObject(GameObject *go)
 {
     std::pair<unsigned int, GameObject*> pair;
 
-    pair.first = indexCounter++;
+    pair.first = ++indexCounter;
     pair.second = go;
+
+    *go->gameObjectIndex = indexCounter;
 
     gameObjects.insert(pair);
 
@@ -60,6 +62,7 @@ void Scene::removeGameObject(std::string name)
 Scene::Scene()
 {
     gameObjects = std::unordered_map<unsigned int, GameObject *>();
+    indexCounter = 0;
 }
 
 void Scene::drawInspector()
@@ -83,15 +86,7 @@ void Scene::drawInspector()
 
 GameObject *Scene::getGameObject(unsigned int index)
 {
-    auto iter = gameObjects.begin();
-
-    while (iter != gameObjects.end())
-    {
-        if((*iter).first == index)
-            return (*iter).second;
-    }
-
-    return nullptr;
+    return gameObjects.at(index);
 }
 
 void Scene::drawCastingShadowObjects(Shader *pShader)

@@ -79,7 +79,7 @@ public:
     void updateVelocity(const TVStack& dv);
     
     //set constraints as projections
-    void setConstraints(const btContactSolverInfo& infoGlobal);
+    void setConstraints();
     
     // update the projections and project the residual
     void project(TVStack& r)

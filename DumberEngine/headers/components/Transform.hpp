@@ -7,7 +7,6 @@
 
 #include <glm/glm.hpp>
 #include<glm/gtc/quaternion.hpp>
-#include "IComponent.hpp"
 
 class Transform
 {
@@ -24,6 +23,7 @@ public:
 
     void addPosition(glm::vec3 pos);
     void addPosition(float x, float y = 0, float z = 0);
+    void setPosition(float x, float y, float z);
     void rotate(glm::vec3 axis, float angle);
 
     glm::mat4& getModelMatrix() { return modelMatrix; };

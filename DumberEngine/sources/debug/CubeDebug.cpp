@@ -12,6 +12,8 @@ CubeDebug::~CubeDebug()
 
 CubeDebug::CubeDebug(glm::vec3 position) : shader("shaders/cube/"), position(position)
 {
+    scale = glm::vec3(1.0f);
+
     vbo = new Vbo(3, 36);
 
     // Définition du contenu VBO
@@ -200,6 +202,10 @@ void CubeDebug::draw()
 
     glm::mat4 m = glm::mat4(1.0f);
     m[3] = glm::vec4(position, 1.0f);
+    m[0][0] = scale.x;
+    m[1][1] = scale.y;
+    m[2][2] = scale.z;
+
     shader.setMatrix4("m", m);
     glm::mat4 v = Camera::getInstance().getViewMatrix();
     shader.setMatrix4("v", v);
@@ -207,6 +213,30 @@ void CubeDebug::draw()
     shader.setMatrix4("p", p);
 
     vbo->draw();
+}
+
+void CubeDebug::setPosition(float x, float y, float z)
+{
+    position.x = x;
+    position.y = y;
+    position.z = z;
+}
+
+void CubeDebug::setPosition(glm::vec3 pos)
+{
+    position = pos;
+}
+
+void CubeDebug::setScale(float x, float y, float z)
+{
+    scale.x = x;
+    scale.y = y;
+    scale.z = z;
+}
+
+void CubeDebug::setScale(glm::vec3 scale)
+{
+    this->scale = scale;
 }
 
 

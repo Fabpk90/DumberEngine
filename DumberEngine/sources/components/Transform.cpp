@@ -67,3 +67,12 @@ void Transform::rotate(glm::vec3 axis, float angle)
 
     updateMatrix();
 }
+
+void Transform::setPosition(float x, float y, float z)
+{
+    position.x = x;
+    position.y = y;
+    position.z = z;
+
+    updateMatrix();
+}

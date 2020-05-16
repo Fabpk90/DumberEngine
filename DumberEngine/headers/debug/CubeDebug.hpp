@@ -15,11 +15,17 @@ private:
     Vbo* vbo;
     Shader shader;
     glm::vec3 position;
+    glm::vec3 scale;
 
 public:
     CubeDebug(glm::vec3 position);
 
     void draw();
+    void setPosition(float x, float y, float z);
+    void setPosition(glm::vec3 pos);
+
+    void setScale(float x, float y, float z);
+    void setScale(glm::vec3 scale);
 
     ~CubeDebug();
 };

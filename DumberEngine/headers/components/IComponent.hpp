@@ -7,10 +7,17 @@
 
 #include "GuiComponent.hpp"
 #include "../rendering/helper/Shader.hpp"
+#include "Transform.hpp"
 
 class IComponent : public GuiComponent
 {
 public:
+
+    IComponent()
+    {
+        gameObjectIndex = new unsigned int;
+    }
+
     virtual void start() = 0;
 
     virtual void update() = 0;
@@ -18,14 +25,18 @@ public:
     virtual void draw() = 0;
 
     virtual ~IComponent()
-    {};
+    {
+        delete gameObjectIndex;
+    };
+
 
     virtual bool castShadow() { return false; }
     virtual void drawShadow(Shader *pShader)
     {};
 
 public:
-    unsigned int gameObjectIndex;
+    unsigned int* gameObjectIndex;
+    Transform* transform;
 };
 
 #endif //DUMBERENGINE_ICOMPONENT_HPP
