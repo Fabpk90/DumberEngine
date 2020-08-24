@@ -25,14 +25,14 @@ public:
     {
         if(shadowMapping == nullptr)
         {
-            shadowMapping = new ShadowMapping(1024, 1024);
+            shadowMapping = new ShadowMapping(4096, 4096);
         }
         return shadowMapping;
     }
 
     glm::mat4& getProjectionMatrix()
     {
-        glm::mat4 lightProjection = glm::ortho(-64.0f, 64.0f, -64.0f, 64.0f, 1.f, 150.0f);
+        glm::mat4 lightProjection = glm::ortho(-64.0f, 64.0f, -64.0f, 64.0f, 1.f, 100.0f);
         glm::mat4 lightLookAt =  glm::lookAt((World::sunDirection),
                                              glm::vec3( 0.0f, 0.0f,  0.0f),
                                              glm::vec3( 0.0f, 1.0f,  0.0f));

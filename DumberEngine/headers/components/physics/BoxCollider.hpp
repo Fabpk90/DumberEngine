@@ -13,7 +13,7 @@
 class BoxCollider : public IComponent
 {
 private:
-    btTransform transform;
+
     float mass;
     btRigidBody* body;
 
@@ -25,7 +25,7 @@ public:
 
     BoxCollider()
     {
-        //TODO: maybe the addcollisionshape adds a static object, it does !
+        //TODO: maybe the addcollisionshape adds a static object, maybe but needs some digging !
         shape = new btBoxShape(btVector3(btScalar(1.0f), btScalar(1.0f), btScalar(1.0f)));
     }
 
@@ -45,6 +45,7 @@ public:
         {
             Physics::physicEngine->removeRigidBody(body);
 
+            delete physicsTransform;
             delete body;
         }
 
@@ -52,5 +53,6 @@ public:
     }
 
     btBoxShape* shape;
+    btTransform* physicsTransform;
 };
 #endif //DUMBERENGINE_BOXCOLLIDER_HPP

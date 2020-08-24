@@ -4,7 +4,7 @@
 
 #include "../../../../headers/rendering/renderer/opengl/Vbo.hpp"
 
-Vbo::Vbo(int nbElements, int nbVertices) : nbVertices(nbVertices), nbElements(nbElements)
+Vbo::Vbo(int nbElements, int nbVertices, bool useEbo) : nbVertices(nbVertices), nbElements(nbElements), useEbo(useEbo)
 {
     elements = new Element[nbElements];
     elementsValue = nullptr;

@@ -27,7 +27,7 @@ public:
 
     };
 
-    Vbo(int nbElements, int nbVertices);
+    Vbo(int nbElements, int nbVertices, bool useEbo = false);
 
     ~Vbo();
 
@@ -63,6 +63,9 @@ private:
 
     GLuint vao;
     GLuint vbo;
+    GLuint ebo;
+
+    bool useEbo;
 };
 
 #endif //DUMBERENGINE_VBO_HPP

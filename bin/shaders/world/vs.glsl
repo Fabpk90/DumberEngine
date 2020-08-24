@@ -20,6 +20,8 @@ out vec2 uv;
 out vec3 wPos;
 out vec3 camPosition;
 
+out vec3 fragPos;
+
 out vec4 fragPosInLightSpace;
 
 
@@ -49,6 +51,8 @@ void main()
 {
 	vec4 vecIn = vec4(vs_position_in,1.0);
 	vec4 vecInW = m * vecIn;
+
+	fragPos = vecInW.xyz;
 
 	//world wave
 	//vecInW.y += sin(vecInW.z + elapsed);

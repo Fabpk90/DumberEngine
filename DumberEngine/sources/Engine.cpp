@@ -81,9 +81,6 @@ void Engine::start()
 
     glEnable(GL_CULL_FACE);
     glDepthFunc(GL_LEQUAL);
-
-    glfwWindowHint(GLFW_SAMPLES, 4);
-    glEnable(GL_MULTISAMPLE);
 }
 
 void Engine::update()

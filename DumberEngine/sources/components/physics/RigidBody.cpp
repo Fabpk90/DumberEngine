@@ -20,17 +20,20 @@ void RigidBody::start()
     collider->setColliderScale(btVector3(15, 15, 15));
 
     shape = collider->shape;
+    collider->physicsTransform = &physicsTransform;
 
     physicsTransform.setIdentity();
-    physicsTransform.setOrigin(btVector3(0.0f, 100.0f, 0.0f));
+    physicsTransform.setOrigin(btVector3(0.0f, 50.0f, 0.0f));
 
     //rigidbody is dynamic if and only if mass is non zero, otherwise static
     mass = btScalar(1.0f);
+    isDynamic = mass != 0.0f;
 
     shape->calculateLocalInertia(mass, localInertia);
 
-    btDefaultMotionState* myMotionState = new btDefaultMotionState(physicsTransform);
-    btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, myMotionState, shape, localInertia);
+    motionState = new btDefaultMotionState(physicsTransform);
+    btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, motionState, shape, localInertia);
+
     body = new btRigidBody(rbInfo);
 
     Physics::physicEngine->addRigidBody(body);

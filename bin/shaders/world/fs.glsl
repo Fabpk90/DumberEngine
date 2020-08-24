@@ -3,7 +3,6 @@
 uniform sampler2D shadowTex;
 uniform sampler2D worldTex;
 
-uniform float elasped;
 uniform vec3 lightDir;
 uniform vec3 skyColor;
 uniform vec3 sunColor;
@@ -17,6 +16,8 @@ in vec3 wPos;
 in vec3 camPosition;
 
 in vec4 fragPosInLightSpace;
+
+in vec3 fragPos;
 
 flat in float type;
 
@@ -52,17 +53,17 @@ float ComputeShadow(vec4 fragPosLightSpace)
 	float currentDepth = projCoords.z;
 	float closestDepth = texture(shadowTex, projCoords.xy).r;
 
-	//out of range, black pixel
+	//out of range, white pixel
 	if(projCoords.z > 1.0)
 		return 0.0;
 
 	float bias = max(0.05 * (1.0 - dot(normalize(normal), normalize(lightDir))), 0.005);
 
-
 	//pcf
 	float shadow = 0.0;
+	shadow += currentDepth - bias > texture(shadowTex, projCoords.xy).r ? 1.0 : 0.0;
 	vec2 texelSize = 1.0 / textureSize(shadowTex, 0);
-	for(int x = -1; x <= 1; ++x)
+	/*for(int x = -1; x <= 1; ++x)
 	{
 		for(int y = -1; y <= 1; ++y)
 		{
@@ -70,7 +71,7 @@ float ComputeShadow(vec4 fragPosLightSpace)
 			shadow += currentDepth - bias > pcfDepth ? 1.0 : 0.0;
 		}
 	}
-	shadow /= 9.0;
+	shadow /= 9.0;*/
 
 	return shadow;
 }

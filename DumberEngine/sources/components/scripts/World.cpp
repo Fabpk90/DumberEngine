@@ -89,8 +89,7 @@ void World::drawInspector()
     ImGui::DragFloat3("SunColor", &sunColor.x, 0.01f);
     if(ImGui::DragFloat3("SunDirection", &sunDirection.x, 0.01f))
     {
-        delete debug;
-        debug = new CubeDebug(sunDirection);
+        debug->setPosition(sunDirection);
     }
 }
 

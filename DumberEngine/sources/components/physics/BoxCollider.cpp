@@ -3,36 +3,34 @@
 //
 #include <imgui/imgui.h>
 #include "../../../headers/components/physics/BoxCollider.hpp"
-#include "../../../headers/systems/physics/Physics.hpp"
 #include "../../../headers/rendering/Scene.hpp"
 #include "../../../headers/components/physics/RigidBody.hpp"
 
 void BoxCollider::drawInspector()
 {
-    auto& val = transform.getOrigin().m_floats;
+    auto& val = physicsTransform->getOrigin().m_floats;
     ImGui::Text("Collider pos: %f %f %f", val[0], val[1], val[2]);
 }
 
 void BoxCollider::start()
 {
-    auto& val = transform.getOrigin().m_floats;
-    cube = new CubeDebug(glm::vec3(val[0], val[1], val[2]));
-
-    transform.setIdentity();
-
+    cube = new CubeDebug(glm::vec3(0.0f));
     if(!Scene::getGameObject(*gameObjectIndex)->getComponent<RigidBody>())
     {
+        physicsTransform = new btTransform();
+        physicsTransform->setIdentity();
+
+        auto& val = physicsTransform->getOrigin().m_floats;
+        cube->setPosition(val[0], val[1], val[2]);
+
         isStatic = true;
-        transform.setOrigin(btVector3(0.0f, -70.0f, 0.0f));
+        physicsTransform->setOrigin(btVector3(0.0f, -70.0f, 0.0f));
 
         mass = btScalar(0.0f);
 
-        btDefaultMotionState* myMotionState = new btDefaultMotionState(transform);
+        btDefaultMotionState* myMotionState = new btDefaultMotionState(*physicsTransform);
         btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, myMotionState, shape, btVector3(0.0f, 0.0f, 0.0f));
         body = new btRigidBody(rbInfo);
-
-        //rigidbody is dynamic if and only if mass is non zero, otherwise static
-        mass = btScalar(0.0f);
 
         float* scale = shape->getHalfExtentsWithMargin().m_floats;
         cube->setScale(scale[0], scale[1], scale[2]);
@@ -45,7 +43,7 @@ void BoxCollider::start()
 
 void BoxCollider::update()
 {
-    auto& val = transform.getOrigin().m_floats;
+    auto& val = physicsTransform->getOrigin().m_floats;
     cube->setPosition(glm::vec3(val[0], val[1], val[2]));
 }
 
@@ -53,14 +51,15 @@ void BoxCollider::draw()
 {
     //TODO: batch this
 
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     cube->draw();
 
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    //glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
 void BoxCollider::setColliderScale(btVector3 scale)
 {
     shape->setLocalScaling(scale);
+    cube->setScale(scale.x(), scale.y(), scale.z());
 }

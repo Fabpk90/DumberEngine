@@ -18,6 +18,8 @@ private:
 
     btCollisionShape* shape;
     btRigidBody* body;
+    btDefaultMotionState* motionState;
+    bool isDynamic;
 public:
     void drawInspector() override;
 
