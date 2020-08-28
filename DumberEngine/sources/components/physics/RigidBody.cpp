@@ -3,6 +3,7 @@
 //
 
 #include <imgui/imgui.h>
+#include <iostream>
 #include "../../../headers/components/physics/RigidBody.hpp"
 #include "../../../headers/rendering/Scene.hpp"
 #include "../../../headers/components/physics/BoxCollider.hpp"
@@ -17,13 +18,13 @@ void RigidBody::drawInspector()
 void RigidBody::start()
 {
     auto* collider = Scene::getGameObject(*gameObjectIndex)->getComponent<BoxCollider>();
-    collider->setColliderScale(btVector3(15, 15, 15));
+    collider->setColliderScale(btVector3(10, 10, 10));
 
     shape = collider->shape;
     collider->physicsTransform = &physicsTransform;
 
     physicsTransform.setIdentity();
-    physicsTransform.setOrigin(btVector3(0.0f, 50.0f, 0.0f));
+    physicsTransform.setOrigin(btVector3(0.0f, 20.0f, 0.0f));
 
     //rigidbody is dynamic if and only if mass is non zero, otherwise static
     mass = btScalar(1.0f);
@@ -35,6 +36,7 @@ void RigidBody::start()
     btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, motionState, shape, localInertia);
 
     body = new btRigidBody(rbInfo);
+    body->setUserPointer((ICollisionCallbacks*)this);
 
     Physics::physicEngine->addRigidBody(body);
 }
@@ -47,6 +49,21 @@ void RigidBody::update()
 }
 
 void RigidBody::draw()
+{
+
+}
+
+void RigidBody::onCollisionEnter(ICollisionCallbacks *other, glm::vec3 point)
+{
+
+}
+
+void RigidBody::onCollisionStay(ICollisionCallbacks *other, glm::vec3 point)
+{
+
+}
+
+void RigidBody::onCollisionExit()
 {
 
 }

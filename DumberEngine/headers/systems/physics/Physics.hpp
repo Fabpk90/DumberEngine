@@ -8,11 +8,16 @@
 #include "bullet/btBulletDynamicsCommon.h"
 
 #include "../ISystem.hpp"
+#include "../../components/physics/ICollisionCallbacks.hpp"
+#include <map>
 
 class Physics : public ISystem
 {
 private:
     btDiscreteDynamicsWorld* world;
+    std::map<ICollisionCallbacks*, int> collisions;
+
+    void checkForExitCollisions();
 
 public:
     void init() override;

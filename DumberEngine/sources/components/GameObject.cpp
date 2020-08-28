@@ -63,6 +63,13 @@ void GameObject::addComponent(IComponent *comp)
     comp->transform = &transform;
 
     components.push_back(comp);
+
+    auto collisions = dynamic_cast<ICollisionCallbacks*>(comp);
+
+    if(collisions)
+    {
+        physicsCallback.push_back(collisions);
+    }
 }
 
 GameObject::~GameObject()
@@ -93,5 +100,29 @@ void GameObject::drawShadows(Shader *pShader)
     {
         if(i->castShadow())
             i->drawShadow(pShader);
+    }
+}
+
+void GameObject::onCollisionEnter(ICollisionCallbacks *other, glm::vec3 point)
+{
+    for(auto callback : physicsCallback)
+    {
+        callback->onCollisionEnter(other, point);
+    }
+}
+
+void GameObject::onCollisionStay(ICollisionCallbacks *other, glm::vec3 point)
+{
+    for(auto callback : physicsCallback)
+    {
+        callback->onCollisionStay(other, point);
+    }
+}
+
+void GameObject::onCollisionExit()
+{
+    for(auto callback : physicsCallback)
+    {
+        callback->onCollisionExit();
     }
 }

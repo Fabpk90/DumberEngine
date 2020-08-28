@@ -2,6 +2,7 @@
 // Created by fab on 11/05/2020.
 //
 #include <imgui/imgui.h>
+#include <iostream>
 #include "../../../headers/components/physics/BoxCollider.hpp"
 #include "../../../headers/rendering/Scene.hpp"
 #include "../../../headers/components/physics/RigidBody.hpp"
@@ -20,17 +21,19 @@ void BoxCollider::start()
         physicsTransform = new btTransform();
         physicsTransform->setIdentity();
 
-        auto& val = physicsTransform->getOrigin().m_floats;
+        btScalar* val = physicsTransform->getOrigin().m_floats;
         cube->setPosition(val[0], val[1], val[2]);
 
         isStatic = true;
-        physicsTransform->setOrigin(btVector3(0.0f, -70.0f, 0.0f));
+        physicsTransform->setOrigin(btVector3(0.0f, 0.0f, 0.0f));
 
         mass = btScalar(0.0f);
 
         btDefaultMotionState* myMotionState = new btDefaultMotionState(*physicsTransform);
         btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, myMotionState, shape, btVector3(0.0f, 0.0f, 0.0f));
         body = new btRigidBody(rbInfo);
+
+        body->setUserPointer((ICollisionCallbacks*)this);
 
         float* scale = shape->getHalfExtentsWithMargin().m_floats;
         cube->setScale(scale[0], scale[1], scale[2]);
@@ -62,4 +65,19 @@ void BoxCollider::setColliderScale(btVector3 scale)
 {
     shape->setLocalScaling(scale);
     cube->setScale(scale.x(), scale.y(), scale.z());
+}
+
+void BoxCollider::onCollisionEnter(ICollisionCallbacks *other, glm::vec3 point)
+{
+    std::cout << "box" << std::endl;
+}
+
+void BoxCollider::onCollisionStay(ICollisionCallbacks *other, glm::vec3 point)
+{
+
+}
+
+void BoxCollider::onCollisionExit()
+{
+
 }

@@ -9,8 +9,9 @@
 #include "../IComponent.hpp"
 #include "../../systems/physics/Physics.hpp"
 #include "../../debug/CubeDebug.hpp"
+#include "ICollisionCallbacks.hpp"
 
-class BoxCollider : public IComponent
+class BoxCollider : public IComponent, public ICollisionCallbacks
 {
 private:
 
@@ -38,6 +39,14 @@ public:
     void draw() override;
 
     void setColliderScale(btVector3 scale);
+
+    virtual void onCollisionEnter(ICollisionCallbacks *other, glm::vec3 point) override;
+
+    virtual void onCollisionStay(ICollisionCallbacks *other, glm::vec3 point) override;
+
+    virtual void onCollisionExit() override;
+
+public:
 
     ~BoxCollider()
     {

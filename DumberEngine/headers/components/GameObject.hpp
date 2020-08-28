@@ -8,17 +8,27 @@
 #include "IComponent.hpp"
 #include "Transform.hpp"
 #include "../rendering/helper/Shader.hpp"
+#include "physics/ICollisionCallbacks.hpp"
 #include <list>
 #include <string>
 
-class GameObject : public IComponent
+class GameObject : public IComponent, public ICollisionCallbacks
 {
 private:
     std::list<IComponent *> components;
     std::list<GuiComponent*> guiComponents;
+    std::list<ICollisionCallbacks*> physicsCallback;
     
     Transform transform;
     bool isActive;
+
+public:
+    void onCollisionEnter(ICollisionCallbacks *other, glm::vec3 point) override;
+
+    void onCollisionStay(ICollisionCallbacks *other, glm::vec3 point) override;
+
+    void onCollisionExit() override;
+
 public:
 
     std::string name;
@@ -72,6 +82,12 @@ public:
             if (type != nullptr)
             {
                 components.remove(*ite);
+                auto collisions = dynamic_cast<ICollisionCallbacks* >(*ite);
+                if(collisions)
+                {
+                    physicsCallback.remove(collisions);
+                }
+
                 break;
             }
 
