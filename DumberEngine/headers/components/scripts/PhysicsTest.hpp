@@ -20,6 +20,8 @@ public:
     void drawInspector() override;
 
     void onCollisionEnter(GameObject *other, glm::vec3 point) override;
+
+    std::string test;
 };
 
 #endif //DUMBERENGINE_PHYSICSTEST_HPP

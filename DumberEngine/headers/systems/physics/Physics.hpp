@@ -30,6 +30,8 @@ public:
     void addCollider(btCollisionObject* shape);
     void removeCollider(btCollisionObject* shape);
 
+    static bool rayCast(glm::vec3 start, glm::vec3 to);
+
     static Physics* physicEngine;
 };
 #endif //DUMBERENGINE_PHYSICS_HPP

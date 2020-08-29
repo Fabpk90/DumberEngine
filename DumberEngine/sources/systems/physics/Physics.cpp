@@ -132,3 +132,21 @@ void Physics::checkForExitCollisions()
             iterator++;
     }
 }
+
+//TODO: add a struct result with some infos (point, normal)
+bool Physics::rayCast(glm::vec3 start, glm::vec3 to)
+{
+    btVector3 fromVec(start.x, start.y, start.z);
+    btVector3 toVec(to.x, to.y, to.z);
+
+    btCollisionWorld::ClosestRayResultCallback rayResultCallback(fromVec, toVec);
+
+    Physics::physicEngine->world->rayTest(fromVec, toVec, rayResultCallback);
+
+    if(rayResultCallback.hasHit())
+    {
+        std::cout << "oooooh yeah" << std::endl;
+        return true;
+    }
+    return false;
+}

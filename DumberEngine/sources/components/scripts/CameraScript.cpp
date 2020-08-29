@@ -9,6 +9,7 @@
 #include "../../../headers/components/scripts/CameraScript.hpp"
 #include "../../../headers/rendering/renderer/opengl/InputManager.hpp"
 #include "../../../headers/rendering/helper/Time.hpp"
+#include "../../../headers/systems/physics/Physics.hpp"
 
 void CameraScript::start()
 {
@@ -71,6 +72,11 @@ void CameraScript::update()
     else
     {
         isCursorvisible = true;
+    }
+
+    if(input.isMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT))
+    {
+
     }
 
     movement *= Time::getInstance().deltaTime;

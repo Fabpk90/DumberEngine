@@ -66,10 +66,15 @@ void Engine::start()
     auto* phy = new GameObject("RigidBody");
     phy->addComponent(new BoxCollider());
     phy->addComponent(new RigidBody());
-    phy->addComponent(new PhysicsTest());
+    auto test = new PhysicsTest();
+    test->test = "yeppa";
+    phy->addComponent(test);
 
     auto* box = new GameObject("BoxCollider");
     box->addComponent(new BoxCollider());
+    auto test1 = new PhysicsTest();
+    test1->test = "nooope";
+    box->addComponent(test1);
 
     scene->addGameObject(worldGO);
     scene->addGameObject(o);

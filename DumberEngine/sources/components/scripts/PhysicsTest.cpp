@@ -22,7 +22,7 @@ void PhysicsTest::draw()
 
 void PhysicsTest::onCollisionEnter(GameObject *other, glm::vec3 point)
 {
-    std::cout << "yeaah" << std::endl;
+
 }
 
 void PhysicsTest::drawInspector()
