@@ -36,7 +36,7 @@ void RigidBody::start()
     btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, motionState, shape, localInertia);
 
     body = new btRigidBody(rbInfo);
-    body->setUserPointer((ICollisionCallbacks*)this);
+    body->setUserPointer(gameObjectIndex);
 
     Physics::physicEngine->addRigidBody(body);
 }
@@ -49,21 +49,6 @@ void RigidBody::update()
 }
 
 void RigidBody::draw()
-{
-
-}
-
-void RigidBody::onCollisionEnter(ICollisionCallbacks *other, glm::vec3 point)
-{
-
-}
-
-void RigidBody::onCollisionStay(ICollisionCallbacks *other, glm::vec3 point)
-{
-
-}
-
-void RigidBody::onCollisionExit()
 {
 
 }

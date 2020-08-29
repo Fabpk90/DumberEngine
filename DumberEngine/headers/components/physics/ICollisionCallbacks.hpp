@@ -7,12 +7,14 @@
 
 #include <glm/glm.hpp>
 
+class GameObject;
+
 class ICollisionCallbacks
 {
 public:
-    virtual void onCollisionEnter(ICollisionCallbacks* other, glm::vec3 point) = 0;
-    virtual void onCollisionStay(ICollisionCallbacks* other, glm::vec3 point) = 0;
-    virtual void onCollisionExit() = 0;
+    virtual void onCollisionEnter(GameObject* other, glm::vec3 point){};
+    virtual void onCollisionStay(GameObject* other, glm::vec3 point){};
+    virtual void onCollisionExit(){};
 };
 
 #endif //DUMBERENGINE_ICOLLISIONCALLBACKS_HPP

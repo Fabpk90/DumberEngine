@@ -10,7 +10,7 @@
 #include "../../systems/physics/Physics.hpp"
 #include "ICollisionCallbacks.hpp"
 
-class RigidBody : public IComponent, public ICollisionCallbacks
+class RigidBody : public IComponent
 {
 private:
     float mass;
@@ -29,12 +29,6 @@ public:
     void update() override;
 
     void draw() override;
-
-    virtual void onCollisionEnter(ICollisionCallbacks *other, glm::vec3 point) override;
-
-    virtual void onCollisionStay(ICollisionCallbacks *other, glm::vec3 point) override;
-
-    virtual void onCollisionExit() override;
 
     ~RigidBody()
     {

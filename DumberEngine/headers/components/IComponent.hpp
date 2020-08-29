@@ -18,11 +18,11 @@ public:
         gameObjectIndex = new unsigned int;
     }
 
-    virtual void start() = 0;
+    virtual void start(){};
 
-    virtual void update() = 0;
+    virtual void update(){};
 
-    virtual void draw() = 0;
+    virtual void draw(){};
 
     virtual ~IComponent()
     {
@@ -32,6 +32,9 @@ public:
 
     virtual bool castShadow() { return false; }
     virtual void drawShadow(Shader *pShader)
+    {};
+
+    virtual void drawInspector() override
     {};
 
 public:

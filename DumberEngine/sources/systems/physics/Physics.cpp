@@ -6,6 +6,7 @@
 #include "../../../headers/systems/physics/Physics.hpp"
 #include "../../../headers/rendering/helper/Time.hpp"
 #include "../../../headers/components/physics/BoxCollider.hpp"
+#include "../../../headers/rendering/Scene.hpp"
 
 Physics* Physics::physicEngine = nullptr;
 
@@ -49,8 +50,8 @@ void Physics::update()
             const btCollisionObject* obA = contactManifold->getBody0();
             const btCollisionObject* obB = contactManifold->getBody1();
 
-            auto col0 = (ICollisionCallbacks*) obA->getUserPointer();
-            auto col1 = (ICollisionCallbacks*) obB->getUserPointer();
+            auto col0 = (unsigned int*) obA->getUserPointer();
+            auto col1 = (unsigned int*) obB->getUserPointer();
 
             if(col0)
             {
@@ -62,12 +63,12 @@ void Physics::update()
                 if(found == collisions.end())
                 {
                     collisions[col0] = 1;
-                    col0->onCollisionEnter(col1, point);
+                    Scene::getGameObject(*col0)->onCollisionEnter(Scene::getGameObject(*col1), point);
                 }
                 else
                 {
                     collisions[col0] = 1;
-                    col0->onCollisionStay(col1, point);
+                    Scene::getGameObject(*col0)->onCollisionStay(Scene::getGameObject(*col1), point);
                 }
             }
 
@@ -81,12 +82,12 @@ void Physics::update()
                 if(found == collisions.end())
                 {
                     collisions[col1] = 1;
-                    col1->onCollisionEnter(col0, point);
+                    Scene::getGameObject(*col1)->onCollisionEnter(Scene::getGameObject(*col0), point);
                 }
                 else
                 {
                     collisions[col1] = 1;
-                    col1->onCollisionStay(col0, point);
+                    Scene::getGameObject(*col1)->onCollisionStay(Scene::getGameObject(*col0), point);
                 }
             }
 
@@ -124,8 +125,8 @@ void Physics::checkForExitCollisions()
     {
         if(--(*iterator).second < 0)
         {
-            (*iterator).first->onCollisionExit();
-           iterator = collisions.erase(iterator);
+            Scene::getGameObject(*(*iterator).first)->onCollisionExit();
+            iterator = collisions.erase(iterator);
         }
         else
             iterator++;

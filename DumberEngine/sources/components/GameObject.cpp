@@ -103,26 +103,10 @@ void GameObject::drawShadows(Shader *pShader)
     }
 }
 
-void GameObject::onCollisionEnter(ICollisionCallbacks *other, glm::vec3 point)
+void GameObject::onCollisionEnter(GameObject *other, glm::vec3 point)
 {
-    for(auto callback : physicsCallback)
+    for(auto* callback : physicsCallback)
     {
         callback->onCollisionEnter(other, point);
-    }
-}
-
-void GameObject::onCollisionStay(ICollisionCallbacks *other, glm::vec3 point)
-{
-    for(auto callback : physicsCallback)
-    {
-        callback->onCollisionStay(other, point);
-    }
-}
-
-void GameObject::onCollisionExit()
-{
-    for(auto callback : physicsCallback)
-    {
-        callback->onCollisionExit();
     }
 }

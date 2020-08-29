@@ -33,7 +33,7 @@ void BoxCollider::start()
         btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, myMotionState, shape, btVector3(0.0f, 0.0f, 0.0f));
         body = new btRigidBody(rbInfo);
 
-        body->setUserPointer((ICollisionCallbacks*)this);
+        body->setUserPointer(gameObjectIndex);
 
         float* scale = shape->getHalfExtentsWithMargin().m_floats;
         cube->setScale(scale[0], scale[1], scale[2]);
@@ -65,19 +65,4 @@ void BoxCollider::setColliderScale(btVector3 scale)
 {
     shape->setLocalScaling(scale);
     cube->setScale(scale.x(), scale.y(), scale.z());
-}
-
-void BoxCollider::onCollisionEnter(ICollisionCallbacks *other, glm::vec3 point)
-{
-    std::cout << "box" << std::endl;
-}
-
-void BoxCollider::onCollisionStay(ICollisionCallbacks *other, glm::vec3 point)
-{
-
-}
-
-void BoxCollider::onCollisionExit()
-{
-
 }

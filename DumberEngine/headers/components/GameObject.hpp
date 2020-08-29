@@ -23,11 +23,8 @@ private:
     bool isActive;
 
 public:
-    void onCollisionEnter(ICollisionCallbacks *other, glm::vec3 point) override;
+    void onCollisionEnter(GameObject *other, glm::vec3 point) override;
 
-    void onCollisionStay(ICollisionCallbacks *other, glm::vec3 point) override;
-
-    void onCollisionExit() override;
 
 public:
 

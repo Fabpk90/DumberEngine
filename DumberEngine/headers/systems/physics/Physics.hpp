@@ -15,7 +15,7 @@ class Physics : public ISystem
 {
 private:
     btDiscreteDynamicsWorld* world;
-    std::map<ICollisionCallbacks*, int> collisions;
+    std::map<unsigned int*, int> collisions;
 
     void checkForExitCollisions();
 

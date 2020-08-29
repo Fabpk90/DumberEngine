@@ -21,6 +21,7 @@
 #include "../headers/systems/physics/Physics.hpp"
 #include "../headers/components/physics/BoxCollider.hpp"
 #include "../headers/components/physics/RigidBody.hpp"
+#include "../headers/components/scripts/PhysicsTest.hpp"
 
 static void loseFocus(bool isFocused)
 {}
@@ -65,6 +66,7 @@ void Engine::start()
     auto* phy = new GameObject("RigidBody");
     phy->addComponent(new BoxCollider());
     phy->addComponent(new RigidBody());
+    phy->addComponent(new PhysicsTest());
 
     auto* box = new GameObject("BoxCollider");
     box->addComponent(new BoxCollider());
