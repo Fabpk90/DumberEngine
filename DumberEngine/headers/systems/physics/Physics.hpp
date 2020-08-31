@@ -20,6 +20,14 @@ private:
     void checkForExitCollisions();
 
 public:
+
+    struct RayCastHit
+    {
+        glm::vec3 point;
+        glm::vec3 normal;
+        GameObject* go;
+    };
+
     void init() override;
 
     void update() override;
@@ -30,8 +38,10 @@ public:
     void addCollider(btCollisionObject* shape);
     void removeCollider(btCollisionObject* shape);
 
-    static bool rayCast(glm::vec3 start, glm::vec3 to);
+    static bool rayCast(glm::vec3 start, glm::vec3 to, RayCastHit& hit);
 
     static Physics* physicEngine;
+
+
 };
 #endif //DUMBERENGINE_PHYSICS_HPP

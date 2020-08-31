@@ -51,6 +51,8 @@ public:
 
     void draw();
 
+    void bind();
+
 private:
     Element *elements;
     int nbElements;

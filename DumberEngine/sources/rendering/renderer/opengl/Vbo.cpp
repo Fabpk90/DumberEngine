@@ -116,6 +116,15 @@ void Vbo::draw()
     glDrawArrays(GL_TRIANGLES, 0, nbVertices);
 }
 
+void Vbo::bind()
+{
+    glBindVertexArray(vao);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+
+    if(useEbo)
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+}
+
 
 
 

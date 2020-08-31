@@ -133,8 +133,7 @@ void Physics::checkForExitCollisions()
     }
 }
 
-//TODO: add a struct result with some infos (point, normal)
-bool Physics::rayCast(glm::vec3 start, glm::vec3 to)
+bool Physics::rayCast(glm::vec3 start, glm::vec3 to, RayCastHit& hit)
 {
     btVector3 fromVec(start.x, start.y, start.z);
     btVector3 toVec(to.x, to.y, to.z);
@@ -145,7 +144,15 @@ bool Physics::rayCast(glm::vec3 start, glm::vec3 to)
 
     if(rayResultCallback.hasHit())
     {
-        std::cout << "oooooh yeah" << std::endl;
+        hit.point[0] = rayResultCallback.m_hitPointWorld[0];
+        hit.point[1] = rayResultCallback.m_hitPointWorld[1];
+        hit.point[2] = rayResultCallback.m_hitPointWorld[2];
+
+        hit.normal[0] = rayResultCallback.m_hitNormalWorld[0];
+        hit.normal[1] = rayResultCallback.m_hitNormalWorld[1];
+        hit.normal[2] = rayResultCallback.m_hitNormalWorld[2];
+
+        hit.go = Scene::getGameObject(*((unsigned int*)rayResultCallback.m_collisionObject->getUserPointer()));
         return true;
     }
     return false;

@@ -2,7 +2,7 @@
 // Created by fab on 25/02/2020.
 //
 
-#include <glm/vec3.hpp>
+#include <glm/glm.hpp>
 #include <glfw/glfw3.h>
 #include <iostream>
 #include <imgui/imgui.h>
@@ -10,6 +10,9 @@
 #include "../../../headers/rendering/renderer/opengl/InputManager.hpp"
 #include "../../../headers/rendering/helper/Time.hpp"
 #include "../../../headers/systems/physics/Physics.hpp"
+
+#include "../../../headers/components/GameObject.hpp"
+#include "../../../headers/debug/DebugDraw.hpp"
 
 void CameraScript::start()
 {
@@ -76,7 +79,15 @@ void CameraScript::update()
 
     if(input.isMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT))
     {
+        Physics::RayCastHit hit;
+        auto pos = cam.position;
+        auto to = pos + cam.direction * 5.0f;
+        
 
+        if(Physics::rayCast(pos, to, hit))
+        {
+            std::cout << hit.point.x << " " << hit.point.y << " " << hit.point.z << std::endl;
+        }
     }
 
     movement *= Time::getInstance().deltaTime;
