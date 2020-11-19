@@ -82,11 +82,11 @@ void CameraScript::update()
         Physics::RayCastHit hit;
         auto pos = cam.position;
         auto to = pos + cam.direction * 5.0f;
-        
+
 
         if(Physics::rayCast(pos, to, hit))
         {
-            std::cout << hit.point.x << " " << hit.point.y << " " << hit.point.z << std::endl;
+           
         }
     }
 

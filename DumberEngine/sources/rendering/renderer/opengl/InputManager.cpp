@@ -60,7 +60,7 @@ void InputManager::setMousePosition(glm::vec2 position)
     mousePosition = position;
 }
 
-glm::vec2 InputManager::getMouseDelta()
+glm::vec2& InputManager::getMouseDelta()
 {
     return mouseDelta;
 }
@@ -97,9 +97,9 @@ IInputManager::EInputEvent InputManager::toInputEvent(int event)
             return REPEAT;
         case GLFW_RELEASE:
             return RELEASED;
+        default:
+            return UNKNOWN;
     }
-
-    return UNKNOWN;
 }
 
 void InputManager::setKey(int code, IInputManager::EInputEvent event)

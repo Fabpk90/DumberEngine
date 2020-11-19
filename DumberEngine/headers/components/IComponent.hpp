@@ -29,6 +29,22 @@ public:
         delete gameObjectIndex;
     };
 
+    IComponent(IComponent&& c)
+    {
+        transform = c.transform;
+        gameObjectIndex = c.gameObjectIndex;
+
+        c.transform = nullptr;
+        c.gameObjectIndex = nullptr;
+    };
+
+    IComponent(const IComponent& c)
+    {
+        transform = c.transform;
+        gameObjectIndex = c.gameObjectIndex;
+    };
+
+
 
     virtual bool castShadow() { return false; }
     virtual void drawShadow(Shader *pShader)

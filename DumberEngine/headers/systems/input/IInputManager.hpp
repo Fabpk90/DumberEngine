@@ -48,9 +48,9 @@ public:
     virtual void setMouseButton(int button, EInputEvent event) = 0;
 
 
-    virtual glm::vec2 getMouseDelta() = 0;
+    virtual glm::vec2& getMouseDelta() = 0;
 
-    virtual glm::vec2 &getMousePosition() = 0;
+    virtual glm::vec2& getMousePosition() = 0;
 
     static IInputManager* instance;
 };

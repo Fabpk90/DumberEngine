@@ -22,25 +22,25 @@ public:
 
     static void mouseButtonClicked(GLFWwindow *, int button, int action, int mods);
 
-    EInputEvent toInputEvent(int event) override;
+    inline EInputEvent toInputEvent(int event) override;
 
-    void setKey(int code, EInputEvent event) override;
+    inline void setKey(int code, EInputEvent event) override;
 
-    bool isKeyPressed(int code) override;
+    inline bool isKeyPressed(int code) override;
 
-    bool isKeyDown(int code) override;
+    inline bool isKeyDown(int code) override;
 
-    bool isMouseButtonPressed(int button) override;
+    inline bool isMouseButtonPressed(int button) override;
 
-    void setMouseVisible(bool isVisible) override;
+    inline void setMouseVisible(bool isVisible) override;
 
-    void setMousePosition(glm::vec2 position) override;
+    inline void setMousePosition(glm::vec2 position) override;
 
-    void setMouseButton(int button, EInputEvent event) override;
+    inline void setMouseButton(int button, EInputEvent event) override;
 
-    glm::vec2 getMouseDelta() override;
+    inline glm::vec2& getMouseDelta() override;
 
-    glm::vec2 &getMousePosition() override;
+    inline glm::vec2& getMousePosition() override;
 
     void init() override;
 

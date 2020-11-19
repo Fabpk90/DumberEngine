@@ -39,7 +39,7 @@ void Engine::start()
 
     window->addWindowLoseFocusCallback(std::function(loseFocus));
 
-    systems =  std::list<ISystem*>();
+    systems.reserve(2);
 
     addSystem(new InputManager());
     addSystem(new Physics());

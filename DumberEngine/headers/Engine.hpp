@@ -18,7 +18,7 @@ private:
     IWindow* window;
     Scene* scene;
 
-    std::list<ISystem*> systems;
+    std::vector<ISystem*> systems;
 
 public:
 
