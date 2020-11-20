@@ -14,7 +14,7 @@ layout(std140) uniform globalPPParameters
 
 out vec4 color_out;
 
-const float offset = 1.0 / 200.0;
+const float offset = 1.0 / 600.0;
 
 const mat3 kernelX
 = mat3
