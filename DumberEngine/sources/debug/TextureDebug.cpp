@@ -6,7 +6,7 @@
 
 TextureDebug::TextureDebug(const char *path) : shader("shaders/quad/")
 {
-    texture.loadFrom(path);
+    texture.loadFrom(path, ITexture::Diffuse);
     vboQuad = new Vbo(1, 6);
     vboQuad->setElementDescription(0, Vbo::Element(3));
     vboQuad->createCPUSide();

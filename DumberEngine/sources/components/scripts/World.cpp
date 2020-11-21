@@ -119,7 +119,7 @@ World::World() : shaderWorld("shaders/world/")
         }
     }
 
-    texture.loadFrom("textures/terrain.png");
+    texture.loadFrom("textures/terrain.png", ITexture::Diffuse);
 
     sunColor = glm::vec3(1.0f, 1.0f, 0.8f);
     skyColor = glm::vec3(0.0f, 181.f / 255.f, 221.f / 255.f);

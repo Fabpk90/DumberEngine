@@ -10,6 +10,8 @@ Transform::Transform()
     position = glm::vec3(0.f);
     quat = glm::quat();
     modelMatrix = glm::mat4(1.0f);
+
+    scale = glm::vec3(1.0f);
 }
 
 void Transform::addPosition(glm::vec3 pos)
@@ -49,7 +51,7 @@ void Transform::updateMatrix()
     rot[2][1] = 2 * (quat.x * quat.y) + 2 * (quat.z * quat.w);
     rot[2][2] = a2-b2-c2+d2;
 
-    modelMatrix = modelMatrix * rot;
+    modelMatrix = rot * modelMatrix;
 }
 
 void Transform::rotate(glm::vec3 axis, float angle)
@@ -74,5 +76,14 @@ void Transform::setPosition(float x, float y, float z)
     position.y = y;
     position.z = z;
 
-    updateMatrix();
+    modelMatrix[3] = glm::vec4(position, 1.0f);
+}
+
+void Transform::addPosition(float x, float y, float z)
+{
+    position.x += x;
+    position.y += y;
+    position.z += z;
+
+    modelMatrix[3] = glm::vec4(position, 1.0f);
 }

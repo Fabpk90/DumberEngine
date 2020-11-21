@@ -18,17 +18,23 @@
 
 class Mesh {
 public:
+    Mesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices, std::vector<Texture2D>& textures);
+    void Draw(Shader& shader);
+
+    ~Mesh()
+    {
+        glDeleteVertexArrays(1, &vao);
+        glDeleteBuffers(1, &vbo);
+        glDeleteBuffers(1, &ebo);
+    };
+private:
+    //  render data
+    unsigned int vao;
+    unsigned int vbo;
+    unsigned int ebo;
     // mesh data
     std::vector<Vertex>       vertices;
     std::vector<unsigned int> indices;
     std::vector<Texture2D>      textures;
-
-    Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture2D> textures);
-    void Draw(Shader shader);
-private:
-    //  render data
-    unsigned int VAO, VBO, EBO;
-
-    void setupMesh();
 };
 #endif //DUMBERENGINE_MESH_HPP

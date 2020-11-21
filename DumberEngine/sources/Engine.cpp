@@ -22,6 +22,7 @@
 #include "../headers/components/physics/BoxCollider.hpp"
 #include "../headers/components/physics/RigidBody.hpp"
 #include "../headers/components/scripts/PhysicsTest.hpp"
+#include "../headers/components/rendering/StaticMesh.hpp"
 
 static void loseFocus(bool isFocused)
 {}
@@ -57,11 +58,11 @@ void Engine::start()
 
     auto* avatarGO = new GameObject("Avatar");
 
-    Avatar* avatar = new Avatar();
-    avatar->setWorld(world);
-    avatar->setCamera(cam);
+    //Avatar* avatar = new Avatar();
+    //avatar->setWorld(world);
+   // avatar->setCamera(cam);
 
-    avatarGO->addComponent(avatar);
+    avatarGO->addComponent(new CameraScript());
 
     auto* phy = new GameObject("RigidBody");
     phy->addComponent(new BoxCollider());
@@ -76,11 +77,17 @@ void Engine::start()
     test1->test = "nooope";
     box->addComponent(test1);
 
+    auto meshGO = new GameObject("StaticMesh");
+    auto sm = new StaticMesh();
+    sm->loadFrom("mesh/nanosuit/nanosuit.obj");
+    meshGO->addComponent(sm);
+
     scene->addGameObject(worldGO);
     scene->addGameObject(o);
     scene->addGameObject(avatarGO);
-    scene->addGameObject(phy);
-    scene->addGameObject(box);
+    //scene->addGameObject(phy);
+   // scene->addGameObject(box);
+    scene->addGameObject(meshGO);
 
     Camera::getInstance().pp.addPostProcess(new PPNoParams("shaders/postprocess/Outline/"));
     Camera::getInstance().pp.addPostProcess(new PPNoParams("shaders/postprocess/Blur/"));

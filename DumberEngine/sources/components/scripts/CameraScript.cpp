@@ -17,7 +17,7 @@
 void CameraScript::start()
 {
     auto &cam = (Camera::getInstance());
-    isControllingMovement = false;
+    isControllingMovement = true;
     cam.moveWorld(glm::vec3(0, 0, -2));
 }
 

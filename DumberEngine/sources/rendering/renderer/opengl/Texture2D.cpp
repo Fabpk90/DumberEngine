@@ -7,9 +7,12 @@
 #include <iostream>
 #include "../../../../headers/rendering/renderer/opengl/Texture2D.hpp"
 
-void Texture2D::loadFrom(const char *path, unsigned int flagWrapS, unsigned int flagWrapT, unsigned int flagMinFilter,
+void Texture2D::loadFrom(const char *path, ETextureType type, unsigned int flagWrapS, unsigned int flagWrapT, unsigned int flagMinFilter,
                          unsigned int flagMagFilter)
 {
+
+    std::cout << "Loading texture " << path << std::endl;
+
     int width, height, nrChannels;
     unsigned char *data = stbi_load(path, &width, &height, &nrChannels, 0);
 

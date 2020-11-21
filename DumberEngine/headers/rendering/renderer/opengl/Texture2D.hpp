@@ -14,11 +14,17 @@ private:
     GLuint id;
 
 public:
-    void loadFrom(const char *path, unsigned int flagWrapS = GL_REPEAT, unsigned int flagWrapT = GL_REPEAT, unsigned int flagMinFilter = GL_NEAREST,
+    void loadFrom(const char *path, ETextureType type, unsigned int flagWrapS = GL_REPEAT, unsigned int flagWrapT = GL_REPEAT, unsigned int flagMinFilter = GL_NEAREST,
                   unsigned int flagMagFilter = GL_NEAREST) override;
 
     void use(int textureUnit) override;
 
+    Texture2D() = default;
+
+    Texture2D(const Texture2D& t) = default;
+    Texture2D(Texture2D&& t) = default;
+    Texture2D& operator=(Texture2D&&) = default;
+    Texture2D& operator=(Texture2D&) = default;
     ~Texture2D() override;
 
     void setID(GLuint id);
