@@ -7,14 +7,21 @@
 #include <utility>
 
 
-void Mesh::Draw(Shader& shader)
+void Mesh::Draw(Shader* shader)
 {
     glBindVertexArray(vao);
+
+    for(auto& tex : textures)
+    {
+        if(tex->getType() == ITexture::Diffuse)
+            tex->use(0);
+    }
+    shader->setInt("textureDiffuse", 0);
 
     glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
 }
 
-Mesh::Mesh(std::vector<Vertex> &vertices, std::vector<unsigned int> &indices, std::vector<Texture2D> &textures)
+Mesh::Mesh(std::vector<Vertex> &vertices, std::vector<unsigned int> &indices, std::vector<Texture2D*> &textures)
 : vertices(std::move(vertices)), indices(std::move(indices)), textures(std::move(textures))
 {
     glGenVertexArrays(1, &vao);

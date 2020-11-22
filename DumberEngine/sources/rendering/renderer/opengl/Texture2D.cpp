@@ -10,6 +10,7 @@
 void Texture2D::loadFrom(const char *path, ETextureType type, unsigned int flagWrapS, unsigned int flagWrapT, unsigned int flagMinFilter,
                          unsigned int flagMagFilter)
 {
+    this->type = type;
 
     std::cout << "Loading texture " << path << std::endl;
 
@@ -51,6 +52,7 @@ void Texture2D::use(int textureUnit)
 
 Texture2D::~Texture2D()
 {
+    std::cout << "deleting texture id: " << id << std::endl;
     glDeleteTextures(1, &id);
 }
 

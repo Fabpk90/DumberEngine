@@ -82,7 +82,7 @@ void Engine::start()
     sm->loadFrom("mesh/nanosuit/nanosuit.obj");
     meshGO->addComponent(sm);
 
-    scene->addGameObject(worldGO);
+   // scene->addGameObject(worldGO);
     scene->addGameObject(o);
     scene->addGameObject(avatarGO);
     //scene->addGameObject(phy);

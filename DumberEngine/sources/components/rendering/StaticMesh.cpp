@@ -5,7 +5,6 @@
 #include <fstream>
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
-#include <iostream>
 #include "../../../headers/components/IComponent.hpp"
 #include "../../../headers/components/rendering/StaticMesh.hpp"
 #include "../../../headers/rendering/renderer/Camera.hpp"
@@ -22,7 +21,7 @@ void StaticMesh::draw()
 
     for(const auto mesh : meshes)
     {
-        mesh->Draw(*shader);
+        mesh->Draw(shader);
     }
 }
 
@@ -66,7 +65,7 @@ Mesh* StaticMesh::loadMeshFrom(aiMesh &mesh, const aiScene *scene)
 {
     std::vector<Vertex> vertices;
     std::vector<unsigned int> indices;
-    std::vector<Texture2D> textures;
+    std::vector<Texture2D*> textures;
 
     vertices.reserve(mesh.mNumVertices);
     indices.reserve(mesh.mNumFaces);
@@ -121,9 +120,9 @@ Mesh* StaticMesh::loadMeshFrom(aiMesh &mesh, const aiScene *scene)
     return new Mesh(vertices, indices, textures);
 }
 
-std::vector<Texture2D> StaticMesh::loadMaterialTexturesType(aiMaterial *pMaterial, aiTextureType type)
+std::vector<Texture2D*> StaticMesh::loadMaterialTexturesType(aiMaterial *pMaterial, aiTextureType type)
 {
-    std::vector<Texture2D> tex;
+    std::vector<Texture2D*> tex;
 
     tex.resize(pMaterial->GetTextureCount(type));
 
@@ -136,7 +135,8 @@ std::vector<Texture2D> StaticMesh::loadMaterialTexturesType(aiMaterial *pMateria
             std::string texPath(path);
             texPath.append(texturePath.C_Str());
 
-            tex[i].loadFrom(texPath.c_str(), ITexture::convertFrom(type));
+            tex[i] = new Texture2D();
+            tex[i]->loadFrom(texPath.c_str(), ITexture::convertFrom(type));
         }
     }
 
@@ -156,4 +156,14 @@ StaticMesh::~StaticMesh()
 
     for(auto mesh : meshes)
         delete mesh;
+}
+
+void StaticMesh::drawInspector()
+{
+    ImGui::Text("Textures from Mesh");
+    for(auto& mesh : meshes)
+    {
+        ImGui::Image((void*)(intptr_t) mesh->getTextures()[0]->getID(), ImVec2(512,512));
+    }
+
 }

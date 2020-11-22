@@ -20,13 +20,15 @@ public:
 
     void draw() override;
 
+    void drawInspector() override;
+
     ~StaticMesh() override;
 
 private:
     void recursivelyLoadNode(aiNode *const pNode, const aiScene *pScene);
 
     Mesh* loadMeshFrom(aiMesh& mesh, const aiScene* scene);
-    std::vector<Texture2D> loadMaterialTexturesType(aiMaterial *pMaterial, aiTextureType type);
+    std::vector<Texture2D*> loadMaterialTexturesType(aiMaterial *pMaterial, aiTextureType type);
 
 private:
     //TODO: fix this, make it not a vector of pointers

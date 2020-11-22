@@ -14,19 +14,22 @@
 #include "../../rendering/helper/Shader.hpp"
 #include "../../rendering/renderer/opengl/Texture2D.hpp"
 
-
-
 class Mesh {
 public:
-    Mesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices, std::vector<Texture2D>& textures);
-    void Draw(Shader& shader);
+    Mesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices, std::vector<Texture2D*>& textures);
+    void Draw(Shader* shader);
 
     ~Mesh()
     {
         glDeleteVertexArrays(1, &vao);
         glDeleteBuffers(1, &vbo);
         glDeleteBuffers(1, &ebo);
+
+        for(auto tex : textures)
+            delete tex;
     };
+
+    std::vector<Texture2D*>& getTextures() { return textures; }
 private:
     //  render data
     unsigned int vao;
@@ -35,6 +38,6 @@ private:
     // mesh data
     std::vector<Vertex>       vertices;
     std::vector<unsigned int> indices;
-    std::vector<Texture2D>      textures;
+    std::vector<Texture2D*>      textures;
 };
 #endif //DUMBERENGINE_MESH_HPP

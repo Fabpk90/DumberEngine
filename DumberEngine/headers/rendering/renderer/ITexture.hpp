@@ -79,6 +79,8 @@ public:
                           unsigned int flagMagFilter) = 0;
     virtual void use(int textureUnit) = 0;
 
+    ETextureType getType() { return type; }
+
 
     virtual ~ITexture() {};
 };

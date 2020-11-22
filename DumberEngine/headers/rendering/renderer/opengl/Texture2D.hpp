@@ -28,6 +28,7 @@ public:
     ~Texture2D() override;
 
     void setID(GLuint id);
+    GLuint getID() { return id; }
 };
 
 #endif //DUMBERENGINE_TEXTURE2D_HPP
