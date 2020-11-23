@@ -79,7 +79,7 @@ void Engine::start()
 
     auto meshGO = new GameObject("StaticMesh");
     auto sm = new StaticMesh();
-    sm->loadFrom("mesh/nanosuit/nanosuit.obj");
+    sm->loadFrom("mesh/Cerberus/Cerberus_LP.fbx");
     meshGO->addComponent(sm);
 
    // scene->addGameObject(worldGO);

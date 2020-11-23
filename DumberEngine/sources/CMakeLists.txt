@@ -9,5 +9,5 @@ add_executable(DumberEngine ${ENGINE_SOURCES} ${IMGUI_SOURCES} ${ENGINE_HEADERS}
 IF(${CMAKE_BUILD_TYPE} MATCHES Debug)
     target_link_libraries(DumberEngine glfw3 BulletCollisiond BulletSoftBodyd LinearMathd BulletDynamicsd assimpd)
 else()
-    target_link_libraries(DumberEngine glfw3 BulletCollision BulletSoftBody LinearMath BulletDynamics assimpd)
+    target_link_libraries(DumberEngine glfw3 BulletCollision BulletSoftBody LinearMath BulletDynamics assimp IrrXML zlibstatic)
 endif()

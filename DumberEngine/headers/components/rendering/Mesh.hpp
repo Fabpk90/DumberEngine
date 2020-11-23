@@ -17,7 +17,9 @@
 class Mesh {
 public:
     Mesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices, std::vector<Texture2D*>& textures);
-    void Draw(Shader* shader);
+    void draw(Shader* shader);
+
+    void drawInspectorTexture();
 
     ~Mesh()
     {

@@ -1,0 +1,35 @@
+# Blender MTL File: 'Glock_01.blend'
+# Material Count: 3
+
+newmtl Bullet
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd Glock_01_Textures\\Glock_01_Bullet_8-bit_Diffuse.png
+
+newmtl Glock
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd Glock_01_Textures\\Glock_01_8-bit_Diffuse.png.png
+
+newmtl Magazine
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd Glock_01_Textures\\Glock_01_Magazine_8-bit_Diffuse.png

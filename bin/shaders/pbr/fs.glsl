@@ -10,10 +10,10 @@ out vec4 color;
 
 uniform vec3 cameraPos;
 
-uniform vec3 albedo;
-uniform float metallic;
-uniform float roughness;
-uniform float ao;
+uniform sampler2D t_albedo;
+uniform sampler2D t_metallic;
+uniform sampler2D t_roughness;
+uniform sampler2D t_ao;
 
 uniform vec3 lightPos;
 uniform vec3 lightColor;
@@ -38,7 +38,31 @@ float distributionGGX(vec3 normal, vec3 halfVector, float roughness)
     return a2 / denom;
 }
 
+float geometrySchlickGGX(float NdotV, float roughness)
+{
+    float a = roughness + 1;
+    float k = (a*a) / 8.0;
+
+    return NdotV / (NdotV * (1.0 - k) + k);
+}
+
+float geometrySmith(vec3 N, vec3 V, vec3 L, float roughness)
+{
+    float NdotV = max(dot(N, V), 0.0);
+    float NdotL = max(dot(N, L), 0.0);
+
+    float ggx1 = geometrySchlickGGX(NdotV, roughness);
+    float ggx2 = geometrySchlickGGX(NdotL, roughness);
+
+    return ggx1 * ggx2;
+}
+
 void main() {
+
+    float roughness = texture(t_roughness, uv).r;
+    float metallic = texture(t_metallic, uv).r;
+    vec3 albedo = texture(t_albedo, uv).rgb;
+    float ao = texture(t_ao, uv).r;
 
     vec3 N = normalize(normal);
     vec3 view = normalize(cameraPos - worldPos);
@@ -58,10 +82,30 @@ void main() {
         F0 = mix(F0, albedo, metallic); //how much metallic the material is
 
         vec3 F = fresnelSchlick(max(dot(halfVector, view), 0.0), F0);
+        float NDF = distributionGGX(N, halfVector, roughness);
+        float G = geometrySmith(N, view, lightDir, roughness);
+
+        vec3 numerator = NDF * F * G;
+        float denominator = 4.0f * max(dot(N, view), 0.0) * max(dot(N, lightDir), 0.0);
+
+        vec3 specular = numerator / max(denominator, 0.0001);
+
+        vec3 kS = F;
+        vec3 kD = vec3(1.0) - kS; //amount of refracted light
+
+        kD *= 1.0 - metallic;
+
+        float NdotL = max(dot(N, lightDir), 0.0); // n*wi
+        Lo += (kD * albedo / PI + specular) * radiance * NdotL;
     }
 
-    Lo /= 1;
+    vec3 ambient = vec3(0.03) * albedo * ao;
+    vec3 pixelColor = ambient + Lo;
 
-    color = vec4(1, 0, 0, 1);
+    //hdr
+    pixelColor = pixelColor / (pixelColor + vec3(1.0));
+    pixelColor = pow(pixelColor, vec3(1.0/2.2));
+
+    color = vec4(pixelColor, 1.0);
 
 }

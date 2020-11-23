@@ -7,16 +7,39 @@
 #include <utility>
 
 
-void Mesh::Draw(Shader* shader)
+void Mesh::draw(Shader* shader)
 {
     glBindVertexArray(vao);
-
+    int i = 0;
     for(auto& tex : textures)
     {
-        if(tex->getType() == ITexture::Diffuse)
-            tex->use(0);
+        switch (tex->getType())
+        {
+            case ITexture::Albedo:
+                tex->use(i);
+                shader->setInt("t_albedo", i);
+                i++;
+                break;
+
+            case ITexture::Metalness:
+                tex->use(i);
+                shader->setInt("t_metallic", i);
+                i++;
+                break;
+
+            case ITexture::AO:
+                tex->use(i);
+                shader->setInt("t_ao", i);
+                i++;
+                break;
+
+            case ITexture::Roughness:
+                tex->use(i);
+                shader->setInt("t_roughness", i);
+                i++;
+                break;
+        }
     }
-    shader->setInt("textureDiffuse", 0);
 
     glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
 }
@@ -44,5 +67,10 @@ Mesh::Mesh(std::vector<Vertex> &vertices, std::vector<unsigned int> &indices, st
 
     glEnableVertexAttribArray(2);
     glVertexAttribPointer(2, 2, GL_FLOAT, false, sizeof(Vertex), (void*)(sizeof(float) * 6));
+}
+
+void Mesh::drawInspectorTexture()
+{
+
 }
 

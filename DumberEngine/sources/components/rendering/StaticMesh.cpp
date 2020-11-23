@@ -5,6 +5,7 @@
 #include <fstream>
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
+#include <iostream>
 #include "../../../headers/components/IComponent.hpp"
 #include "../../../headers/components/rendering/StaticMesh.hpp"
 #include "../../../headers/rendering/renderer/Camera.hpp"
@@ -19,9 +20,16 @@ void StaticMesh::draw()
     auto p = Camera::getInstance().getProjectionMatrix();
     shader->setMatrix4("p", p);
 
+    auto pos = glm::vec3(10, 10, 10);
+    shader->setVec3("lightPos", pos);
+    pos = glm::vec3(1.0f);
+    shader->setVec3("lightColor", pos);
+
+    shader->setVec3("cameraPos", Camera::getInstance().position);
+
     for(const auto mesh : meshes)
     {
-        mesh->Draw(shader);
+        mesh->draw(shader);
     }
 }
 
@@ -104,8 +112,21 @@ Mesh* StaticMesh::loadMeshFrom(aiMesh &mesh, const aiScene *scene)
     {
         auto mat = scene->mMaterials[mesh.mMaterialIndex];
 
-        auto texDiffuse = loadMaterialTexturesType(mat, aiTextureType_DIFFUSE);
-        textures = texDiffuse;
+        auto texAlbedo = loadMaterialTexturesType(mat, aiTextureType_BASE_COLOR);
+
+        aiString texture_file;
+        mat->Get(AI_MATKEY_TEXTURE(aiTextureType_DIFFUSE, 0), texture_file);
+
+        auto tex = scene->GetEmbeddedTexture(texture_file.C_Str());
+        if(tex)
+        {
+            std::cout << "oh yeah diffuse embedded" << std::endl;
+        }
+
+        if(texAlbedo.empty())
+            texAlbedo = loadMaterialTexturesType(mat, aiTextureType_DIFFUSE);
+
+        textures = texAlbedo;
 
         auto texSpecular = loadMaterialTexturesType(mat, aiTextureType_SPECULAR);
 
@@ -114,7 +135,14 @@ Mesh* StaticMesh::loadMeshFrom(aiMesh &mesh, const aiScene *scene)
             texSpecular = loadMaterialTexturesType(mat, aiTextureType_HEIGHT);
         }
 
+        auto texMetallic = loadMaterialTexturesType(mat, aiTextureType_METALNESS);
+        auto texRoughness = loadMaterialTexturesType(mat, aiTextureType_DIFFUSE_ROUGHNESS);
+        auto texAO = loadMaterialTexturesType(mat, aiTextureType_AMBIENT_OCCLUSION);
+
         textures.insert(textures.end(), texSpecular.begin(), texSpecular.end());
+        textures.insert(textures.end(), texMetallic.begin(), texMetallic.end());
+        textures.insert(textures.end(), texRoughness.begin(), texRoughness.end());
+        textures.insert(textures.end(), texAO.begin(), texAO.end());
     }
 
     return new Mesh(vertices, indices, textures);
@@ -145,7 +173,7 @@ std::vector<Texture2D*> StaticMesh::loadMaterialTexturesType(aiMaterial *pMateri
 
 void StaticMesh::start()
 {
-    shader = new Shader("shaders/mesh/");
+    shader = new Shader("shaders/pbr/");
 
     transform->setPosition(0, 0, 0);
 }
