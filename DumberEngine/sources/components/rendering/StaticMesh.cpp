@@ -6,6 +6,7 @@
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
 #include <iostream>
+#include <Windows.h>
 #include "../../../headers/components/IComponent.hpp"
 #include "../../../headers/components/rendering/StaticMesh.hpp"
 #include "../../../headers/rendering/renderer/Camera.hpp"
@@ -189,9 +190,40 @@ StaticMesh::~StaticMesh()
 void StaticMesh::drawInspector()
 {
     ImGui::Text("Textures from Mesh");
+
+    static char buf[1024];
+    ImGui::InputText("Texturepath", buf, 1024);
+
+    static char* items[] = {"Albedo","Normal","Metalness","AO","Roughness"};
+    static int index = 0;
+    ImGui::Combo("Texture type", &index, items, 5);
+    if(ImGui::Button("Load Texture"))
+    {
+
+        Texture2D* tex = new Texture2D();
+        tex->loadFrom(buf, static_cast<ITexture::ETextureType>(ITexture::Albedo + index));
+        std::cout << "size before " << meshes[0]->getTextures().size() << std::endl;
+        meshes[0]->getTextures().push_back(tex);
+        std::cout << "size after " << meshes[0]->getTextures().size() << std::endl;
+    }
+
     for(auto& mesh : meshes)
     {
-        ImGui::Image((void*)(intptr_t) mesh->getTextures()[0]->getID(), ImVec2(512,512));
+        auto texColor = mesh->getTextureByType(ITexture::Albedo);
+
+        if(!texColor)
+            texColor = mesh->getTextureByType(ITexture::Diffuse);
+
+        if(texColor)
+        {
+            ImGui::Image((void*)(intptr_t) texColor->getID(), ImVec2(256, 256));
+        }
+        else
+        {
+
+        }
     }
+
+
 
 }

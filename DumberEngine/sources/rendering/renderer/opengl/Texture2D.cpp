@@ -19,6 +19,10 @@ void Texture2D::loadFrom(const char *path, ETextureType type, unsigned int flagW
 
     if(data)
     {
+        name = path;
+        size.x = width;
+        size.y = height;
+
         glGenTextures(1, &id);
         glBindTexture(GL_TEXTURE_2D, id);
 

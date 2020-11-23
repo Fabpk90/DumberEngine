@@ -19,8 +19,6 @@ public:
     Mesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices, std::vector<Texture2D*>& textures);
     void draw(Shader* shader);
 
-    void drawInspectorTexture();
-
     ~Mesh()
     {
         glDeleteVertexArrays(1, &vao);
@@ -32,6 +30,7 @@ public:
     };
 
     std::vector<Texture2D*>& getTextures() { return textures; }
+    Texture2D* getTextureByType(Texture2D::ETextureType type);
 private:
     //  render data
     unsigned int vao;

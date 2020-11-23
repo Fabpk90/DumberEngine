@@ -69,8 +69,14 @@ Mesh::Mesh(std::vector<Vertex> &vertices, std::vector<unsigned int> &indices, st
     glVertexAttribPointer(2, 2, GL_FLOAT, false, sizeof(Vertex), (void*)(sizeof(float) * 6));
 }
 
-void Mesh::drawInspectorTexture()
+Texture2D *Mesh::getTextureByType(Texture2D::ETextureType type)
 {
+    for(const auto tex : textures)
+    {
+        if(tex->getType() == type)
+            return tex;
+    }
 
+    return nullptr;
 }
 

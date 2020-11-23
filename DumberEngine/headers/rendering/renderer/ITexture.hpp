@@ -14,8 +14,8 @@ public:
     {
         Diffuse,
         Specular,
-        Normal,
         Albedo,
+        Normal,
         Metalness,
         AO,
         Roughness,
@@ -73,6 +73,7 @@ public:
 
 protected:
     ETextureType type;
+    std::string name;
 
 public:
     virtual void loadFrom(const char *path, ETextureType type, unsigned int flagWrapS, unsigned int flagWrapT, unsigned int flagMinFilter,
@@ -80,6 +81,7 @@ public:
     virtual void use(int textureUnit) = 0;
 
     ETextureType getType() { return type; }
+    std::string& getName() { return name;}
 
 
     virtual ~ITexture() {};
