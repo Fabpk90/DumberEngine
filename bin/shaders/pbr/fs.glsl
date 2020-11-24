@@ -3,7 +3,6 @@
 #define PI 3.1415926538
 
 in vec3 worldPos;
-in vec3 normal;
 in vec2 uv;
 
 out vec4 color;
@@ -14,6 +13,7 @@ uniform sampler2D t_albedo;
 uniform sampler2D t_metallic;
 uniform sampler2D t_roughness;
 uniform sampler2D t_ao;
+uniform sampler2D t_normal;
 
 uniform vec3 lightPos;
 uniform vec3 lightColor;
@@ -61,11 +61,15 @@ void main() {
 
     float roughness = texture(t_roughness, uv).r;
     float metallic = texture(t_metallic, uv).r;
-    vec3 albedo = texture(t_albedo, uv).rgb;
+    vec3 albedo = pow(texture(t_albedo, uv).rgb, vec3(2.2));
     float ao = texture(t_ao, uv).r;
 
-    vec3 N = normalize(normal);
+    vec3 N = normalize(texture(t_normal, uv).rgb);
     vec3 view = normalize(cameraPos - worldPos);
+
+    //avg for dieletric mat
+    vec3 F0 = vec3(0.04);
+    F0 = mix(F0, albedo, metallic); //how much metallic the material is
 
     vec3 Lo = vec3(0);
     for(int i = 0; i < 1; i++)
@@ -77,18 +81,14 @@ void main() {
         float attenuation = 1.0 / (distance * distance); //inv quadratic attenuation
         vec3 radiance = lightColor * attenuation;
 
-        //avg for dieletric mat
-        vec3 F0 = vec3(0.04);
-        F0 = mix(F0, albedo, metallic); //how much metallic the material is
-
         vec3 F = fresnelSchlick(max(dot(halfVector, view), 0.0), F0);
         float NDF = distributionGGX(N, halfVector, roughness);
         float G = geometrySmith(N, view, lightDir, roughness);
 
-        vec3 numerator = NDF * F * G;
-        float denominator = 4.0f * max(dot(N, view), 0.0) * max(dot(N, lightDir), 0.0);
+        vec3 numerator = NDF * G * F;
+        float denominator = 4 * max(dot(N, view), 0.0) * max(dot(N, lightDir), 0.0) + 0.0001;
 
-        vec3 specular = numerator / max(denominator, 0.0001);
+        vec3 specular = numerator / denominator;
 
         vec3 kS = F;
         vec3 kD = vec3(1.0) - kS; //amount of refracted light

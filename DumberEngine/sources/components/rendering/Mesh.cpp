@@ -15,6 +15,7 @@ void Mesh::draw(Shader* shader)
     {
         switch (tex->getType())
         {
+            case ITexture::Diffuse:
             case ITexture::Albedo:
                 tex->use(i);
                 shader->setInt("t_albedo", i);
@@ -36,6 +37,12 @@ void Mesh::draw(Shader* shader)
             case ITexture::Roughness:
                 tex->use(i);
                 shader->setInt("t_roughness", i);
+                i++;
+                break;
+
+            case ITexture::Normal:
+                tex->use(i);
+                shader->setInt("t_normal", i);
                 i++;
                 break;
         }

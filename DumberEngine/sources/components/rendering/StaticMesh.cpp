@@ -209,19 +209,10 @@ void StaticMesh::drawInspector()
 
     for(auto& mesh : meshes)
     {
-        auto texColor = mesh->getTextureByType(ITexture::Albedo);
-
-        if(!texColor)
-            texColor = mesh->getTextureByType(ITexture::Diffuse);
-
-        if(texColor)
-        {
-            ImGui::Image((void*)(intptr_t) texColor->getID(), ImVec2(256, 256));
-        }
-        else
-        {
-
-        }
+       for(auto tex : mesh->getTextures())
+       {
+           ImGui::Image((void*)(intptr_t) tex->getID(), ImVec2(256, 256));
+       }
     }
 
 
