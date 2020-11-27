@@ -6,10 +6,10 @@
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
 #include <iostream>
-#include <Windows.h>
 #include "../../../headers/components/IComponent.hpp"
 #include "../../../headers/components/rendering/StaticMesh.hpp"
 #include "../../../headers/rendering/renderer/Camera.hpp"
+#include "../../../headers/systems/Editor.hpp"
 
 void StaticMesh::draw()
 {
@@ -174,6 +174,7 @@ std::vector<Texture2D*> StaticMesh::loadMaterialTexturesType(aiMaterial *pMateri
 
 void StaticMesh::start()
 {
+    Editor::instance->addDragNDropCallback(this);
     shader = new Shader("shaders/pbr/");
 
     transform->setPosition(0, 0, 0);
@@ -185,6 +186,9 @@ StaticMesh::~StaticMesh()
 
     for(auto mesh : meshes)
         delete mesh;
+
+    if(Editor::instance)
+        Editor::instance->addDragNDropCallback(this);
 }
 
 void StaticMesh::drawInspector()
@@ -195,26 +199,51 @@ void StaticMesh::drawInspector()
     ImGui::InputText("Texturepath", buf, 1024);
 
     static char* items[] = {"Albedo","Normal","Metalness","AO","Roughness"};
-    static int index = 0;
-    ImGui::Combo("Texture type", &index, items, 5);
+    ImGui::Combo("Texture type", &indexTextureType, items, 5);
     if(ImGui::Button("Load Texture"))
     {
-
+    //TODO: drag and drop to add textures
         Texture2D* tex = new Texture2D();
-        tex->loadFrom(buf, static_cast<ITexture::ETextureType>(ITexture::Albedo + index));
+        tex->loadFrom(buf, static_cast<ITexture::ETextureType>(ITexture::Albedo + indexTextureType));
         std::cout << "size before " << meshes[0]->getTextures().size() << std::endl;
         meshes[0]->getTextures().push_back(tex);
         std::cout << "size after " << meshes[0]->getTextures().size() << std::endl;
     }
 
+    Texture2D* texToDelete = nullptr;
+    Mesh* textureOwner = nullptr;
     for(auto& mesh : meshes)
     {
        for(auto tex : mesh->getTextures())
        {
+           ImGui::PushID(tex);
+           if(ImGui::Button("X"))
+           {
+               texToDelete = tex;
+               textureOwner = mesh;
+           }
            ImGui::Image((void*)(intptr_t) tex->getID(), ImVec2(256, 256));
+           ImGui::PopID();
        }
     }
 
+    if(texToDelete)
+    {
+        auto& textures = textureOwner->getTextures();
+        auto index = std::find(textures.begin(), textures.end(), texToDelete);
+        textureOwner->getTextures().erase(index);
 
+        delete texToDelete;
+    }
+}
 
+void StaticMesh::OnFileDropped(const char *filePath)
+{
+    Texture2D* tex = new Texture2D();
+    if(!tex->loadFrom(filePath, static_cast<ITexture::ETextureType>(ITexture::Albedo + indexTextureType)))
+    {
+        delete tex;
+    }
+    else
+        meshes[0]->getTextures().push_back(tex);
 }

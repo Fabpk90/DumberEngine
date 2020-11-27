@@ -19,7 +19,6 @@ private:
     Scene* scene;
 
     std::vector<ISystem*> systems;
-
 public:
 
     ~Engine();

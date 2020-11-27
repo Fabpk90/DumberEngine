@@ -14,6 +14,8 @@ private:
     bool isCursorvisible;
     bool isRightButtonReleased;
     bool isControllingMovement;
+
+    float speedScale = 1.0f;
 public:
     CameraScript();
 

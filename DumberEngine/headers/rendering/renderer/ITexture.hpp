@@ -76,7 +76,7 @@ protected:
     std::string name;
 
 public:
-    virtual void loadFrom(const char *path, ETextureType type, unsigned int flagWrapS, unsigned int flagWrapT, unsigned int flagMinFilter,
+    virtual bool loadFrom(const char *path, ETextureType type, unsigned int flagWrapS, unsigned int flagWrapT, unsigned int flagMinFilter,
                           unsigned int flagMagFilter) = 0;
     virtual void use(int textureUnit) = 0;
 

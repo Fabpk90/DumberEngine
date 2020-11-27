@@ -7,7 +7,7 @@
 #include <iostream>
 #include "../../../../headers/rendering/renderer/opengl/Texture2D.hpp"
 
-void Texture2D::loadFrom(const char *path, ETextureType type, unsigned int flagWrapS, unsigned int flagWrapT, unsigned int flagMinFilter,
+bool Texture2D::loadFrom(const char *path, ETextureType type, unsigned int flagWrapS, unsigned int flagWrapT, unsigned int flagMinFilter,
                          unsigned int flagMagFilter)
 {
     this->type = type;
@@ -36,16 +36,21 @@ void Texture2D::loadFrom(const char *path, ETextureType type, unsigned int flagW
         else if(nrChannels == 4)
             glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
         else
+        {
             std::cout << "The texture has an unknown number of channels" << std::endl;
+            return false;
+        }
 
         glGenerateMipmap(GL_TEXTURE_2D);
     }
     else
     {
         std::cout << "The texture at " << path << " could not be loaded" << std::endl;
+        return false;
     }
 
     stbi_image_free(data);
+    return true;
 }
 
 void Texture2D::use(int textureUnit)

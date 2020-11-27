@@ -3,6 +3,7 @@
 //
 
 #include <iostream>
+#include <imgui/imgui.h>
 #include "../../headers/components/Transform.hpp"
 
 Transform::Transform()
@@ -86,4 +87,9 @@ void Transform::addPosition(float x, float y, float z)
     position.z += z;
 
     modelMatrix[3] = glm::vec4(position, 1.0f);
+}
+
+void Transform::drawInspector()
+{
+    //ImGui::InputFloat3("Scale", &scale.x, &scale.y, &scale.z)
 }

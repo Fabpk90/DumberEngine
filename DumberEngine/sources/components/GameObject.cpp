@@ -13,6 +13,8 @@ GameObject::GameObject(const char *name) : name(name)
     isActive = true;
     components = std::list<IComponent *>();
     transform = Transform();
+
+    guiComponents.push_back(&transform);
 }
 
 void GameObject::start()
@@ -84,13 +86,16 @@ void GameObject::drawInspector()
 {
     if(ImGui::CollapsingHeader(name.c_str()))
     {
+        ImGui::PushID(this);
         //TODO: optimize this
-        ImGui::Checkbox(("Activate " + name).c_str(), &isActive);
+        ImGui::Checkbox("Activate", &isActive);
 
         for (IComponent *i : components)
         {
             i->drawInspector();
         }
+
+        ImGui::PopID();
     }
 }
 

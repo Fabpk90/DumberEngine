@@ -7,11 +7,12 @@
 
 #include "../IComponent.hpp"
 #include "Mesh.hpp"
+#include "../../utils/IDragNDrop.hpp"
 
 #include <assimp/scene.h>
 #include <vector>
 
-class StaticMesh : public IComponent
+class StaticMesh : public IComponent, public IDragNDrop
 {
 public:
     void start() override;
@@ -24,6 +25,8 @@ public:
 
     ~StaticMesh() override;
 
+    void OnFileDropped(const char *path) override;
+
 private:
     void recursivelyLoadNode(aiNode *const pNode, const aiScene *pScene);
 
@@ -35,6 +38,7 @@ private:
     std::vector<Mesh*> meshes;
     std::string path;
     Shader* shader;
+    int indexTextureType = 0;
 };
 
 #endif //DUMBERENGINE_STATICMESH_HPP

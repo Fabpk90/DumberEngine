@@ -17,7 +17,7 @@ private:
 
 
 public:
-    void loadFrom(const char *path, ETextureType type, unsigned int flagWrapS = GL_REPEAT, unsigned int flagWrapT = GL_REPEAT, unsigned int flagMinFilter = GL_NEAREST,
+    bool loadFrom(const char *path, ETextureType type, unsigned int flagWrapS = GL_REPEAT, unsigned int flagWrapT = GL_REPEAT, unsigned int flagMinFilter = GL_NEAREST,
                   unsigned int flagMagFilter = GL_NEAREST) override;
 
     void use(int textureUnit) override;

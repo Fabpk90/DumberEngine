@@ -90,7 +90,7 @@ void CameraScript::update()
         }
     }
 
-    movement *= Time::getInstance().deltaTime;
+    movement *= Time::getInstance().deltaTime * speedScale;
 
     cam.move(movement);
     if (!isCursorvisible)
@@ -127,5 +127,6 @@ void CameraScript::drawInspector()
 {
     ImGui::Text("CameraScript");
     ImGui::Text("%f %f %f", Camera::getInstance().position.x, Camera::getInstance().position.y, Camera::getInstance().position.z);
+    ImGui::DragFloat("Speed Scale", &speedScale);
     ImGui::Checkbox("is controlling movement ?", &isControllingMovement);
 }

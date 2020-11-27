@@ -23,6 +23,7 @@
 #include "../headers/components/physics/RigidBody.hpp"
 #include "../headers/components/scripts/PhysicsTest.hpp"
 #include "../headers/components/rendering/StaticMesh.hpp"
+#include "../headers/systems/Editor.hpp"
 
 static void loseFocus(bool isFocused)
 {}
@@ -40,10 +41,9 @@ void Engine::start()
 
     window->addWindowLoseFocusCallback(std::function(loseFocus));
 
-    systems.reserve(2);
-
     addSystem(new InputManager());
     addSystem(new Physics());
+    addSystem(new Editor());
 
     scene = new Scene();
 
@@ -84,7 +84,7 @@ void Engine::start()
 
    // scene->addGameObject(worldGO);
     scene->addGameObject(o);
-    scene->addGameObject(avatarGO);
+   // scene->addGameObject(avatarGO);
     //scene->addGameObject(phy);
    // scene->addGameObject(box);
     scene->addGameObject(meshGO);
@@ -147,6 +147,8 @@ void Engine::update()
         scene->drawInspector();
 
         Camera::getInstance().pp.drawInspector();
+
+        //ImGui::ShowDemoWindow();
 
         ImGui::Render();
 

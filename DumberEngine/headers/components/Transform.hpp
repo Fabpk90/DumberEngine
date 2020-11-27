@@ -7,8 +7,9 @@
 
 #include <glm/glm.hpp>
 #include<glm/gtc/quaternion.hpp>
+#include "GuiComponent.hpp"
 
-class Transform
+class Transform : public GuiComponent
 {
 private:
     glm::mat4 modelMatrix;
@@ -25,6 +26,8 @@ public:
     void addPosition(float x, float y = 0, float z = 0);
     void setPosition(float x, float y, float z);
     void rotate(glm::vec3 axis, float angle);
+
+    void drawInspector() override;
 
     glm::mat4& getModelMatrix() { return modelMatrix; };
     glm::vec3& getPosition() { return position; };
