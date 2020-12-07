@@ -21,10 +21,10 @@ void StaticMesh::draw()
     auto p = Camera::getInstance().getProjectionMatrix();
     shader->setMatrix4("p", p);
 
-    auto pos = glm::vec3(10, 10, 10);
+    auto pos = glm::vec3(2, 2, 2);
     shader->setVec3("lightPos", pos);
-    pos = glm::vec3(1.0f);
-    shader->setVec3("lightColor", pos);
+    auto color = glm::vec3(1.0f);
+    shader->setVec3("lightColor", color);
 
     shader->setVec3("cameraPos", Camera::getInstance().position);
 

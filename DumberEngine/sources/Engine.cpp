@@ -24,6 +24,7 @@
 #include "../headers/components/scripts/PhysicsTest.hpp"
 #include "../headers/components/rendering/StaticMesh.hpp"
 #include "../headers/systems/Editor.hpp"
+#include "../headers/components/rendering/PointLight.hpp"
 
 static void loseFocus(bool isFocused)
 {}
@@ -82,12 +83,17 @@ void Engine::start()
     sm->loadFrom("mesh/Cerberus/Cerberus_LP.fbx");
     meshGO->addComponent(sm);
 
+    auto pointLightGO = new GameObject("PointLight");
+    pointLightGO->addComponent(new PointLight());
+
+
    // scene->addGameObject(worldGO);
     scene->addGameObject(o);
    // scene->addGameObject(avatarGO);
     //scene->addGameObject(phy);
    // scene->addGameObject(box);
     scene->addGameObject(meshGO);
+    scene->addGameObject(pointLightGO);
 
     Camera::getInstance().pp.addPostProcess(new PPNoParams("shaders/postprocess/Outline/"));
     Camera::getInstance().pp.addPostProcess(new PPNoParams("shaders/postprocess/Blur/"));

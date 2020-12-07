@@ -91,5 +91,15 @@ void Transform::addPosition(float x, float y, float z)
 
 void Transform::drawInspector()
 {
-    //ImGui::InputFloat3("Scale", &scale.x, &scale.y, &scale.z)
+    ImGui::PushID(this);
+
+    if(ImGui::InputFloat3("Scale", &scale.x))
+    {
+        modelMatrix[0][0] = scale.x;
+        modelMatrix[1][1] = scale.y;
+        modelMatrix[2][2] = scale.z;
+    }
+
+    ImGui::PopID();
+
 }

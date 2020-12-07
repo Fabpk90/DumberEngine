@@ -87,8 +87,9 @@ void GameObject::drawInspector()
     if(ImGui::CollapsingHeader(name.c_str()))
     {
         ImGui::PushID(this);
-        //TODO: optimize this
         ImGui::Checkbox("Activate", &isActive);
+
+        transform.drawInspector();
 
         for (IComponent *i : components)
         {

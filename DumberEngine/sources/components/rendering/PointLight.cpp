@@ -1,0 +1,59 @@
+//
+// Created by fab on 07/12/2020.
+//
+
+#include <imgui/imgui.h>
+#include "../../../headers/components/IComponent.hpp"
+#include "../../../headers/components/rendering/PointLight.hpp"
+
+constexpr unsigned int SHADOW_WIDTH = 2048, SHADOW_HEIGHT = 2048;
+
+void PointLight::start()
+{
+    IComponent::start();
+
+    glGenTextures(1, &depthCubeMap);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, depthCubeMap);
+
+    for (int i = 0; i < 6; ++i)
+    {
+        glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_DEPTH_COMPONENT, SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT,
+                     nullptr);
+    }
+
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+    depthMap = new Fbo(SHADOW_WIDTH, SHADOW_HEIGHT, -1, depthCubeMap);
+    depthMap->enableRead(false);
+    depthMap->enableWrite(false);
+
+    projectionMatrix = glm::perspective(glm::radians(60.0f)
+            ,(float) IWindow::instance->getActualWidth() / (float) IWindow::instance->getActualHeight()
+    , 0.1f, 100.0f);
+}
+
+void PointLight::update()
+{
+    IComponent::update();
+}
+
+void PointLight::draw()
+{
+    IComponent::draw();
+}
+
+PointLight::~PointLight()
+{
+    delete depthMap;
+}
+
+void PointLight::drawInspector()
+{
+    IComponent::drawInspector();
+
+    ImGui::Image((void*)(intptr_t) depthCubeMap, ImVec2(SHADOW_WIDTH, SHADOW_HEIGHT));
+}

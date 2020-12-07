@@ -15,7 +15,7 @@ protected:
     GLuint idColorTex;
     GLuint idDepthTex;
 public:
-
+    Fbo() = delete;
     Fbo(int width, int height, bool hasDepth = true, bool hasColor = false, bool updateOnResize = false);
     Fbo(int width, int height, int colorTexId, int depthTexId);
 

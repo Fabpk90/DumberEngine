@@ -1,0 +1,14 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\DumberEngine",
+    "\\DumberEngine\\headers",
+    "\\DumberEngine\\headers\\components",
+    "\\DumberEngine\\headers\\components\\rendering",
+    "\\DumberEngine\\sources",
+    "\\DumberEngine\\sources\\components",
+    "\\DumberEngine\\sources\\components\\rendering"
+  ],
+  "SelectedNode": "\\CMakeLists.txt",
+  "PreviewInSolutionExplorer": false
+}

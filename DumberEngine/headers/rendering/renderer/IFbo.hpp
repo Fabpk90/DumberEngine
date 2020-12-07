@@ -17,6 +17,8 @@ protected:
     bool updateOnResize;
 
 public:
+    IFbo() = delete;
+
     IFbo(int width, int height, bool hasDepth = true, bool hasColor = false, bool updateOnResize = false)
     : width(width), height(height), hasDepth(hasDepth), hasColor(hasColor), updateOnResize(updateOnResize)
     {}
