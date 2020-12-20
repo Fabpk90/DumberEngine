@@ -52,6 +52,7 @@ void Engine::start()
 
     auto *o = new GameObject("Camera");
     o->addComponent(new CameraScript());
+    o->addComponent(cam);
 
     auto* worldGO = new GameObject("World");
     World* world = new World();
@@ -132,16 +133,8 @@ void Engine::update()
         glCullFace(GL_BACK);
 
         scene->draw();
+        scene->drawPostRendering();
         //debug->draw();
-
-        glDisable(GL_DEPTH_TEST);
-        Camera::getInstance().pp.activateEffects();
-        Camera::getInstance().pp.getFBO().unBind();
-
-        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
-
-        Camera::getInstance().pp.draw();
 
         //GUI
         // Start the Dear ImGui frame

@@ -8,6 +8,7 @@
 #include <unordered_map>
 #include "../components/GameObject.hpp"
 #include "helper/Shader.hpp"
+#include "../components/rendering/IPostRendering.hpp"
 
 class Scene
 {
@@ -23,6 +24,7 @@ public:
     void update();
 
     void draw();
+    void drawPostRendering();
     void drawCastingShadowObjects(Shader *pShader);
 
     void addGameObject(GameObject *go);
@@ -31,7 +33,7 @@ public:
 
     void drawInspector();
 
-     static GameObject* getGameObject(unsigned int index);
+    static GameObject* getGameObject(unsigned int index);
 };
 
 #endif //DUMBERENGINE_SCENE_HPP

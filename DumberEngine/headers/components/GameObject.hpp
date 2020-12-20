@@ -9,18 +9,22 @@
 #include "Transform.hpp"
 #include "../rendering/helper/Shader.hpp"
 #include "physics/ICollisionCallbacks.hpp"
+#include "rendering/IPostRendering.hpp"
 #include <list>
 #include <string>
+#include <vector>
 
 class GameObject : public IComponent, public ICollisionCallbacks
 {
 private:
-    std::list<IComponent *> components;
-    std::list<GuiComponent*> guiComponents;
-    std::list<ICollisionCallbacks*> physicsCallback;
+    std::vector<IComponent *> components;
+    std::vector<GuiComponent*> guiComponents;
+    std::vector<ICollisionCallbacks*> physicsCallback;
+    std::vector<IPostRendering*> postRenderers;
     
     Transform transform;
     bool isActive;
+    bool hasPostRenderers;
 
 public:
     void onCollisionEnter(GameObject *other, glm::vec3 point) override;
@@ -42,6 +46,7 @@ public:
     void drawShadows(Shader *pShader);
 
     void drawInspector() override;
+    void drawPostRenderers();
 
     void addComponent(IComponent *comp);
 

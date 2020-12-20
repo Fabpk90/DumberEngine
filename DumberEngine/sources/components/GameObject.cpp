@@ -2,8 +2,6 @@
 // Created by fab on 25/02/2020.
 //
 
-//TODO: gameobject index not init !
-
 #include <imgui/imgui.h>
 #include "../../headers/components/GameObject.hpp"
 
@@ -11,7 +9,6 @@
 GameObject::GameObject(const char *name) : name(name)
 {
     isActive = true;
-    components = std::list<IComponent *>();
     transform = Transform();
 
     guiComponents.push_back(&transform);
@@ -66,11 +63,20 @@ void GameObject::addComponent(IComponent *comp)
 
     components.push_back(comp);
 
-    auto collisions = dynamic_cast<ICollisionCallbacks*>(comp);
+    auto* collisions = dynamic_cast<ICollisionCallbacks*>(comp);
 
     if(collisions)
     {
         physicsCallback.push_back(collisions);
+    }
+
+    auto* postRenderer = dynamic_cast<IPostRendering*>(comp);
+    if(postRenderer)
+    {
+        if(postRenderers.empty())
+            hasPostRenderers = true;
+
+        postRenderers.push_back(postRenderer);
     }
 }
 
@@ -115,4 +121,13 @@ void GameObject::onCollisionEnter(GameObject *other, glm::vec3 point)
     {
         callback->onCollisionEnter(other, point);
     }
+}
+
+void GameObject::drawPostRenderers()
+{
+    if(!hasPostRenderers) return;
+
+    for(auto* postRenderer : postRenderers)
+        postRenderer->postDraw();
+
 }

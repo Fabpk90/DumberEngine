@@ -11,8 +11,9 @@
 #include "opengl/Vbo.hpp"
 #include "../helper/Shader.hpp"
 #include "../postprocess/PostProcessStack.hpp"
+#include "../../components/rendering/IPostRendering.hpp"
 
-class Camera : public IComponent
+class Camera : public IComponent, public IPostRendering
 {
 public:
     glm::vec3 position;
@@ -37,6 +38,8 @@ public:
     void update() override;
 
     void draw() override;
+
+    void postDraw() override;
 
     void drawInspector() override;
 

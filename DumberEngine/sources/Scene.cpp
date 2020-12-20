@@ -61,7 +61,7 @@ void Scene::removeGameObject(std::string name)
 
 Scene::Scene()
 {
-    gameObjects = std::unordered_map<unsigned int, GameObject *>();
+    selectedGO = nullptr;
     indexCounter = 0;
 }
 
@@ -96,6 +96,17 @@ void Scene::drawCastingShadowObjects(Shader *pShader)
     while (iter != gameObjects.end())
     {
         (*iter).second->drawShadows(pShader);
+        ++iter;
+    }
+}
+
+void Scene::drawPostRendering()
+{
+    auto iter = gameObjects.begin();
+
+    while (iter != gameObjects.end())
+    {
+        (*iter).second->drawPostRenderers();
         ++iter;
     }
 }

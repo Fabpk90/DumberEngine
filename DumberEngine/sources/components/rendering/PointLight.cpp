@@ -34,6 +34,13 @@ void PointLight::start()
     projectionMatrix = glm::perspective(glm::radians(60.0f)
             ,(float) IWindow::instance->getActualWidth() / (float) IWindow::instance->getActualHeight()
     , 0.1f, 100.0f);
+
+    lookAts[0] = projectionMatrix * glm::lookAt(transform->getPosition(), transform->getPosition() + glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f));
+    lookAts[1] = projectionMatrix * glm::lookAt(transform->getPosition(), transform->getPosition() + glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f));
+    lookAts[2] = projectionMatrix * glm::lookAt(transform->getPosition(), transform->getPosition() + glm::vec3(.0f, 1.0f, 0.0f), glm::vec3(0.0f, .0f, 1.0f));
+    lookAts[2] = projectionMatrix * glm::lookAt(transform->getPosition(), transform->getPosition() + glm::vec3(.0f, -1.0f, 0.0f), glm::vec3(0.0f, .0f, -1.0f));
+    lookAts[2] = projectionMatrix * glm::lookAt(transform->getPosition(), transform->getPosition() + glm::vec3(.0f, .0f, 1.0f), glm::vec3(0.0f, -1.0f, .0f));
+    lookAts[2] = projectionMatrix * glm::lookAt(transform->getPosition(), transform->getPosition() + glm::vec3(.0f, .0f, -1.0f), glm::vec3(0.0f, -1.0f, .0f));
 }
 
 void PointLight::update()
@@ -56,4 +63,15 @@ void PointLight::drawInspector()
     IComponent::drawInspector();
 
     ImGui::Image((void*)(intptr_t) depthCubeMap, ImVec2(SHADOW_WIDTH, SHADOW_HEIGHT));
+}
+
+void PointLight::postDraw()
+{
+    int previousHeight = IWindow::instance->getActualHeight();
+    int previousWidth = IWindow::instance->getActualHeight();
+
+    glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
+
+
+    glViewport(0, 0, previousWidth, previousHeight);
 }

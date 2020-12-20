@@ -17,13 +17,14 @@ Shader::Shader(const char *path) : path(path)
     shadersLoaded.push_back(this);
 }
 
+//TODO: make this more modular, don't repeat the loading code
 void Shader::load()
 {
     std::string s = path;
     s += "vs.glsl";
     std::ifstream i(s);
 
-    GLuint vertexShader = 0, fragmentShader = 0;
+    GLuint vertexShader = 0, fragmentShader = 0, geometryShader = 0;
     int compiledShader;
     char infoLog[1024];
 
@@ -55,9 +56,11 @@ void Shader::load()
         std::cout << "The path for the vertex shader is incorrect " << s << std::endl;
     }
 
+    i.close();
+
     s = path;
     s += "fs.glsl";
-    i.close();
+
 
     i.open(s);
 
@@ -87,6 +90,39 @@ void Shader::load()
     else
     {
         std::cout << "The path for the fragment shader is incorrect " << s << std::endl;
+    }
+
+    i.close();
+
+    s = path;
+    s += "gs.glsl";
+
+    //compiling geometry shader
+    if (i.good())
+    {
+        std::stringstream buf;
+        std::string geometryCode;
+
+        buf << i.rdbuf();
+
+        geometryCode = buf.str();
+
+        geometryShader = glCreateShader(GL_GEOMETRY_SHADER);
+        const char *code = geometryCode.c_str();
+        glShaderSource(geometryShader, 1, &code, NULL);
+        glCompileShader(geometryShader);
+
+        glGetShaderiv(geometryShader, GL_COMPILE_STATUS, &compiledShader);
+
+        if (!compiledShader)
+        {
+            glGetShaderInfoLog(geometryShader, 1024, NULL, infoLog);
+            std::cout << "ERROR::SHADER::GEOMETRY::COMPILATION_FAILED\n" << infoLog << std::endl;
+        }
+    }
+    else
+    {
+        std::cout << "The path for the geometry shader is incorrect " << s << std::endl;
     }
 
     shaderProgram = glCreateProgram();

@@ -113,3 +113,17 @@ void Camera::setPosition(glm::vec3 position)
     updateVecs();
 }
 
+void Camera::postDraw()
+{
+    glDisable(GL_DEPTH_TEST);
+    pp.activateEffects();
+    pp.getFBO().unBind();
+
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    pp.draw();
+
+    glEnable(GL_DEPTH_TEST);
+}
+
