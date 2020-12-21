@@ -247,3 +247,21 @@ void StaticMesh::OnFileDropped(const char *filePath)
     else
         meshes[0]->getTextures().push_back(tex);
 }
+
+bool StaticMesh::castShadow()
+{
+    return true;
+}
+
+void StaticMesh::drawShadow(Shader *pShader)
+{
+    IComponent::drawShadow(pShader);
+
+    pShader->use();
+    pShader->setMatrix4("model", transform->getModelMatrix());
+
+    for(auto* mesh : meshes)
+    {
+        mesh->drawShadows();
+    }
+}

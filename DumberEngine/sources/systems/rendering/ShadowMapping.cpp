@@ -29,7 +29,7 @@ void ShadowMapping::draw()
     shadowShader.use();
     shadowShader.setMatrix4("lightSpaceMatrix", projectionMatrix);
 
-    scene->drawCastingShadowObjects(&shadowShader);
+    Scene::instance->drawCastingShadowObjects(&shadowShader);
 }
 
 ShadowMapping::~ShadowMapping()

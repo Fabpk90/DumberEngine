@@ -8,6 +8,7 @@
 #include <string>
 #include <glad/glad.h>
 #include <list>
+#include <vector>
 #include "glm/glm.hpp"
 
 class Shader
@@ -44,7 +45,7 @@ public:
 private:
     void load();
 
-    static std::list<Shader*> shadersLoaded;
+    static std::vector<Shader*> shadersLoaded;
 
     const char *path;
     GLuint shaderProgram;

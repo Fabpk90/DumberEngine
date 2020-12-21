@@ -29,7 +29,7 @@ void World::draw()
 
     shaderWorld.use();
 
-    glm::mat4 m = Scene::getGameObject(*gameObjectIndex)->getTransform().getModelMatrix();
+    glm::mat4 m = Scene::instance->getGameObject(*gameObjectIndex)->getTransform().getModelMatrix();
     shaderWorld.setMatrix4("m", m);
     glm::mat4 v = Camera::getInstance().getViewMatrix();
     shaderWorld.setMatrix4("v", v);
@@ -250,7 +250,7 @@ Chunk *World::getChunkAt(int x, int y, int z)
 
 void World::drawShadow(Shader *pShader)
 {
-    glm::mat4 m = Scene::getGameObject(*gameObjectIndex)->getTransform().getModelMatrix();
+    glm::mat4 m = Scene::instance->getGameObject(*gameObjectIndex)->getTransform().getModelMatrix();
     pShader->setMatrix4("model", m);
     for (int i = 0; i < CHUNK_SIZE; ++i)
     {

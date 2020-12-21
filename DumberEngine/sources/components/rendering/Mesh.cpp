@@ -87,3 +87,9 @@ Texture2D *Mesh::getTextureByType(Texture2D::ETextureType type)
     return nullptr;
 }
 
+void Mesh::drawShadows()
+{
+    glBindVertexArray(vao);
+    glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+}
+

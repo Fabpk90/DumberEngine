@@ -16,7 +16,7 @@ void BoxCollider::drawInspector()
 void BoxCollider::start()
 {
     cube = new CubeDebug(glm::vec3(0.0f));
-    if(!Scene::getGameObject(*gameObjectIndex)->getComponent<RigidBody>())
+    if(!Scene::instance->getGameObject(*gameObjectIndex)->getComponent<RigidBody>())
     {
         physicsTransform = new btTransform();
         physicsTransform->setIdentity();

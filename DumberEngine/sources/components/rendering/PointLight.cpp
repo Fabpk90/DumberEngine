@@ -5,12 +5,15 @@
 #include <imgui/imgui.h>
 #include "../../../headers/components/IComponent.hpp"
 #include "../../../headers/components/rendering/PointLight.hpp"
+#include "../../../headers/rendering/Scene.hpp"
 
 constexpr unsigned int SHADOW_WIDTH = 2048, SHADOW_HEIGHT = 2048;
 
 void PointLight::start()
 {
     IComponent::start();
+
+    shader = new Shader("shaders/pointlightShadow/");
 
     glGenTextures(1, &depthCubeMap);
     glBindTexture(GL_TEXTURE_CUBE_MAP, depthCubeMap);
@@ -56,6 +59,7 @@ void PointLight::draw()
 PointLight::~PointLight()
 {
     delete depthMap;
+    delete shader;
 }
 
 void PointLight::drawInspector()
@@ -71,6 +75,11 @@ void PointLight::postDraw()
     int previousWidth = IWindow::instance->getActualHeight();
 
     glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, depthCubeMap);
+    glClear(GL_DEPTH_BUFFER_BIT);
+
+    Scene::instance->drawCastingShadowObjects(shader);
 
 
     glViewport(0, 0, previousWidth, previousHeight);

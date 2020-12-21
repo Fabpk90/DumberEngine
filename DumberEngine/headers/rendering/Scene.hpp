@@ -13,10 +13,13 @@
 class Scene
 {
 private:
-    static std::unordered_map<unsigned int, GameObject *> gameObjects;
+    std::unordered_map<unsigned int, GameObject *> gameObjects;
     unsigned int indexCounter;
 
     GameObject* selectedGO;
+
+public:
+    static Scene* instance;
 
 public:
     Scene();
@@ -33,7 +36,7 @@ public:
 
     void drawInspector();
 
-    static GameObject* getGameObject(unsigned int index);
+    GameObject* getGameObject(unsigned int index);
 };
 
 #endif //DUMBERENGINE_SCENE_HPP

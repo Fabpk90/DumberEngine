@@ -8,13 +8,15 @@
 #include <iostream>
 
 #include "../../../headers/rendering/helper/Shader.hpp"
-
-std::list<Shader*> Shader::shadersLoaded = std::list<Shader*>();
+//TODO: make this a map
+std::vector<Shader*> Shader::shadersLoaded = std::vector<Shader*>();
 
 Shader::Shader(const char *path) : path(path)
 {
     load();
     shadersLoaded.push_back(this);
+
+    std::cout << "Loaded " << path << std::endl;
 }
 
 //TODO: make this more modular, don't repeat the loading code

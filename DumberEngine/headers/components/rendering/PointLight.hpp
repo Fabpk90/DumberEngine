@@ -21,6 +21,8 @@ private:
     std::array<glm::mat4, 6> lookAts;
     Fbo* depthMap;
 
+    Shader* shader;
+
 public:
     float range;
 

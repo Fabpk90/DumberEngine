@@ -8,22 +8,16 @@
 #include "stb/stb_image.h"
 #include "stb/stb_image_write.h"
 
-
+//Ugly hax
 #include "glad/glad.c"
 #include "glfw/glfw3.h"
 
 
-#include <string>
-#include <iostream>
-
-#include "../headers/rendering/renderer/opengl/OpenGLRenderer.hpp"
-#include "../headers/rendering/renderer/opengl/InputManager.hpp"
-
 #include "../headers/Engine.hpp"
-
 
 int main(int argc, char **argv)
 {
+
    Engine* engine = new Engine();
    engine->start();
    engine->update();

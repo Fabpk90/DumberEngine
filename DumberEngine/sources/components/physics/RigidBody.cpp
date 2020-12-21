@@ -17,7 +17,7 @@ void RigidBody::drawInspector()
 
 void RigidBody::start()
 {
-    auto* collider = Scene::getGameObject(*gameObjectIndex)->getComponent<BoxCollider>();
+    auto* collider = Scene::instance->getGameObject(*gameObjectIndex)->getComponent<BoxCollider>();
     collider->setColliderScale(btVector3(10, 10, 10));
 
     shape = collider->shape;

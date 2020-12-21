@@ -5,7 +5,7 @@
 #include <imgui/imgui.h>
 #include "../headers/rendering/Scene.hpp"
 
-std::unordered_map<unsigned int, GameObject *> Scene::gameObjects;
+Scene* Scene::instance = nullptr;
 
 void Scene::addGameObject(GameObject *go)
 {
@@ -61,6 +61,9 @@ void Scene::removeGameObject(std::string name)
 
 Scene::Scene()
 {
+    //TODO: fix this ! We should not enable more instances
+    instance = this;
+
     selectedGO = nullptr;
     indexCounter = 0;
 }

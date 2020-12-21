@@ -27,6 +27,10 @@ public:
 
     void OnFileDropped(const char *path) override;
 
+    bool castShadow() override;
+
+    void drawShadow(Shader *pShader) override;
+
 private:
     void recursivelyLoadNode(aiNode *const pNode, const aiScene *pScene);
 

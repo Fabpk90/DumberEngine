@@ -88,11 +88,11 @@ void Engine::start()
     pointLightGO->addComponent(new PointLight());
 
 
-   // scene->addGameObject(worldGO);
+    scene->addGameObject(worldGO);
     scene->addGameObject(o);
    // scene->addGameObject(avatarGO);
-    //scene->addGameObject(phy);
-   // scene->addGameObject(box);
+    scene->addGameObject(phy);
+    scene->addGameObject(box);
     scene->addGameObject(meshGO);
     scene->addGameObject(pointLightGO);
 

@@ -40,8 +40,6 @@ public:
         return projectionMatrix;
     }
 
-    Scene* scene;
-
 private:
     Fbo* fbo;
     glm::mat4 projectionMatrix;
