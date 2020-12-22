@@ -33,7 +33,7 @@ void BoxCollider::start()
         btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, myMotionState, shape, btVector3(0.0f, 0.0f, 0.0f));
         body = new btRigidBody(rbInfo);
 
-        body->setUserPointer(gameObjectIndex);
+        body->setUserPointer(gameObjectIndex.get());
 
         float* scale = shape->getHalfExtentsWithMargin().m_floats;
         cube->setScale(scale[0], scale[1], scale[2]);

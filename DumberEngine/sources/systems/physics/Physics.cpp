@@ -63,12 +63,12 @@ void Physics::update()
                 if(found == collisions.end())
                 {
                     collisions[col0] = 1;
-                    Scene::instance->getGameObject(*col0)->onCollisionEnter(Scene::instance->getGameObject(*col1), point);
+                    Scene::instance->getGameObject(*col0)->onCollisionEnter(Scene::instance->getGameObject(*col1).get(), point);
                 }
                 else
                 {
                     collisions[col0] = 1;
-                    Scene::instance->getGameObject(*col0)->onCollisionStay(Scene::instance->getGameObject(*col1), point);
+                    Scene::instance->getGameObject(*col0)->onCollisionStay(Scene::instance->getGameObject(*col1).get(), point);
                 }
             }
 
@@ -82,12 +82,12 @@ void Physics::update()
                 if(found == collisions.end())
                 {
                     collisions[col1] = 1;
-                    Scene::instance->getGameObject(*col1)->onCollisionEnter(Scene::instance->getGameObject(*col0), point);
+                    Scene::instance->getGameObject(*col1)->onCollisionEnter(Scene::instance->getGameObject(*col0).get(), point);
                 }
                 else
                 {
                     collisions[col1] = 1;
-                    Scene::instance->getGameObject(*col1)->onCollisionStay(Scene::instance->getGameObject(*col0), point);
+                    Scene::instance->getGameObject(*col1)->onCollisionStay(Scene::instance->getGameObject(*col0).get(), point);
                 }
             }
 
@@ -152,7 +152,7 @@ bool Physics::rayCast(glm::vec3 start, glm::vec3 to, RayCastHit& hit)
         hit.normal[1] = rayResultCallback.m_hitNormalWorld[1];
         hit.normal[2] = rayResultCallback.m_hitNormalWorld[2];
 
-        hit.go = Scene::instance->getGameObject(*((unsigned int*)rayResultCallback.m_collisionObject->getUserPointer()));
+        hit.go = Scene::instance->getGameObject(*((unsigned int*)rayResultCallback.m_collisionObject->getUserPointer())).get();
         return true;
     }
     return false;

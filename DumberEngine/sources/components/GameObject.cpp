@@ -5,27 +5,24 @@
 #include <imgui/imgui.h>
 #include "../../headers/components/GameObject.hpp"
 
-
-GameObject::GameObject(const char *name) : name(name)
+GameObject::GameObject()
 {
     isActive = true;
-    transform = Transform();
 
-    guiComponents.push_back(&transform);
+    guiComponents.push_back(transform.get());
+}
+
+GameObject::GameObject(const char *name) : name(name), IComponent()
+{
+    isActive = true;
+
+    guiComponents.push_back(transform.get());
+    transform = std::make_shared<Transform>();
 }
 
 void GameObject::start()
 {
-    if(isActive)
-    {
-        auto ite = components.begin();
 
-        while (ite != components.end())
-        {
-            (*ite)->start();
-            ++ite;
-        }
-    }
 }
 
 void GameObject::update()
@@ -56,29 +53,7 @@ void GameObject::draw()
     }
 }
 
-void GameObject::addComponent(IComponent *comp)
-{
-    comp->gameObjectIndex = gameObjectIndex;
-    comp->transform = &transform;
 
-    components.push_back(comp);
-
-    auto* collisions = dynamic_cast<ICollisionCallbacks*>(comp);
-
-    if(collisions)
-    {
-        physicsCallback.push_back(collisions);
-    }
-
-    auto* postRenderer = dynamic_cast<IPostRendering*>(comp);
-    if(postRenderer)
-    {
-        if(postRenderers.empty())
-            hasPostRenderers = true;
-
-        postRenderers.push_back(postRenderer);
-    }
-}
 
 GameObject::~GameObject()
 {
@@ -95,7 +70,7 @@ void GameObject::drawInspector()
         ImGui::PushID(this);
         ImGui::Checkbox("Activate", &isActive);
 
-        transform.drawInspector();
+        transform->drawInspector();
 
         for (IComponent *i : components)
         {
@@ -129,5 +104,37 @@ void GameObject::drawPostRenderers()
 
     for(auto* postRenderer : postRenderers)
         postRenderer->postDraw();
+
+}
+
+std::shared_ptr<GameObject> GameObject::createGameObject(const char *name)
+{
+    return Scene::instance->createGameObject(name);
+}
+
+void GameObject::addComponent(IComponent *comp)
+{
+    *comp->gameObjectIndex = *gameObjectIndex;
+    comp->transform = transform;
+
+    components.push_back(comp);
+
+    auto* collisions = dynamic_cast<ICollisionCallbacks*>(comp);
+
+    if(collisions)
+    {
+        physicsCallback.push_back(collisions);
+    }
+
+    auto* postRenderer = dynamic_cast<IPostRendering*>(comp);
+    if(postRenderer)
+    {
+        if(postRenderers.empty())
+            hasPostRenderers = true;
+
+        postRenderers.push_back(postRenderer);
+    }
+
+    comp->start();
 
 }

@@ -10,13 +10,19 @@
 #include "helper/Shader.hpp"
 #include "../components/rendering/IPostRendering.hpp"
 
+#include <memory>
+
 class Scene
 {
 private:
-    std::unordered_map<unsigned int, GameObject *> gameObjects;
+    std::unordered_map<unsigned int, std::shared_ptr<GameObject>> gameObjects;
     unsigned int indexCounter;
 
+    std::vector<GameObject*> toStart;
+
     GameObject* selectedGO;
+
+    std::string name;
 
 public:
     static Scene* instance;
@@ -30,13 +36,15 @@ public:
     void drawPostRendering();
     void drawCastingShadowObjects(Shader *pShader);
 
-    void addGameObject(GameObject *go);
-
     void removeGameObject(std::string name);
 
     void drawInspector();
 
-    GameObject* getGameObject(unsigned int index);
+    std::shared_ptr<GameObject> getGameObject(unsigned int index);
+
+    void save();
+
+    std::shared_ptr<GameObject> createGameObject(const char *string);
 };
 
 #endif //DUMBERENGINE_SCENE_HPP

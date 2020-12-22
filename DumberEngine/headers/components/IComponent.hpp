@@ -9,13 +9,15 @@
 #include "../rendering/helper/Shader.hpp"
 #include "Transform.hpp"
 
+#include <memory>
+
 class IComponent : public GuiComponent
 {
 public:
 
     IComponent()
     {
-        gameObjectIndex = new unsigned int;
+        gameObjectIndex = std::make_shared<unsigned int>();
     }
 
     virtual void start(){};
@@ -24,15 +26,10 @@ public:
 
     virtual void draw(){};
 
-    virtual ~IComponent()
-    {
-        delete gameObjectIndex;
-    };
-
     IComponent(IComponent&& c)
     {
-        transform = c.transform;
-        gameObjectIndex = c.gameObjectIndex;
+        transform = std::move(c.transform);
+        gameObjectIndex = std::move(c.gameObjectIndex);
 
         c.transform = nullptr;
         c.gameObjectIndex = nullptr;
@@ -40,8 +37,8 @@ public:
 
     IComponent(const IComponent& c)
     {
-        transform = c.transform;
-        gameObjectIndex = c.gameObjectIndex;
+        transform = std::shared_ptr<Transform>(c.transform.get());
+        gameObjectIndex = std::shared_ptr<unsigned int>(c.gameObjectIndex);
     };
 
 
@@ -54,8 +51,8 @@ public:
     {};
 
 public:
-    unsigned int* gameObjectIndex;
-    Transform* transform;
+    std::shared_ptr<unsigned int> gameObjectIndex;
+    std::shared_ptr<Transform> transform;
 };
 
 #endif //DUMBERENGINE_ICOMPONENT_HPP

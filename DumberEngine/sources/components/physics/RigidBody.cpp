@@ -36,7 +36,7 @@ void RigidBody::start()
     btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, motionState, shape, localInertia);
 
     body = new btRigidBody(rbInfo);
-    body->setUserPointer(gameObjectIndex);
+    body->setUserPointer(gameObjectIndex.get());
 
     Physics::physicEngine->addRigidBody(body);
 }

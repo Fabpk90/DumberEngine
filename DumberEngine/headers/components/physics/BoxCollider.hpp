@@ -48,8 +48,8 @@ public:
         {
             Physics::physicEngine->removeRigidBody(body);
 
-            delete physicsTransform;
-            delete body;
+            //delete physicsTransform;
+            //delete body;
         }
 
         delete cube;

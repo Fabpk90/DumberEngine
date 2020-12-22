@@ -3,23 +3,14 @@
 //
 
 #include <imgui/imgui.h>
+#include <ostream>
+#include <fstream>
+#include <cereal/archives/binary.hpp>
+#include <cereal/types/unordered_map.hpp>
+#include <cereal/types/memory.hpp>
 #include "../headers/rendering/Scene.hpp"
 
 Scene* Scene::instance = nullptr;
-
-void Scene::addGameObject(GameObject *go)
-{
-    std::pair<unsigned int, GameObject*> pair;
-
-    pair.first = ++indexCounter;
-    pair.second = go;
-
-    *go->gameObjectIndex = indexCounter;
-
-    gameObjects.insert(pair);
-
-    go->start();
-}
 
 void Scene::update()
 {
@@ -66,6 +57,8 @@ Scene::Scene()
 
     selectedGO = nullptr;
     indexCounter = 0;
+
+    name.reserve(256);
 }
 
 void Scene::drawInspector()
@@ -73,6 +66,14 @@ void Scene::drawInspector()
 
     if(ImGui::Begin("Inspector"))
     {
+        ImGui::Text("Scene name"); ImGui::SameLine();
+        ImGui::InputText("", name.data(), 64); ImGui::SameLine();
+        if(ImGui::Button("Save"))
+        {
+            save();
+        }
+
+
         auto iter = gameObjects.begin();
 
         while (iter != gameObjects.end())
@@ -87,7 +88,7 @@ void Scene::drawInspector()
     ImGui::End();
 }
 
-GameObject *Scene::getGameObject(unsigned int index)
+std::shared_ptr<GameObject> Scene::getGameObject(unsigned int index)
 {
     return gameObjects.at(index);
 }
@@ -112,5 +113,38 @@ void Scene::drawPostRendering()
         (*iter).second->drawPostRenderers();
         ++iter;
     }
+}
+
+void Scene::save()
+{
+    std::string path;
+    path = name;
+    path += ".map";
+
+    std::ofstream os(path.data());
+
+    {
+        cereal::BinaryOutputArchive oArchive(os);
+
+        oArchive(gameObjects);
+    }
+}
+
+//TODO: simplify the use of this function
+
+std::shared_ptr<GameObject> Scene::createGameObject(const char* nameGo)
+{
+    std::pair<unsigned int, std::shared_ptr<GameObject>> pair;
+
+    pair.first = indexCounter;
+    pair.second = std::make_shared<GameObject>(nameGo);
+    *pair.second->gameObjectIndex = indexCounter;
+
+    indexCounter++;
+
+    auto goIndex = gameObjects.insert(pair).first->first;
+    toStart.push_back(gameObjects[goIndex].get());
+
+    return gameObjects[goIndex];
 }
 

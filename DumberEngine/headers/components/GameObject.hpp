@@ -10,9 +10,11 @@
 #include "../rendering/helper/Shader.hpp"
 #include "physics/ICollisionCallbacks.hpp"
 #include "rendering/IPostRendering.hpp"
+#include "../rendering/Scene.hpp"
 #include <list>
 #include <string>
 #include <vector>
+#include <memory>
 
 class GameObject : public IComponent, public ICollisionCallbacks
 {
@@ -22,21 +24,23 @@ private:
     std::vector<ICollisionCallbacks*> physicsCallback;
     std::vector<IPostRendering*> postRenderers;
     
-    Transform transform;
+    std::shared_ptr<Transform> transform;
     bool isActive;
     bool hasPostRenderers;
 
 public:
     void onCollisionEnter(GameObject *other, glm::vec3 point) override;
 
+    static std::shared_ptr<GameObject> createGameObject(const char* name);
+
+    GameObject();
+    GameObject(const char *name);
 
 public:
 
     std::string name;
 
     ~GameObject() override;
-
-    GameObject(const char *name);
 
     void start() override;
 
@@ -48,9 +52,46 @@ public:
     void drawInspector() override;
     void drawPostRenderers();
 
-    void addComponent(IComponent *comp);
+    void addComponent(IComponent* cmp);
 
-    Transform& getTransform() { return transform; }
+    template<class T>
+    T* addComponent()
+    {
+        T* comp = new T();
+
+        *comp->gameObjectIndex = *gameObjectIndex;
+        comp->transform = transform;
+
+        components.push_back(comp);
+
+        auto* collisions = dynamic_cast<ICollisionCallbacks*>(comp);
+
+        if(collisions)
+        {
+            physicsCallback.push_back(collisions);
+        }
+
+        auto* postRenderer = dynamic_cast<IPostRendering*>(comp);
+        if(postRenderer)
+        {
+            if(postRenderers.empty())
+                hasPostRenderers = true;
+
+            postRenderers.push_back(postRenderer);
+        }
+
+        comp->start();
+
+        return comp;
+    }
+
+    std::shared_ptr<Transform> getTransform() { return transform; }
+
+    template<class Archive>
+    void serialize(Archive& archive)
+    {
+
+    }
 
     template<class T>
     T *getComponent()

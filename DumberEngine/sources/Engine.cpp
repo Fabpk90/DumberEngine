@@ -50,15 +50,15 @@ void Engine::start()
 
     Camera* cam = new Camera();
 
-    auto *o = new GameObject("Camera");
-    o->addComponent(new CameraScript());
+    auto o = Scene::instance->createGameObject("Camera");
+    o->addComponent<CameraScript>();
     o->addComponent(cam);
 
-    auto* worldGO = new GameObject("World");
+    auto worldGO = Scene::instance->createGameObject("World");
     World* world = new World();
     worldGO->addComponent(world);
 
-    auto* avatarGO = new GameObject("Avatar");
+    auto avatarGO = Scene::instance->createGameObject("Avatar");
 
     //Avatar* avatar = new Avatar();
     //avatar->setWorld(world);
@@ -66,35 +66,26 @@ void Engine::start()
 
     avatarGO->addComponent(new CameraScript());
 
-    auto* phy = new GameObject("RigidBody");
+    auto phy = Scene::instance->createGameObject("RigidBody");
     phy->addComponent(new BoxCollider());
     phy->addComponent(new RigidBody());
-    auto test = new PhysicsTest();
+
+    auto test = phy->addComponent<PhysicsTest>();
     test->test = "yeppa";
-    phy->addComponent(test);
 
-    auto* box = new GameObject("BoxCollider");
+    auto box = Scene::instance->createGameObject("BoxCollider");
     box->addComponent(new BoxCollider());
-    auto test1 = new PhysicsTest();
+
+    auto test1 = box->addComponent<PhysicsTest>();
     test1->test = "nooope";
-    box->addComponent(test1);
 
-    auto meshGO = new GameObject("StaticMesh");
-    auto sm = new StaticMesh();
+    auto meshGO = Scene::instance->createGameObject("StaticMesh");
+    auto sm = meshGO->addComponent<StaticMesh>();
     sm->loadFrom("mesh/Cerberus/Cerberus_LP.fbx");
-    meshGO->addComponent(sm);
-
-    auto pointLightGO = new GameObject("PointLight");
+    
+    auto pointLightGO = Scene::instance->createGameObject("PointLight");
     pointLightGO->addComponent(new PointLight());
 
-
-    scene->addGameObject(worldGO);
-    scene->addGameObject(o);
-   // scene->addGameObject(avatarGO);
-    scene->addGameObject(phy);
-    scene->addGameObject(box);
-    scene->addGameObject(meshGO);
-    scene->addGameObject(pointLightGO);
 
     Camera::getInstance().pp.addPostProcess(new PPNoParams("shaders/postprocess/Outline/"));
     Camera::getInstance().pp.addPostProcess(new PPNoParams("shaders/postprocess/Blur/"));
@@ -168,12 +159,12 @@ void Engine::update()
 
 Engine::~Engine()
 {
+    delete scene;
+    delete window;
+
     for(ISystem* s : systems)
     {
         delete s;
     }
-
-    delete scene;
-    delete window;
 }
 
