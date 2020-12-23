@@ -56,12 +56,7 @@ void GameObject::draw()
 
 
 GameObject::~GameObject()
-{
-    for (IComponent *i : components)
-    {
-        delete i;
-    }
-}
+= default;
 
 void GameObject::drawInspector()
 {
@@ -72,7 +67,7 @@ void GameObject::drawInspector()
 
         transform->drawInspector();
 
-        for (IComponent *i : components)
+        for (const auto& i : components)
         {
             i->drawInspector();
         }
@@ -83,7 +78,7 @@ void GameObject::drawInspector()
 
 void GameObject::drawShadows(Shader *pShader)
 {
-    for (IComponent *i : components)
+    for (const auto& i : components)
     {
         if(i->castShadow())
             i->drawShadow(pShader);
@@ -117,7 +112,9 @@ void GameObject::addComponent(IComponent *comp)
     *comp->gameObjectIndex = *gameObjectIndex;
     comp->transform = transform;
 
-    components.push_back(comp);
+    std::shared_ptr<IComponent> cmpShareable(comp);
+
+    components.push_back(cmpShareable);
 
     auto* collisions = dynamic_cast<ICollisionCallbacks*>(comp);
 

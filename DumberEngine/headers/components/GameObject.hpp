@@ -16,10 +16,13 @@
 #include <vector>
 #include <memory>
 
+#include <cereal/types/memory.hpp>
+#include <cereal/types/vector.hpp>
+
 class GameObject : public IComponent, public ICollisionCallbacks
 {
 private:
-    std::vector<IComponent *> components;
+    std::vector<std::shared_ptr<IComponent>> components;
     std::vector<GuiComponent*> guiComponents;
     std::vector<ICollisionCallbacks*> physicsCallback;
     std::vector<IPostRendering*> postRenderers;
@@ -55,23 +58,23 @@ public:
     void addComponent(IComponent* cmp);
 
     template<class T>
-    T* addComponent()
+    std::shared_ptr<T> addComponent()
     {
-        T* comp = new T();
+        std::shared_ptr<T> comp = std::make_shared<T>();
 
         *comp->gameObjectIndex = *gameObjectIndex;
         comp->transform = transform;
 
         components.push_back(comp);
 
-        auto* collisions = dynamic_cast<ICollisionCallbacks*>(comp);
+        auto* collisions = dynamic_cast<ICollisionCallbacks*>(comp.get());
 
         if(collisions)
         {
             physicsCallback.push_back(collisions);
         }
 
-        auto* postRenderer = dynamic_cast<IPostRendering*>(comp);
+        auto* postRenderer = dynamic_cast<IPostRendering*>(comp.get());
         if(postRenderer)
         {
             if(postRenderers.empty())
@@ -90,7 +93,7 @@ public:
     template<class Archive>
     void serialize(Archive& archive)
     {
-
+        archive(components, transform, isActive, hasPostRenderers);
     }
 
     template<class T>
@@ -100,7 +103,7 @@ public:
 
         while (ite != components.end())
         {
-            T *comp = dynamic_cast<T *>(*ite);
+            T *comp = dynamic_cast<T *>((*ite).get());
 
             if (comp != nullptr)
             {

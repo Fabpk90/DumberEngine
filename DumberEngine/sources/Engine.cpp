@@ -48,15 +48,13 @@ void Engine::start()
 
     scene = new Scene();
 
-    Camera* cam = new Camera();
-
     auto o = Scene::instance->createGameObject("Camera");
+    o->addComponent<Camera>();
     o->addComponent<CameraScript>();
-    o->addComponent(cam);
+
 
     auto worldGO = Scene::instance->createGameObject("World");
-    World* world = new World();
-    worldGO->addComponent(world);
+    worldGO->addComponent<World>();
 
     auto avatarGO = Scene::instance->createGameObject("Avatar");
 
@@ -82,7 +80,7 @@ void Engine::start()
     auto meshGO = Scene::instance->createGameObject("StaticMesh");
     auto sm = meshGO->addComponent<StaticMesh>();
     sm->loadFrom("mesh/Cerberus/Cerberus_LP.fbx");
-    
+
     auto pointLightGO = Scene::instance->createGameObject("PointLight");
     pointLightGO->addComponent(new PointLight());
 

@@ -5,9 +5,11 @@
 #include <imgui/imgui.h>
 #include <ostream>
 #include <fstream>
+#include <cereal/types/polymorphic.hpp>
+#include <cereal/types/memory.hpp>
 #include <cereal/archives/binary.hpp>
 #include <cereal/types/unordered_map.hpp>
-#include <cereal/types/memory.hpp>
+
 #include "../headers/rendering/Scene.hpp"
 
 Scene* Scene::instance = nullptr;
@@ -117,11 +119,10 @@ void Scene::drawPostRendering()
 
 void Scene::save()
 {
-    std::string path;
-    path = name;
+    std::string path(name);
     path += ".map";
 
-    std::ofstream os(path.data());
+    std::ofstream os(path);
 
     {
         cereal::BinaryOutputArchive oArchive(os);

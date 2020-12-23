@@ -29,6 +29,18 @@ public:
 
     void drawInspector() override;
 
+    template<class Archive>
+    void serialize(Archive& ar)
+    {
+        for (int i = 0; i < 4; ++i)
+        {
+            for (int j = 0; j < 4; ++j)
+            {
+                ar(modelMatrix[i][j]);
+            }
+        }
+    }
+
     glm::mat4& getModelMatrix() { return modelMatrix; };
     glm::vec3& getPosition() { return position; };
 };

@@ -41,7 +41,11 @@ public:
         gameObjectIndex = std::shared_ptr<unsigned int>(c.gameObjectIndex);
     };
 
-
+    template<class Archive>
+    void serialize(Archive& ar)
+    {
+        ar(gameObjectIndex);
+    }
 
     virtual bool castShadow() { return false; }
     virtual void drawShadow(Shader *pShader)
