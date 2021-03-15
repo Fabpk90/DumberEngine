@@ -13,7 +13,7 @@ void PointLight::start()
 {
     IComponent::start();
 
-    shader = new Shader("shaders/pointlightShadow/");
+    shader = new Shader("shaders/forward/pointlightShadow/");
 
     glGenTextures(1, &depthCubeMap);
     glBindTexture(GL_TEXTURE_CUBE_MAP, depthCubeMap);
@@ -66,6 +66,7 @@ void PointLight::drawInspector()
 {
     IComponent::drawInspector();
 
+    glBindTexture(GL_TEXTURE_CUBE_MAP, depthCubeMap);
     ImGui::Image((void*)(intptr_t) depthCubeMap, ImVec2(SHADOW_WIDTH, SHADOW_HEIGHT));
 }
 

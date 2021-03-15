@@ -107,6 +107,10 @@ void Engine::update()
         {
             Shader::reloadShaders();
         }
+        else if(IInputManager::instance->isKeyPressed(GLFW_KEY_F1))
+        {
+            IWindow::instance->toggleRenderingType();
+        }
 
         scene->update();
 

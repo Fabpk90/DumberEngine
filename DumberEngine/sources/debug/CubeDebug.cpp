@@ -10,7 +10,7 @@ CubeDebug::~CubeDebug()
     delete vbo;
 }
 
-CubeDebug::CubeDebug(glm::vec3 position) : shader("shaders/cube/"), position(position)
+CubeDebug::CubeDebug(glm::vec3 position) : shader("shaders/forward/cube/"), position(position)
 {
     scale = glm::vec3(1.0f);
 

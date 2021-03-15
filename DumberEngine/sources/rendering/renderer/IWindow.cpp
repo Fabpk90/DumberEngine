@@ -10,3 +10,19 @@ GLFWwindow *IWindow::getHandle()
 {
     return windowHandle;
 }
+
+void IWindow::toggleRenderingType()
+{
+    if(renderingType == RenderingType::Forward)
+    {
+        renderingType = RenderingType::Deferred;
+        gBuffer->activate();
+    }
+    else
+        renderingType = RenderingType::Forward;
+}
+
+void IWindow::setGBuffer(std::unique_ptr<IGBuffer> &&gBuffer)
+{
+    this->gBuffer = std::move(gBuffer);
+}

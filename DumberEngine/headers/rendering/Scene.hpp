@@ -23,6 +23,7 @@ private:
     GameObject* selectedGO;
 
     std::string name;
+    Shader shaderGeometry;
 
 public:
     static Scene* instance;

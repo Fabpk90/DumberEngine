@@ -175,7 +175,7 @@ std::vector<Texture2D*> StaticMesh::loadMaterialTexturesType(aiMaterial *pMateri
 void StaticMesh::start()
 {
     Editor::instance->addDragNDropCallback(this);
-    shader = new Shader("shaders/pbr/");
+    shader = new Shader("shaders/forward/pbr/");
 
     transform->setPosition(0, 0, 0);
 }
@@ -264,4 +264,25 @@ void StaticMesh::drawShadow(Shader *pShader)
     {
         mesh->drawShadows();
     }
+}
+
+void StaticMesh::geometryDraw(Shader &shader)
+{
+    shader.use();
+
+    shader.setMatrix4("m", transform->getModelMatrix());
+    glm::mat4 v = Camera::getInstance().getViewMatrix();
+    shader.setMatrix4("v", v);
+    auto p = Camera::getInstance().getProjectionMatrix();
+    shader.setMatrix4("p", p);
+
+    for(const auto& mesh : meshes)
+    {
+        mesh->draw(&shader);
+    }
+}
+
+void StaticMesh::lightingPass()
+{
+    IComponent::lightingPass();
 }

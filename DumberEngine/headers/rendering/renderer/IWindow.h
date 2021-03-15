@@ -9,6 +9,7 @@
 #include <vector>
 #include <functional>
 #include <glm/glm.hpp>
+#include "IGBuffer.hpp"
 
 class ICallbackResize
 {
@@ -21,6 +22,12 @@ struct SWindowData
     int width;
     int height;
     char *name;
+};
+
+enum class RenderingType
+{
+    Forward,
+    Deferred
 };
 
 class IWindow
@@ -54,9 +61,20 @@ public:
 
     static IWindow* instance;
 
+    bool isForward() { return renderingType == RenderingType::Forward; }
+    bool isDeferred() { return renderingType == RenderingType::Deferred; }
+
+    void setGBuffer(std::unique_ptr<IGBuffer>&& gBuffer);
+    std::unique_ptr<IGBuffer>& getGBuffer() { return gBuffer; }
+
+    void toggleRenderingType();
+
 protected:
     GLFWwindow* windowHandle = nullptr;
     glm::vec3 clearColor;
+    RenderingType renderingType;
+
+    std::unique_ptr<IGBuffer> gBuffer;
 
 };
 

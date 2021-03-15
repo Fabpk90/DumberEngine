@@ -93,7 +93,7 @@ void World::drawInspector()
     }
 }
 
-World::World() : shaderWorld("shaders/world/")
+World::World() : shaderWorld("shaders/forward/world/")
 {
     for (int i = 0; i < CHUNK_SIZE; ++i)
     {

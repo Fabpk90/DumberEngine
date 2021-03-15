@@ -10,6 +10,7 @@
 #include "../../../../headers/rendering/renderer/opengl/OpenGLRenderer.hpp"
 #include "../../../../headers/rendering/renderer/opengl/InputManager.hpp"
 #include "../../../../headers/rendering/renderer/IFbo.hpp"
+#include "../../../../headers/rendering/renderer/opengl/GBuffer.hpp"
 
 static void glfwError(int id, const char *description)
 {
@@ -73,6 +74,10 @@ void OpenGLRenderer::init(SWindowData data)
     ImGui_ImplOpenGL3_Init(NULL);
 
     std::cout << "ImGui initialized" << std::endl;
+
+    std::vector<IGBuffer::Param> params = {IGBuffer::Param::Position, IGBuffer::Param::Albedo, IGBuffer::Param::Normal
+                                           , IGBuffer::Param::Depth};
+    gBuffer = std::make_unique<GBuffer>(std::move(params));
 }
 
 OpenGLRenderer::~OpenGLRenderer()

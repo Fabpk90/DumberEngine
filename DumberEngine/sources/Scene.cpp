@@ -5,12 +5,12 @@
 #include <imgui/imgui.h>
 #include <ostream>
 #include <fstream>
-#include <cereal/types/polymorphic.hpp>
 #include <cereal/types/memory.hpp>
-#include <cereal/archives/binary.hpp>
+#include <cereal/archives/portable_binary.hpp>
 #include <cereal/types/unordered_map.hpp>
 
 #include "../headers/rendering/Scene.hpp"
+#include "../headers/rendering/renderer/IWindow.h"
 
 Scene* Scene::instance = nullptr;
 
@@ -29,11 +29,36 @@ void Scene::draw()
 {
     auto iter = gameObjects.begin();
 
-    while (iter != gameObjects.end())
+    if(IWindow::instance->isForward())
     {
-        (*iter).second->draw();
-        ++iter;
+        while (iter != gameObjects.end())
+        {
+            (*iter).second->draw();
+            ++iter;
+        }
     }
+    else
+    {
+        IWindow::instance->getGBuffer()->bind();
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glClearColor(0, 0, 0, 1.0f);
+
+
+        while (iter != gameObjects.end())
+        {
+            (*iter).second->geometryDraw(shaderGeometry);
+            ++iter;
+        }
+
+       // glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+        while (iter != gameObjects.end())
+        {
+            (*iter).second->lightingPass();
+            ++iter;
+        }
+    }
+
 }
 
 void Scene::removeGameObject(std::string name)
@@ -52,7 +77,7 @@ void Scene::removeGameObject(std::string name)
     }
 }
 
-Scene::Scene()
+Scene::Scene() : shaderGeometry("shaders/deferred/cube/")
 {
     //TODO: fix this ! We should not enable more instances
     instance = this;
@@ -120,12 +145,11 @@ void Scene::drawPostRendering()
 void Scene::save()
 {
     std::string path(name);
-    path += ".map";
 
-    std::ofstream os(path);
+    std::ofstream os(path + ".map");
 
     {
-        cereal::BinaryOutputArchive oArchive(os);
+        cereal::PortableBinaryOutputArchive oArchive(os);
 
         oArchive(gameObjects);
     }
@@ -135,6 +159,8 @@ void Scene::save()
 
 std::shared_ptr<GameObject> Scene::createGameObject(const char* nameGo)
 {
+    std::cout << "Creating " << nameGo << std::endl;
+
     std::pair<unsigned int, std::shared_ptr<GameObject>> pair;
 
     pair.first = indexCounter;

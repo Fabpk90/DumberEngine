@@ -31,6 +31,10 @@ public:
 
     void drawShadow(Shader *pShader) override;
 
+    void geometryDraw(Shader &shader) override;
+
+    void lightingPass() override;
+
 private:
     void recursivelyLoadNode(aiNode *const pNode, const aiScene *pScene);
 

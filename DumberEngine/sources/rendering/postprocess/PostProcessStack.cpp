@@ -35,7 +35,7 @@ void PostProcessStack::draw()
     vboQuad->draw();
 }
 
-PostProcessStack::PostProcessStack() : shaderQuad("shaders/quad/")
+PostProcessStack::PostProcessStack() : shaderQuad("shaders/forward/quad/")
 {
     vboQuad = new Vbo(1, 6);
     vboQuad->setElementDescription(0, Vbo::Element(3));

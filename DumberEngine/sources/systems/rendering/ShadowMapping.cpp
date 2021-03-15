@@ -7,7 +7,7 @@
 
 ShadowMapping* ShadowMapping::shadowMapping = nullptr;
 
-ShadowMapping::ShadowMapping(uint32_t width, uint32_t height) : shadowShader("shaders/shadow/")
+ShadowMapping::ShadowMapping(uint32_t width, uint32_t height) : shadowShader("shaders/forward/shadow/")
 , width(width), height(height)
 {
     fbo = new Fbo(width, height, true);
