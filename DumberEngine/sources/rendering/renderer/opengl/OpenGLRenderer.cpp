@@ -75,8 +75,7 @@ void OpenGLRenderer::init(SWindowData data)
 
     std::cout << "ImGui initialized" << std::endl;
 
-    std::vector<IGBuffer::Param> params = {IGBuffer::Param::Position, IGBuffer::Param::Albedo, IGBuffer::Param::Normal
-                                           , IGBuffer::Param::Depth};
+    std::vector<IGBuffer::Param> params = {IGBuffer::Param::Position, IGBuffer::Param::Albedo, IGBuffer::Param::Normal};
     gBuffer = std::make_unique<GBuffer>(std::move(params));
 }
 

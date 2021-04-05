@@ -39,11 +39,6 @@ void Scene::draw()
     }
     else
     {
-        IWindow::instance->getGBuffer()->bind();
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        glClearColor(0, 0, 0, 1.0f);
-
-
         while (iter != gameObjects.end())
         {
             (*iter).second->geometryDraw(shaderGeometry);
@@ -51,7 +46,7 @@ void Scene::draw()
         }
 
        // glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
+        iter = gameObjects.begin();
         while (iter != gameObjects.end())
         {
             (*iter).second->lightingPass();

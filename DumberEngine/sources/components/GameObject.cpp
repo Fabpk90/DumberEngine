@@ -135,3 +135,17 @@ void GameObject::addComponent(IComponent *comp)
     comp->start();
 
 }
+
+void GameObject::geometryDraw(Shader &shader)
+{
+    if(isActive)
+    {
+        auto ite = components.begin();
+
+        while (ite != components.end())
+        {
+            (*ite)->geometryDraw(shader);
+            ++ite;
+        }
+    }
+}

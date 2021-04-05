@@ -4,6 +4,8 @@
 
 #include "../../../headers/rendering/renderer/IWindow.h"
 
+#include <glad/glad.h>
+
 IWindow* IWindow::instance = nullptr;
 
 GLFWwindow *IWindow::getHandle()
@@ -13,10 +15,13 @@ GLFWwindow *IWindow::getHandle()
 
 void IWindow::toggleRenderingType()
 {
+    glClearColor(0, 0, 0, 0);
     if(renderingType == RenderingType::Forward)
     {
         renderingType = RenderingType::Deferred;
+
         gBuffer->activate();
+        gBuffer->bind();
     }
     else
         renderingType = RenderingType::Forward;

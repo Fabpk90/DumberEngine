@@ -118,7 +118,11 @@ void Engine::update()
         ShadowMapping::getInstance()->draw();
 
         //post process
-        Camera::getInstance().pp.getFBO().bind();
+        if(IWindow::instance->isForward())
+            Camera::getInstance().pp.getFBO().bind();
+        else
+            IWindow::instance->getGBuffer()->bind();
+
         glViewport(0, 0, IWindow::instance->getActualWidth(), IWindow::instance->getActualHeight());
 
         glClearColor(window->getClearColor().x, window->getClearColor().y, window->getClearColor().z, 1.0f);
@@ -126,8 +130,22 @@ void Engine::update()
         glCullFace(GL_BACK);
 
         scene->draw();
-        scene->drawPostRendering();
+
+        //Quick fix, need to handle forward -> deferred changin
+        // as the pp uses the same fbo
+        if(IWindow::instance->isForward())
+            scene->drawPostRendering();
+        else
+        {
+            glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+            glClearColor(window->getClearColor().x, window->getClearColor().y, window->getClearColor().z, 1.0f);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        }
         //debug->draw();
+
+
+      //  glCullFace(GL_BACK);
 
         //GUI
         // Start the Dear ImGui frame

@@ -9,10 +9,15 @@ uniform mat4 v;
 uniform mat4 p;
 
 out vec2 uv;
+out vec3 normal;
+out vec3 position;
 
 void main()
 {
-    gl_Position = p * v * m * vec4(vs_position, 1.0);
+    vec4 worldPos = v * m * vec4(vs_position, 1.0);
+    gl_Position = p * worldPos;
+
+    position = worldPos.xyz;
 
     uv = vs_uv;
 }

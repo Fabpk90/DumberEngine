@@ -4,6 +4,7 @@
 
 #include <utility>
 #include <vector>
+#include <iostream>
 #include "../../../../headers/rendering/renderer/opengl/GBuffer.hpp"
 
 
@@ -40,7 +41,7 @@ GBuffer::GBuffer(std::vector<Param>&& params)
                 attachmentsList.emplace_back(GL_COLOR_ATTACHMENT0 + colorAttachment);
                 break;
             case IGBuffer::Param::Albedo:
-                glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_FLOAT, nullptr);
+                glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
                 glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + colorAttachment, GL_TEXTURE_2D, idTexture, 0);
@@ -58,6 +59,17 @@ GBuffer::GBuffer(std::vector<Param>&& params)
                 glDeleteTextures(1, &idTexture);
         }
         textures.emplace_back(idTexture);
+
+        glDrawBuffers(3, attachmentsList.data());
+
+        unsigned int rboDepth;
+        glGenRenderbuffers(1, &rboDepth);
+        glBindRenderbuffer(GL_RENDERBUFFER, rboDepth);
+        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, width, height);
+        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rboDepth);
+
+        if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+            std::cout << "Framebuffer not complete!" << std::endl;
     }
 }
 

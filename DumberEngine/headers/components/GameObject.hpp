@@ -50,6 +50,9 @@ public:
     void update() override;
 
     void draw() override;
+
+    void geometryDraw(Shader &shader) override;
+
     void drawShadows(Shader *pShader);
 
     void drawInspector() override;
