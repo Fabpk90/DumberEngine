@@ -10,6 +10,7 @@
 
 GBuffer::GBuffer(std::vector<Param>&& params)
 {
+    isActive = false;
     descriptor = std::move(params);
 
     const int width = IWindow::instance->getActualWidth();
@@ -80,10 +81,24 @@ void GBuffer::OnResize(int i, int i1)
 
 void GBuffer::activate()
 {
+    isActive = true;
     glDrawBuffers(3, attachmentsList.data());
 }
 
 void GBuffer::bind()
 {
     glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+}
+
+unsigned int GBuffer::getID(Param textureType)
+{
+    for (int i = 0; i < descriptor.size(); ++i)
+    {
+        if(descriptor[i] == textureType)
+        {
+            return textures[i];
+        }
+    }
+
+    return -1;
 }

@@ -16,7 +16,6 @@
 #include <imgui/imgui_impl_glfw.h>
 
 #include "../headers/rendering/postprocess/PPNoParams.hpp"
-#include "../headers/components/scripts/Avatar.hpp"
 #include "../headers/systems/rendering/ShadowMapping.hpp"
 #include "../headers/systems/physics/Physics.hpp"
 #include "../headers/components/physics/BoxCollider.hpp"
@@ -131,7 +130,7 @@ void Engine::update()
 
         scene->draw();
 
-        //Quick fix, need to handle forward -> deferred changin
+        //Quick fix, need to handle forward -> deferred changing
         // as the pp uses the same fbo
         if(IWindow::instance->isForward())
             scene->drawPostRendering();
@@ -158,7 +157,9 @@ void Engine::update()
 
         Camera::getInstance().pp.drawInspector();
 
-        //ImGui::ShowDemoWindow();
+        ImGui::ShowDemoWindow();
+
+        IWindow::drawGUITools();
 
         ImGui::Render();
 

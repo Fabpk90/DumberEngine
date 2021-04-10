@@ -69,6 +69,8 @@ public:
 
     void toggleRenderingType();
 
+    static void drawGUITools();
+
 protected:
     GLFWwindow* windowHandle = nullptr;
     glm::vec3 clearColor;

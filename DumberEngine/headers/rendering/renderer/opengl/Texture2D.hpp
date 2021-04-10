@@ -5,7 +5,6 @@
 #ifndef DUMBERENGINE_TEXTURE2D_HPP
 #define DUMBERENGINE_TEXTURE2D_HPP
 
-#include <gl/GL.h>
 #include <glm/glm.hpp>
 #include "../ITexture.hpp"
 
