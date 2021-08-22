@@ -23,7 +23,7 @@ void StaticMesh::draw()
 
     auto pos = glm::vec3(2, 2, 2);
     shader->setVec3("lightPos", pos);
-    auto color = glm::vec3(1.0f);
+    auto color = glm::vec3(0, 1, 0);
     shader->setVec3("lightColor", color);
 
     shader->setVec3("cameraPos", Camera::getInstance().position);
@@ -116,12 +116,20 @@ Mesh* StaticMesh::loadMeshFrom(aiMesh &mesh, const aiScene *scene)
         auto texAlbedo = loadMaterialTexturesType(mat, aiTextureType_BASE_COLOR);
 
         aiString texture_file;
-        mat->Get(AI_MATKEY_TEXTURE(aiTextureType_DIFFUSE, 0), texture_file);
+        if(mat->Get(AI_MATKEY_TEXTURE(aiTextureType_DIFFUSE, 0), texture_file) == aiReturn_SUCCESS)
+        {
+
+        }
+
+        auto texHas = scene->HasTextures();
+
+        if(texHas)
+            std::cout << "yes" << std::endl;
 
         auto tex = scene->GetEmbeddedTexture(texture_file.C_Str());
         if(tex)
         {
-            std::cout << "oh yeah diffuse embedded" << std::endl;
+
         }
 
         if(texAlbedo.empty())
@@ -266,7 +274,7 @@ void StaticMesh::drawShadow(Shader *pShader)
     }
 }
 
-void StaticMesh::geometryDraw(Shader &shader)
+void StaticMesh::fillGBuffer(Shader &shader)
 {
     shader.use();
 
@@ -280,9 +288,4 @@ void StaticMesh::geometryDraw(Shader &shader)
     {
         mesh->draw(&shader);
     }
-}
-
-void StaticMesh::lightingPass()
-{
-    IComponent::lightingPass();
 }

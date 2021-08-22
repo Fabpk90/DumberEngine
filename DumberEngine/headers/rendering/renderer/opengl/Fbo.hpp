@@ -39,6 +39,8 @@ public:
 
     unsigned int getDepthTexture() override;
 
+    unsigned int getID() { return idFbo;}
+
 public:
     void OnResize(int i, int i1) override;
 

@@ -12,6 +12,7 @@
 #include "../headers/rendering/Scene.hpp"
 #include "../headers/rendering/renderer/IWindow.h"
 
+
 Scene* Scene::instance = nullptr;
 
 void Scene::update()
@@ -41,17 +42,23 @@ void Scene::draw()
     {
         while (iter != gameObjects.end())
         {
-            (*iter).second->geometryDraw(shaderGeometry);
+            (*iter).second->fillGBuffer(shaderFillGBuffer);
             ++iter;
         }
 
-       // glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        iter = gameObjects.begin();
-        while (iter != gameObjects.end())
-        {
-            (*iter).second->lightingPass();
-            ++iter;
-        }
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+        glClearColor(0, 0, 0, 0);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        shaderShowGBuffer.use();
+        vboQuad.bind();
+        shaderShowGBuffer.setInt("t_albedoSpec", 0);
+
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, IWindow::instance->getGBuffer()->getID(IGBuffer::Param::Albedo));
+
+        vboQuad.draw();
     }
 
 }
@@ -72,7 +79,9 @@ void Scene::removeGameObject(std::string name)
     }
 }
 
-Scene::Scene() : shaderGeometry("shaders/deferred/cube/")
+Scene::Scene() : shaderFillGBuffer("shaders/deferred/fillGBuffer/")
+, shaderShowGBuffer("shaders/deferred/drawGBuffer/")
+, vboQuad(1, 6)
 {
     //TODO: fix this ! We should not enable more instances
     instance = this;
@@ -81,6 +90,19 @@ Scene::Scene() : shaderGeometry("shaders/deferred/cube/")
     indexCounter = 0;
 
     name.reserve(256);
+
+    vboQuad.setElementDescription(0, Vbo::Element(3));
+    vboQuad.createCPUSide();
+
+    vboQuad.setElementData(0, 0, -1, -1, 0);
+    vboQuad.setElementData(0, 1, 1, -1, 0);
+    vboQuad.setElementData(0, 2, -1, 1, 0);
+    vboQuad.setElementData(0, 3, -1, 1, 0);
+    vboQuad.setElementData(0, 4, 1, -1, 0);
+    vboQuad.setElementData(0, 5, 1, 1, 0);
+
+    vboQuad.createGPUSide();
+    vboQuad.deleteCPUSide();
 }
 
 void Scene::drawInspector()
@@ -121,7 +143,7 @@ void Scene::drawCastingShadowObjects(Shader *pShader)
 
     while (iter != gameObjects.end())
     {
-        (*iter).second->drawShadows(pShader);
+        (*iter).second->drawShadow(pShader);
         ++iter;
     }
 }

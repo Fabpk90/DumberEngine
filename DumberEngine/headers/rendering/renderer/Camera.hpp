@@ -52,7 +52,7 @@ public:
 
     void rotate(glm::vec2 delta);
 
-    glm::mat4 getViewMatrix();
+    glm::mat4 getViewMatrix() const;
     glm::mat4 getProjectionMatrix();
 
     void setPosition(glm::vec3 position);

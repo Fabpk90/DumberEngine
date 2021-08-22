@@ -85,7 +85,7 @@ void main()
 
 	type = int(vs_type_in);
 
-	fragPosInLightSpace = lightSpaceMatrix * vecInW;
+	fragPosInLightSpace = lightSpaceMatrix * vec4(fragPos, 1.0);
 	camPosition = camPos;
 
 	gl_Position = p * v * vecInW;

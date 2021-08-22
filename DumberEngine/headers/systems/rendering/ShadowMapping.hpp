@@ -25,7 +25,7 @@ public:
     {
         if(shadowMapping == nullptr)
         {
-            shadowMapping = new ShadowMapping(4096, 4096);
+            shadowMapping = new ShadowMapping(2048, 2048);
         }
         return shadowMapping;
     }

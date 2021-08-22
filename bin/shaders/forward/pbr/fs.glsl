@@ -33,7 +33,7 @@ float distributionGGX(vec3 normal, vec3 halfVector, float roughness)
     float NdotH2 = NdotH * NdotH;
 
     float denom = (NdotH2 * (a2 - 1.0) + 1.0);
-    denom = PI * (denom * denom);
+    denom = PI * denom * denom;
 
     return a2 / denom;
 }
@@ -63,7 +63,7 @@ void main() {
 
     float roughness = texture(t_roughness, uv).r;
     float metallic = texture(t_metallic, uv).r;
-    float ao = texture(t_ao, uv).r;
+    float ao = pow(texture(t_ao, uv).r, 2.2);
 
     vec3 N = normalize(texture(t_normal, uv).rgb);
     vec3 view = normalize(cameraPos - worldPos);
@@ -104,7 +104,7 @@ void main() {
     vec3 pixelColor = ambient + Lo;
 
     //hdr
-    pixelColor = pixelColor / (pixelColor + vec3(1.0));
+   // pixelColor = pixelColor / (pixelColor + vec3(1.0));
     pixelColor = pow(pixelColor, vec3(1.0/2.2));
 
     color = vec4(pixelColor, 1.0);

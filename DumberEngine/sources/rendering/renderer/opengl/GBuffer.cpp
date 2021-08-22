@@ -8,7 +8,7 @@
 #include "../../../../headers/rendering/renderer/opengl/GBuffer.hpp"
 
 
-GBuffer::GBuffer(std::vector<Param>&& params)
+GBuffer::GBuffer(std::vector<Param>&& params) : fbo(-1)
 {
     isActive = false;
     descriptor = std::move(params);
@@ -61,7 +61,7 @@ GBuffer::GBuffer(std::vector<Param>&& params)
         }
         textures.emplace_back(idTexture);
 
-        glDrawBuffers(3, attachmentsList.data());
+        glDrawBuffers(attachmentsList.size(), attachmentsList.data());
 
         unsigned int rboDepth;
         glGenRenderbuffers(1, &rboDepth);
@@ -82,7 +82,7 @@ void GBuffer::OnResize(int i, int i1)
 void GBuffer::activate()
 {
     isActive = true;
-    glDrawBuffers(3, attachmentsList.data());
+    glDrawBuffers(attachmentsList.size(), attachmentsList.data());
 }
 
 void GBuffer::bind()

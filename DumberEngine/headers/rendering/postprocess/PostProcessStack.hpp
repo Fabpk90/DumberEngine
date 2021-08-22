@@ -47,5 +47,7 @@ public:
 
 public:
     void OnResize(int width, int height) override;
+
+    int getActiveEffects();
 };
 #endif //DUMBERENGINE_POSTPROCESSSTACK_HPP

@@ -44,14 +44,14 @@ void IWindow::drawGUITools()
 
     if(gBuffer->getIsActive())
     {
-        auto& gBuffer = IWindow::instance->getGBuffer();
         for (auto& desc : gBuffer->getDescriptors())
         {
             auto id = gBuffer->getID(desc);
 
+            ImGui::Text("%s", gBuffer->getDescriptorName(desc).c_str());
+
             ImGui::Image((void*)(intptr_t) id, ImVec2(512, 512));
         }
-
     }
 
     ImGui::End();

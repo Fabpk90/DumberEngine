@@ -15,7 +15,7 @@ public:
         Albedo,
         Normal,
         Depth,
-        Position
+        Position // in uv space
     };
 
     IGBuffer() = default;
@@ -31,6 +31,30 @@ public:
     std::vector<Param>& getDescriptors() { return descriptor;}
 
     bool getIsActive() { return isActive;}
+
+    std::string getDescriptorName(unsigned int index)
+    {
+        switch (descriptor[index])
+        {
+            case Param::Albedo:
+                return "Albedo";
+            case Param::Normal:
+                return  "Normal";
+            case Param::Depth:
+                return "Depth";
+            case Param::Position:
+                return "Position";
+            default:
+                return "BADTEXFORMAT";
+        }
+    }
+
+    std::string getDescriptorName(Param& p)
+    {
+        auto it = std::find(descriptor.begin(), descriptor.end(), p);
+
+        return getDescriptorName(it - descriptor.begin());
+    }
 
 protected:
    std::vector<Param> descriptor;

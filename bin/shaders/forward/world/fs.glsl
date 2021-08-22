@@ -61,17 +61,19 @@ float ComputeShadow(vec4 fragPosLightSpace)
 
 	//pcf
 	float shadow = 0.0;
-	shadow += currentDepth - bias > texture(shadowTex, projCoords.xy).r ? 1.0 : 0.0;
+	shadow += (currentDepth - bias) > texture(shadowTex, projCoords.xy).r ? 1.0 : 0.0;
 	vec2 texelSize = 1.0 / textureSize(shadowTex, 0);
-	/*for(int x = -1; x <= 1; ++x)
+	int i = 1;
+	for(float x = -1.5; x < 2; x += 1.0)
 	{
-		for(int y = -1; y <= 1; ++y)
+		for(float y = -2; y < 2; y += 1.0)
 		{
 			float pcfDepth = texture(shadowTex, projCoords.xy + vec2(x, y) * texelSize).r;
 			shadow += currentDepth - bias > pcfDepth ? 1.0 : 0.0;
+			i++;
 		}
 	}
-	shadow /= 9.0;*/
+	shadow /= i;
 
 	return shadow;
 }
@@ -107,7 +109,8 @@ void main()
 	}
 
 	float diffuse = max(0.005f, dot(toLight, N));
-	float shadow = ComputeShadow(fragPosInLightSpace);
+	float inShadow = dot(N, toLight);
+	float shadow = inShadow > 0.1 ? ComputeShadow(fragPosInLightSpace) : 1.0;
 	//Spec
 	if(type == CUBE_EAU){
 		vec3 halfVec = normalize(toLight + view);

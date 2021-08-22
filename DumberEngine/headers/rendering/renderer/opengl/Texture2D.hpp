@@ -12,8 +12,6 @@ class Texture2D : public ITexture
 {
 private:
     GLuint id;
-    glm::vec2 size;
-
 
 public:
     bool loadFrom(const char *path, ETextureType type, unsigned int flagWrapS = GL_REPEAT, unsigned int flagWrapT = GL_REPEAT, unsigned int flagMinFilter = GL_NEAREST,

@@ -24,9 +24,8 @@ public:
 
     virtual void update(){};
 
-    virtual void geometryDraw(Shader &shader)
+    virtual void fillGBuffer(Shader &shader)
     {};
-    virtual void lightingPass(){};
     virtual void draw(){};
 
     IComponent(IComponent&& c)

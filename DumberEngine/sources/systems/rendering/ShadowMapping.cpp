@@ -8,7 +8,7 @@
 ShadowMapping* ShadowMapping::shadowMapping = nullptr;
 
 ShadowMapping::ShadowMapping(uint32_t width, uint32_t height) : shadowShader("shaders/forward/shadow/")
-, width(width), height(height)
+, width(width), height(height), projectionMatrix(glm::identity<glm::mat4>())
 {
     fbo = new Fbo(width, height, true);
     fbo->bind();

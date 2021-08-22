@@ -40,6 +40,18 @@ public:
 
     std::vector<Texture2D*>& getTextures() { return textures; }
     Texture2D* getTextureByType(Texture2D::ETextureType type);
+
+    void addTexture(Texture2D* tex)
+    {
+        textures.push_back(tex);
+    }
+
+    void addTexture(const std::string_view& path, ITexture::ETextureType type)
+    {
+        auto* tex = new Texture2D();
+        tex->loadFrom(path.data(), type);
+        textures.push_back(tex);
+    }
 private:
     //  render data
     unsigned int vao;
@@ -48,6 +60,6 @@ private:
     // mesh data
     std::vector<Vertex>       vertices;
     std::vector<unsigned int> indices;
-    std::vector<Texture2D*>      textures;
+    std::vector<Texture2D*>   textures;
 };
 #endif //DUMBERENGINE_MESH_HPP

@@ -21,7 +21,7 @@ struct SWindowData
 {
     int width;
     int height;
-    char *name;
+    std::string name;
 };
 
 enum class RenderingType

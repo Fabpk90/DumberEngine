@@ -37,7 +37,7 @@ bool Texture2D::loadFrom(const char *path, ETextureType type, unsigned int flagW
             glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
         else
         {
-            std::cout << "The texture has an unknown number of channels" << std::endl;
+            std::cout << "The texture has an unknown number of channels " << nrChannels << std::endl;
             return false;
         }
 
@@ -61,7 +61,7 @@ void Texture2D::use(int textureUnit)
 
 Texture2D::~Texture2D()
 {
-    std::cout << "deleting texture id: " << id << std::endl;
+    std::cout << "deleting texture " << name << " id " << id << std::endl;
     glDeleteTextures(1, &id);
 }
 

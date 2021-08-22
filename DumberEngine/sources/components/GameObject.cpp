@@ -76,7 +76,7 @@ void GameObject::drawInspector()
     }
 }
 
-void GameObject::drawShadows(Shader *pShader)
+void GameObject::drawShadow(Shader *pShader)
 {
     for (const auto& i : components)
     {
@@ -136,7 +136,7 @@ void GameObject::addComponent(IComponent *comp)
 
 }
 
-void GameObject::geometryDraw(Shader &shader)
+void GameObject::fillGBuffer(Shader &shader)
 {
     if(isActive)
     {
@@ -144,7 +144,7 @@ void GameObject::geometryDraw(Shader &shader)
 
         while (ite != components.end())
         {
-            (*ite)->geometryDraw(shader);
+            (*ite)->fillGBuffer(shader);
             ++ite;
         }
     }

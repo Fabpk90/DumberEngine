@@ -20,6 +20,7 @@ public:
     void bind() override;
 
     unsigned int getID(Param textureType) override;
+    unsigned int getIDFbo() const { return fbo;};
 
 private:
     std::vector<GLuint> textures;

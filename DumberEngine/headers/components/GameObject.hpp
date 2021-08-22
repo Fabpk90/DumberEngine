@@ -51,9 +51,9 @@ public:
 
     void draw() override;
 
-    void geometryDraw(Shader &shader) override;
+    void fillGBuffer(Shader &shader) override;
 
-    void drawShadows(Shader *pShader);
+    void drawShadow(Shader *pShader) override;
 
     void drawInspector() override;
     void drawPostRenderers();

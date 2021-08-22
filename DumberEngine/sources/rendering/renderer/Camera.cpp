@@ -88,14 +88,14 @@ void Camera::drawInspector()
 
 }
 
-glm::mat4 Camera::getViewMatrix()
+glm::mat4 Camera::getViewMatrix() const
 {
     return glm::lookAt(position, position + direction, up);
 }
 
 glm::mat4 Camera::getProjectionMatrix()
 {
-    return glm::perspective(glm::radians(60.0f), (float) IWindow::instance->getActualWidth() / (float) IWindow::instance->getActualHeight(), 0.1f, 100.0f);
+    return glm::perspective(glm::radians(60.0f), (float) IWindow::instance->getActualWidth() / (float) IWindow::instance->getActualHeight(), 0.1f, 1000.0f);
 }
 
 void Camera::moveWorld(glm::vec3 movement)
@@ -115,8 +115,12 @@ void Camera::setPosition(glm::vec3 position)
 
 void Camera::postDraw()
 {
-    glDisable(GL_DEPTH_TEST);
-    pp.activateEffects();
+    if(pp.getActiveEffects() != 0)
+    {
+        glDisable(GL_DEPTH_TEST);
+        pp.activateEffects();
+    }
+
     pp.getFBO().unBind();
 
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);

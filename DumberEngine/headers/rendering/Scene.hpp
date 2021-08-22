@@ -9,6 +9,7 @@
 #include "../components/GameObject.hpp"
 #include "helper/Shader.hpp"
 #include "../components/rendering/IPostRendering.hpp"
+#include "renderer/opengl/Vbo.hpp"
 
 #include <memory>
 
@@ -23,7 +24,9 @@ private:
     GameObject* selectedGO;
 
     std::string name;
-    Shader shaderGeometry;
+    Shader shaderFillGBuffer;
+    Shader shaderShowGBuffer;
+    Vbo vboQuad;
 
 public:
     static Scene* instance;

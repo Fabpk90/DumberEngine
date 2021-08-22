@@ -41,9 +41,9 @@ void OpenGLRenderer::init(SWindowData data)
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    windowHandle = glfwCreateWindow(data.width, data.height, data.name, NULL, NULL);
+    windowHandle = glfwCreateWindow(data.width, data.height, data.name.c_str(), nullptr, nullptr);
 
-    if (windowHandle == NULL)
+    if (windowHandle == nullptr)
     {
         std::cout << "Failed to create GLFW window" << std::endl;
     }
@@ -71,11 +71,11 @@ void OpenGLRenderer::init(SWindowData data)
 
     // Setup Platform/Renderer bindings
     ImGui_ImplGlfw_InitForOpenGL(windowHandle, true);
-    ImGui_ImplOpenGL3_Init(NULL);
+    ImGui_ImplOpenGL3_Init(nullptr);
 
     std::cout << "ImGui initialized" << std::endl;
 
-    std::vector<IGBuffer::Param> params = {IGBuffer::Param::Position, IGBuffer::Param::Albedo, IGBuffer::Param::Normal};
+    std::vector<IGBuffer::Param> params = {IGBuffer::Param::Albedo, IGBuffer::Param::Normal};
     gBuffer = std::make_unique<GBuffer>(std::move(params));
 }
 

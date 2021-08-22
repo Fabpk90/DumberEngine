@@ -45,6 +45,11 @@ void Mesh::draw(Shader* shader)
                 shader->setInt("t_normal", i);
                 i++;
                 break;
+            case ITexture::Specular:
+                tex->use(i);
+                shader->setInt("t_specular", i);
+                i++;
+                break;
         }
     }
 

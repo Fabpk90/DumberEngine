@@ -64,14 +64,14 @@ void Engine::start()
     avatarGO->addComponent(new CameraScript());
 
     auto phy = Scene::instance->createGameObject("RigidBody");
-    phy->addComponent(new BoxCollider());
-    phy->addComponent(new RigidBody());
+    phy->addComponent<BoxCollider>();
+    phy->addComponent<RigidBody>();
 
     auto test = phy->addComponent<PhysicsTest>();
     test->test = "yeppa";
 
     auto box = Scene::instance->createGameObject("BoxCollider");
-    box->addComponent(new BoxCollider());
+    box->addComponent<BoxCollider>();
 
     auto test1 = box->addComponent<PhysicsTest>();
     test1->test = "nooope";
@@ -80,8 +80,20 @@ void Engine::start()
     auto sm = meshGO->addComponent<StaticMesh>();
     sm->loadFrom("mesh/Cerberus/Cerberus_LP.fbx");
 
+    sm->getMesh(0).addTexture("mesh/Cerberus/Textures/Cerberus_M.tga", ITexture::Metalness);
+
+    sm->getMesh(0).addTexture("mesh/Cerberus/Textures/Cerberus_N.tga", ITexture::Normal);
+
+    sm->getMesh(0).addTexture("mesh/Cerberus/Textures/Cerberus_R.tga", ITexture::Roughness);
+
+    sm->getMesh(0).addTexture("mesh/Cerberus/Textures/Raw/Cerberus_AO.tga", ITexture::AO);
+
+    /*auto sponza = Scene::instance->createGameObject("Sponza");
+    auto smSponza = sponza->addComponent<StaticMesh>();
+    smSponza->loadFrom("mesh/sponza/sponza.obj");*/
+
     auto pointLightGO = Scene::instance->createGameObject("PointLight");
-    pointLightGO->addComponent(new PointLight());
+    pointLightGO->addComponent<PointLight>();
 
 
     Camera::getInstance().pp.addPostProcess(new PPNoParams("shaders/postprocess/Outline/"));
@@ -130,21 +142,8 @@ void Engine::update()
 
         scene->draw();
 
-        //Quick fix, need to handle forward -> deferred changing
-        // as the pp uses the same fbo
-        if(IWindow::instance->isForward())
-            scene->drawPostRendering();
-        else
-        {
-            glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-            glClearColor(window->getClearColor().x, window->getClearColor().y, window->getClearColor().z, 1.0f);
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        }
+        scene->drawPostRendering();
         //debug->draw();
-
-
-      //  glCullFace(GL_BACK);
 
         //GUI
         // Start the Dear ImGui frame
@@ -157,7 +156,7 @@ void Engine::update()
 
         Camera::getInstance().pp.drawInspector();
 
-        ImGui::ShowDemoWindow();
+        //ImGui::ShowDemoWindow();
 
         IWindow::drawGUITools();
 

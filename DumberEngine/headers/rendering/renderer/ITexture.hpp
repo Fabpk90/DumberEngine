@@ -5,6 +5,9 @@
 #ifndef DUMBERENGINE_ITEXTURE_HPP
 #define DUMBERENGINE_ITEXTURE_HPP
 
+#include <unordered_map>
+#include <memory>
+
 #include <assimp/material.h>
 
 class ITexture
@@ -41,7 +44,7 @@ public:
             case aiTextureType_NORMALS:
                 return Normal;
             case aiTextureType_SHININESS:
-                break;
+                return Specular;
             case aiTextureType_OPACITY:
                 break;
             case aiTextureType_DISPLACEMENT:
@@ -74,6 +77,8 @@ public:
 protected:
     ETextureType type;
     std::string name;
+    glm::vec2 size;
+    bool isLoaded = false;
 
 public:
     virtual bool loadFrom(const char *path, ETextureType type, unsigned int flagWrapS, unsigned int flagWrapT, unsigned int flagMinFilter,
@@ -82,6 +87,9 @@ public:
 
     ETextureType getType() { return type; }
     std::string& getName() { return name;}
+
+    float getX() const { return size.x;}
+    float getY() const { return size.y;}
 
 
     virtual ~ITexture() {};

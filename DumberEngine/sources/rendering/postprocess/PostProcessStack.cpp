@@ -5,8 +5,9 @@
 #include <imgui/imgui.h>
 #include <glm/gtc/type_ptr.hpp>
 #include <iostream>
+#include <algorithm>
 #include "../../../headers/rendering/postprocess/PostProcessStack.hpp"
-#include "../../../headers/rendering/renderer/IWindow.h"
+#include "../../../headers/rendering/renderer/opengl/GBuffer.hpp"
 
 void PostProcessStack::addPostProcess(IPostProcess *pp)
 {
@@ -54,7 +55,7 @@ PostProcessStack::PostProcessStack() : shaderQuad("shaders/forward/quad/")
     glGenBuffers(1, &ubo);
     glBindBuffer(GL_UNIFORM_BUFFER, ubo);
 
-    SUniforms uni;
+    SUniforms uni{};
 
     uni.screen_height = IWindow::instance->getActualHeight();
     uni.screen_width = IWindow::instance->getActualWidth();
@@ -106,6 +107,15 @@ void PostProcessStack::activateEffects()
 
     glBindBufferBase(GL_UNIFORM_BUFFER, 0, ubo);
 
+    if(!IWindow::instance->isForward())
+    {
+        glBindFramebuffer(GL_READ_BUFFER, fbo0->getID());
+        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, dynamic_cast<GBuffer*>(IWindow::instance->getGBuffer().get())->getIDFbo());
+        glBlitFramebuffer(0, 0, 1280, 720, 0, 0, 1280, 720, GL_COLOR_BUFFER_BIT, GL_LINEAR);
+    }
+
+
+    glActiveTexture(GL_TEXTURE0);
     for(IPostProcess* pp : stack)
     {
         if(pp->getIsActive())
@@ -114,7 +124,6 @@ void PostProcessStack::activateEffects()
             {
                 fbo0->setColorTexture(texFBO1);
 
-                glActiveTexture(GL_TEXTURE0);
                 glBindTexture(GL_TEXTURE_2D, texFBO0);
 
                 isFirstFboBound = false;
@@ -123,7 +132,6 @@ void PostProcessStack::activateEffects()
             {
                 fbo0->setColorTexture(texFBO0);
 
-                glActiveTexture(GL_TEXTURE0);
                 glBindTexture(GL_TEXTURE_2D, texFBO1);
 
                 isFirstFboBound = true;
@@ -139,7 +147,7 @@ void PostProcessStack::activateEffects()
 void PostProcessStack::OnResize(int width, int height)
 {
     glBindBuffer(GL_UNIFORM_BUFFER, ubo);
-    SUniforms uni;
+    SUniforms uni{};
 
     uni.screen_height = IWindow::instance->getActualHeight();
     uni.screen_width = IWindow::instance->getActualWidth();
@@ -154,5 +162,11 @@ void PostProcessStack::OnResize(int width, int height)
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, uni.screen_width,  uni.screen_height, 0, GL_RGB, GL_UNSIGNED_BYTE, nullptr);
     glBindTexture(GL_TEXTURE_2D, texFBO1);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, uni.screen_width,  uni.screen_height, 0, GL_RGB, GL_UNSIGNED_BYTE, nullptr);
+}
+
+int PostProcessStack::getActiveEffects()
+{
+    return
+    std::count_if(stack.begin(), stack.end(), [](IPostProcess* elm) { return elm->getIsActive();});
 }
 

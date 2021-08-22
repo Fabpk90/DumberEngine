@@ -31,9 +31,9 @@ public:
 
     void drawShadow(Shader *pShader) override;
 
-    void geometryDraw(Shader &shader) override;
+    void fillGBuffer(Shader &shader) override;
 
-    void lightingPass() override;
+    Mesh& getMesh(int index) { return *meshes[index]; }
 
 private:
     void recursivelyLoadNode(aiNode *const pNode, const aiScene *pScene);
